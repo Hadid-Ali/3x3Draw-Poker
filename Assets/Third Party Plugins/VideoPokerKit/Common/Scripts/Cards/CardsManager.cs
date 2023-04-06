@@ -127,8 +127,8 @@ public class CardsManager : MonoBehaviour
 
 		// evaluate the temp hand
 		HandEvaluator.Evaluate( workCards, 		                       	
-		                       	true, // auto-hold enabled
-		                       	MainGame.the.gameState == MainGame.STATE_SHOW_RESULTS ); // show wins only in the RESULTS stage
+		                       	false, // auto-hold enabled
+		                       	true ); // show wins only in the RESULTS stage
 
 		bool cardsWereHolded = false;
 
