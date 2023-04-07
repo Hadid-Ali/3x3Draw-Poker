@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.XR;
 
 public class CardsManager : MonoBehaviour 
 {
@@ -19,6 +20,8 @@ public class CardsManager : MonoBehaviour
 	public float firstHandDealDelayBetweenCards = 0.4f;
 	public float secondHandDealDelayBetweenCards = 0.3f;
 
+
+	[SerializeField] private GameplayHandTypeEvent m_HandTypeEvent;
 	//--------------------------------------------------------
 
 	// Use this for initialization
@@ -128,9 +131,10 @@ public class CardsManager : MonoBehaviour
 		// evaluate the temp hand
 		HandEvaluator.Evaluate( workCards, 		                       	
 		                       	false, // auto-hold enabled
-		                       	true ); // show wins only in the RESULTS stage
+		                       	false,out HandType handType ); // show wins only in the RESULTS stage
 
 		bool cardsWereHolded = false;
+		m_HandTypeEvent.Raise(handType);
 
 		// apply auto holds to the cards on the screen or highlight winner cards
 		foreach(CardData workCard in workCards)			

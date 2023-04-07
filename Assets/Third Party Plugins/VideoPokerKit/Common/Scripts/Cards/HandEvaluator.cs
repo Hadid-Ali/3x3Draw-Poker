@@ -83,10 +83,9 @@ public class HandEvaluator
 
 	//--------------------------------------------------------
 
-	public static void Evaluate(CardData[] cards, bool autoHold, bool showWin)
+	public static void Evaluate(CardData[] cards, bool autoHold, bool showWin,out HandType handType)
 	{
-		HandType handType = HandType.HighCard;
-		
+		handType = HandType.HighCard;
 		// define all win flags needed in video poker
 		bool bOnePair = false;
 		bool bTwoPair = false;
@@ -246,7 +245,7 @@ public class HandEvaluator
 			// if (autoHold)
 			// 	HoldAll(cards);
 		}
-		
+
 		Debug.LogError($"Hand Type {handType}");
 	}
 }

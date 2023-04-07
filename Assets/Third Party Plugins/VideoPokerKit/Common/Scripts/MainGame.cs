@@ -65,6 +65,7 @@ public class MainGame : MonoBehaviour
 	[Header("Info panel")]
 	public GameObject infoPanelObj;
 
+	
 	//--------------------------------------------
 
 	// Use this for initialization
