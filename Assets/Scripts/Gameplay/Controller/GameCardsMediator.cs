@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameCardsMediator : MonoBehaviour
 {
     [SerializeField] private DraggableCard m_DraggableCard;
-    [SerializeField] private Card m_CardAtHand;
+    private Card m_CardAtHand;
 
     public static CardData CurrentData
     {
@@ -48,6 +48,7 @@ public class GameCardsMediator : MonoBehaviour
     private void OnCardDrop()
     {
         m_DraggableCard.SetEnabled(false);
+        m_CardAtHand.SetActiveStatus(true);
         CurrentData = null;
     }
 }

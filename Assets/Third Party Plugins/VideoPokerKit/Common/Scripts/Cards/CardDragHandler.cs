@@ -28,7 +28,6 @@ public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler
     {
         if (GameCardsMediator.CurrentData == null || GameCardsMediator.CurrentData.IsNull)
             return;
-        
         SetCardData(GameCardsMediator.CurrentData, false);
     }
 

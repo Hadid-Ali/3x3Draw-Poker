@@ -13,6 +13,7 @@ public class Card : MonoBehaviour
 	[SerializeField] private CardDataHolder m_CardDataHandler;
 
 	private CardData m_CardData = new();
+	public CardData CardData => m_CardData;
 	
 	protected virtual void Start ()
 	{

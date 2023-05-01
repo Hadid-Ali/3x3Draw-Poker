@@ -90,6 +90,16 @@ public class CardsManager : MonoBehaviour
 
 	//--------------------------------------------------------
 
+	public static HandType EvaluateDeck(CardData[] cards)
+	{
+		// evaluate the temp hand
+		HandEvaluator.Evaluate( cards, 		                       	
+			false, // auto-hold enabled
+			false,out HandType handType ); // show wins only in the RESULTS stage
+
+		return handType;
+	}
+	
 	public void EvaluateHand()
 	{
 		// copy cards into a separate array of cards

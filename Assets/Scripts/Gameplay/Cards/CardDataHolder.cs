@@ -8,7 +8,6 @@ public class CardDataHolder : MonoBehaviour
     [SerializeField] private Card m_CardComponent;
 
     private CardData m_TempData;
-
     public CardData CardData { get; private set; }
 
     public void SetCardData(CardData cardData, bool isPersistent)

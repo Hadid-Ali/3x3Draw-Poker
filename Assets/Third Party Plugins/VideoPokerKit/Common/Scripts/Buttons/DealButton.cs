@@ -1,8 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class DealButton : GameButton 
 {
+	private void Start()
+	{
+		Invoke(nameof(PressAction), 0.1f);
+	}
+
 	public override void PressAction()
 	{
 		// call the main deal function from MainGame
