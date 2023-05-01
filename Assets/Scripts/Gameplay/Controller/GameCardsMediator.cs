@@ -8,16 +8,10 @@ public class GameCardsMediator : MonoBehaviour
     [SerializeField] private DraggableCard m_DraggableCard;
     [SerializeField] private CardDataHolder m_CardAtHand;
 
-    private static CardData _CurrentData;
-    
     public static CardData CurrentData
     {
-        get => _CurrentData;
-        set
-        {
-            _CurrentData = value;
-            Debug.LogError("Setting Value");
-        }
+        get; 
+        private set;
     }
 
     private void OnEnable()

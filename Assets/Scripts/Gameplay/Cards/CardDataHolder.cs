@@ -30,6 +30,9 @@ public class CardDataHolder : MonoBehaviour
 
     public void RefreshData()
     {
+        if (CardData == null)
+            return;
+        
         SetCardDataInternal(CardData);
     }
 

@@ -6,20 +6,22 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler, IPointerExitHandler, IDragHandler,IBeginDragHandler
+public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler, IPointerExitHandler,IBeginDragHandler,IDragHandler
 {
     [SerializeField] private CardDataHolder m_CurrentCardHandler;
-
-    private void OnEnable()
+    
+    public void OnDrag(PointerEventData eventData)
     {
-        
     }
-
-    private void OnDisable()
+    
+    public void OnBeginDrag(PointerEventData eventData)
     {
+        if (GameCardsMediator.CurrentData != null)
+            return;
         
+        GameEvents.GameplayEvents.CardDragStartEvent.Raise(m_CurrentCardHandler.CardData, m_CurrentCardHandler);
     }
-
+    
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (GameCardsMediator.CurrentData == null || GameCardsMediator.CurrentData.IsNull)
@@ -30,30 +32,11 @@ public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        OnPointerExitCell();
-    }
-
-    protected virtual void OnPointerExitCell()
-    {
         m_CurrentCardHandler.RefreshData();
-    }
-    
-    public void OnDrag(PointerEventData eventData)
-    {
-        
     } 
     
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (GameCardsMediator.CurrentData != null)
-            return;
-        
-        GameEvents.GameplayEvents.CardDragStartEvent.Raise(m_CurrentCardHandler.CardData, m_CurrentCardHandler);
-    }
-
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.LogError(transform.parent);
         GameEvents.GameplayEvents.CardReplacedEvent.Raise(m_CurrentCardHandler.CardData);
         m_CurrentCardHandler.SaveData();
     }
