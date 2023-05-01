@@ -24,11 +24,17 @@ public class Card : MonoBehaviour
 	public void SetData(CardData cardData,bool isPersistent)
 	{
 		m_CardDataHandler.SetCardData(cardData, isPersistent);
+
+		if (isPersistent)
+		{
+			StartFlippingCard();
+		}
 	}
 
 	public void SetActiveStatus(bool status)
 	{
 		m_CardFaceImage.enabled = status;
+		StartFlippingCard();
 	}
 
 	//----------------------------------------------------
@@ -37,7 +43,6 @@ public class Card : MonoBehaviour
 	{
 		m_CardData = cardData;
 		CopyInfoFrom(cardData);
-		StartFlippingCard();
 	}
 
 	//----------------------------------------------------
