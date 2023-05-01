@@ -42,7 +42,7 @@ public class CardData
 	// card suit and value (set in the Inspector)
 	public CardType type = CardType.TYPE_HEARTS;
 	public CardValue value = CardValue.VALUE_2;
-
+	
 	// image
 	public Sprite sprite;
 
@@ -52,6 +52,8 @@ public class CardData
 	[HideInInspector]
 	public bool hold = false;
 
+	public bool IsNull => sprite == null;
+	
 	//----------------------------------
 
 	// used to make a copy of another card

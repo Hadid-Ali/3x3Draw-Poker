@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 using UnityEngine.XR;
 
 public class CardsManager : MonoBehaviour 
 {
 	// all the cards in the deck (set in the inspector)
-	[Header("The deck")]
-	public CardData [] cardLibrary;
+	[Header("The deck"),SerializeField] private CardData [] m_CardsRegistry;
 
 	// screen cards
-	[Header("Player cards")]
-	public Card [] gameCards;
+	[Header("Player cards"),SerializeField] private CardContainer [] m_GameCardContainers;
 
 	// temporary cards used for evaluating hand
 	CardData [] workCards;
@@ -38,7 +37,7 @@ public class CardsManager : MonoBehaviour
 	{
 		// make cards vanish
 		for (int i=0; i<5; i++) 			
-			gameCards [i].ClearAfterDeal();
+			m_GameCardContainers [i].ClearCardData();
 	}
 
 	//--------------------------------------------------------
@@ -46,8 +45,8 @@ public class CardsManager : MonoBehaviour
 	public void ResetDeck()
 	{
 		// mark all cards as not dealt
-		for(int i = 0; i<cardLibrary.Length; i++)
-			cardLibrary[i].dealt = false;
+		for(int i = 0; i<m_CardsRegistry.Length; i++)
+			m_CardsRegistry[i].dealt = false;
 	}
 
 	//--------------------------------------------------------
@@ -60,63 +59,33 @@ public class CardsManager : MonoBehaviour
 			// get a random card
 			idx = Random.Range(0,52);
 		}
-		while( cardLibrary[idx].dealt ); // check to see if it's already drawn
+		while( m_CardsRegistry[idx].dealt ); // check to see if it's already drawn
 
 		// mark the new card as drawn
-		cardLibrary[idx].dealt = true;
+		m_CardsRegistry[idx].dealt = true;
 
-		return cardLibrary[idx];
+		return m_CardsRegistry[idx];
 	}
 
 	//--------------------------------------------------------
 
 	public int DealCards(bool firstHand)
 	{
-		// if first hand
-		if (firstHand) 
-		{
-			// set the state as DEALING
 			MainGame.the.gameState = MainGame.STATE_DEALING;
 
 			// set cards values
-			for (int i=0; i<5; i++) 			
+			for (int i = 0; i < m_GameCardContainers.Length; i++)
 			{
 				// extract new card from the deck and attach it to the screen card
-				gameCards[i].SetCardData( GetNewCardFromTheDeck() );
+				m_GameCardContainers[i].SetData(GetNewCardFromTheDeck());
 			}
 
-			// start deal animations for all five cards with a small delay in between
-			for (int i=0; i<5; i++) 			
-				gameCards [i].DealWithDelay (i * firstHandDealDelayBetweenCards);
+			// // start deal animations for all five cards with a small delay in between
+			// for (int i=0; i<5; i++) 			
+			// 	m_GameCardContainers [i].DealWithDelay (i * firstHandDealDelayBetweenCards);
 
 			// we deal 5 cards
-			return 5;
-		}
-		else 
-		{
-			// set the new dealing state
-			MainGame.the.gameState = MainGame.STATE_DEALING2;
-
-			// second hand
-			int cardsDealt = 0; // count separately the non holded cards
-			for (int i=0; i<5; i++) 
-			{
-				// deal only the non holded cards
-				if( !gameCards[i].IsHolded() )
-				{
-					// generate a new random card from the deck
-					// and assign it to the card on the screen
-					gameCards[i].SetCardData( GetNewCardFromTheDeck() );
-
-					// start vanish animation and prepare the deal
-					gameCards[i].VanishAndDealAgainWithDelay(cardsDealt * secondHandDealDelayBetweenCards);
-					cardsDealt++;
-				}
-				else
-					gameCards[i].ResetHold(); // remove hold marker for holded cards
-			}
-			return cardsDealt;
-		}
+		return m_GameCardContainers.Length;
 	}
 
 	//--------------------------------------------------------
@@ -126,7 +95,7 @@ public class CardsManager : MonoBehaviour
 		// copy cards into a separate array of cards
 		// (they will be sorted and better not mess up original cards)
 		for(int i=0; i<5; i++)			
-			workCards[i].CopyInfoFrom( gameCards[i].CardData );
+			workCards[i].CopyInfoFrom( m_GameCardContainers[i].CardData );
 
 		// evaluate the temp hand
 		HandEvaluator.Evaluate( workCards, 		                       	
@@ -139,7 +108,7 @@ public class CardsManager : MonoBehaviour
 		// apply auto holds to the cards on the screen or highlight winner cards
 		foreach(CardData workCard in workCards)			
 		{
-			foreach(Card screenCard in gameCards)
+			foreach(CardContainer screenCard in m_GameCardContainers)
 			{
 				// compare the work cards and the screen cards
 				if(workCard.sprite == screenCard.CardData.sprite)
@@ -150,13 +119,12 @@ public class CardsManager : MonoBehaviour
 						// if the card was auto-holded, mark it on the screen
 						if(workCard.hold)
 						{
-							screenCard.ToggleHold();
 							cardsWereHolded = true;
 						}
 					}
-					else // game end
-						if(MainGame.the.gameState == MainGame.STATE_SHOW_RESULTS)							
-							screenCard.SetResultsState( workCard.hold );
+					// else // game end
+					// 	if(MainGame.the.gameState == MainGame.STATE_SHOW_RESULTS)							
+					// 		screenCard.SetResultsState( workCard.hold );
 
 					//*****************
 					// NOTE

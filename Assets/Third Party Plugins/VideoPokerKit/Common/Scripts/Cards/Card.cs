@@ -1,20 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour 
 {
-	[SerializeField] private SpriteRenderer m_CardFaceSprite;
-	
-	//public GameObject holdMarkerObj;
+	[SerializeField] protected Image m_CardFaceImage;
+	[SerializeField] private Transform m_CardTransform;
 
-	private Transform m_CardTransform;
+	[SerializeField] private AudioSource flipSound;
 
-	public CardData CardData { get; private set; }
+	private CardData m_CardData = new();
 	
-	AudioSource flipSound;
-	
-	void Start ()
+	protected virtual void Start ()
 	{
 		m_CardTransform = transform;
 		flipSound = GetComponent<AudioSource>();
@@ -24,9 +23,9 @@ public class Card : MonoBehaviour
 
 	public void SetCardData(CardData cardData)
 	{
-		// set a link to a deck card, so that we know what 
-		// card we need to work with
-		CardData = cardData;
+		m_CardData = cardData;
+		CopyInfoFrom(cardData);
+		StartFlippingCard();
 	}
 
 	//----------------------------------------------------
@@ -35,7 +34,6 @@ public class Card : MonoBehaviour
 	// instead it is called as an event FROM THE flipping animation which is already runnning
 	public void StartFlippingCard()
 	{		
-		CopyInfoFrom(CardData);
 		SetCardRotation(0);
 		flipSound.Play();
 	}
@@ -44,21 +42,29 @@ public class Card : MonoBehaviour
 
 	void CopyInfoFrom(CardData other)
 	{
-		CardData.type = other.type;
-		CardData.value = other.value;
-		CardData.sprite = other.sprite;
-		CardData.hold = other.hold;
+		try
+		{
+			m_CardData.type = other.type;
+			m_CardData.value = other.value;
+			m_CardData.sprite = other.sprite;
+			m_CardData.hold = other.hold;
 
-		// update sprite
-		UpdateCardFaceSprite();
+			UpdateCardFaceSprite(other.sprite);
+		}
+		catch (Exception e)
+		{
+			Debug.LogError(gameObject, gameObject);
+			throw;
+		}
 	}
 
 	//----------------------------------------------------
 
-	public void UpdateCardFaceSprite()
+	public void UpdateCardFaceSprite(Sprite sprite)
 	{
-		m_CardFaceSprite.sprite = CardData.sprite;
+		m_CardFaceImage.sprite = sprite;
 	}
+	
 
 	//----------------------------------------------------
 
@@ -95,7 +101,7 @@ public class Card : MonoBehaviour
 	public void ResetHold()
 	{
 		// disable HOLD
-		CardData.hold = false;
+		m_CardData.hold = false;
 		// hide hold marker
 		Debug.LogError("Reset Hold");
 	}
@@ -104,7 +110,7 @@ public class Card : MonoBehaviour
 
 	public bool IsHolded()
 	{
-		return CardData.hold;
+		return m_CardData.hold;
 	}
 
 	//--------------------------------------------------
@@ -149,10 +155,10 @@ public class Card : MonoBehaviour
 	public void ToggleHold()
 	{
 		// change hold status
-		CardData.hold = !CardData.hold;
+		m_CardData.hold = !m_CardData.hold;
 		
 		// play HOLD animation if needed
-		if(CardData.hold)
+		if(m_CardData.hold)
 		{
 			// start playing the HOLD animation
 			Debug.LogError("Hold");

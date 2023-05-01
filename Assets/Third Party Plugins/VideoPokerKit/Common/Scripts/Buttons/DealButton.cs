@@ -7,7 +7,7 @@ public class DealButton : GameButton
 	{
 		// call the main deal function from MainGame
 		// (it uses the static reference to acces the object instance)
-		MainGame.the.DealCards ();
+		MainGame.the.DealCardsSimple();
 
 		// play sound
 		SoundsManager.the.dealButtonSound.Play ();
