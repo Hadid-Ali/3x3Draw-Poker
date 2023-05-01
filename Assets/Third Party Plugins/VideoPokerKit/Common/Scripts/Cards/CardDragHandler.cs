@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler, IPointerExitHandler,IBeginDragHandler,IDragHandler
 {
+    [SerializeField] private Card m_Card;
     [SerializeField] private CardDataHolder m_CurrentCardHandler;
     
     public void OnDrag(PointerEventData eventData)
@@ -18,8 +19,9 @@ public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler
     {
         if (GameCardsMediator.CurrentData != null)
             return;
-        
-        GameEvents.GameplayEvents.CardDragStartEvent.Raise(m_CurrentCardHandler.CardData, m_CurrentCardHandler);
+
+        m_Card.SetActiveStatus(false);
+        GameEvents.GameplayEvents.CardDragStartEvent.Raise(m_CurrentCardHandler.CardData, m_Card);
     }
     
     public void OnPointerEnter(PointerEventData eventData)

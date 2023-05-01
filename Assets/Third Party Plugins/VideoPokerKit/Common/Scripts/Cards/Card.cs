@@ -10,6 +10,7 @@ public class Card : MonoBehaviour
 	[SerializeField] private Transform m_CardTransform;
 
 	[SerializeField] private AudioSource flipSound;
+	[SerializeField] private CardDataHolder m_CardDataHandler;
 
 	private CardData m_CardData = new();
 	
@@ -17,6 +18,16 @@ public class Card : MonoBehaviour
 	{
 		m_CardTransform = transform;
 		flipSound = GetComponent<AudioSource>();
+	}
+
+	public void SetData(CardData cardData,bool isPersistent)
+	{
+		m_CardDataHandler.SetCardData(cardData, isPersistent);
+	}
+
+	public void SetActiveStatus(bool status)
+	{
+		m_CardFaceImage.enabled = status;
 	}
 
 	//----------------------------------------------------

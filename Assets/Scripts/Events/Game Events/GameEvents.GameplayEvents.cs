@@ -7,7 +7,7 @@ public static partial class GameEvents
 {
     public static class GameplayEvents
     {
-        public static GameEvent<CardData,CardDataHolder> CardDragStartEvent = new();
+        public static GameEvent<CardData, Card> CardDragStartEvent = new();
         public static GameEvent CardDropEvent = new();
         
         public static GameEvent<CardData> CardReplacedEvent = new();

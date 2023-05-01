@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameCardsMediator : MonoBehaviour
 {
     [SerializeField] private DraggableCard m_DraggableCard;
-    [SerializeField] private CardDataHolder m_CardAtHand;
+    [SerializeField] private Card m_CardAtHand;
 
     public static CardData CurrentData
     {
@@ -33,10 +33,11 @@ public class GameCardsMediator : MonoBehaviour
         if (m_CardAtHand == null)
             return;
         
-        m_CardAtHand.SetCardData(previousData, true);
+        m_CardAtHand.SetData(previousData, true);
+        m_CardAtHand.SetActiveStatus(true);
     }
     
-    private void OnCardDragStart(CardData cardData,CardDataHolder cardDataHolder)
+    private void OnCardDragStart(CardData cardData,Card cardDataHolder)
     {
         CurrentData = cardData;
         m_CardAtHand = cardDataHolder;
