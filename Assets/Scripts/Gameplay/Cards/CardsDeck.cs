@@ -1,21 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CardsDeck : MonoBehaviour
 {
-   [SerializeField] private CardContainer[] m_CardContainers;
    [SerializeField] private DeckName m_DeckName;
+   [SerializeField] private Card[] m_Cards;
 
    public CardData[] CardsData
    {
       get
       {
-         CardData[] cards = new CardData[m_CardContainers.Length];
+         CardData[] cards = new CardData[m_Cards.Length];
 
-         for (int i = 0; i < m_CardContainers.Length; i++)
+         for (int i = 0; i < m_Cards.Length; i++)
          {
-            cards[i] = m_CardContainers[i].CardData;
+            cards[i] = m_Cards[i].CardData;
          }
 
          return cards;

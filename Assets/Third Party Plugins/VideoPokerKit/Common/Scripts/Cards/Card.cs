@@ -21,7 +21,7 @@ public class Card : MonoBehaviour
 		flipSound = GetComponent<AudioSource>();
 	}
 
-	public void SetData(CardData cardData,bool isPersistent)
+	public void SetData(CardData cardData,bool isPersistent,bool isInit)
 	{
 		m_CardDataHandler.SetCardData(cardData, isPersistent);
 

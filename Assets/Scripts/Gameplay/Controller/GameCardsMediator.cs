@@ -32,8 +32,8 @@ public class GameCardsMediator : MonoBehaviour
     {
         if (m_CardAtHand == null)
             return;
-        
-        m_CardAtHand.SetData(previousData, true);
+
+        m_CardAtHand.SetData(previousData, true, false);
         m_CardAtHand.SetActiveStatus(true);
     }
     
