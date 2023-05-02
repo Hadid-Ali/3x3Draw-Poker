@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler, IPointerExitHandler,IBeginDragHandler,IDragHandler
 {
     [SerializeField] private Card m_Card;
-    [SerializeField] private CardDataHolder m_CurrentCardHandler;
     
     public void OnDrag(PointerEventData eventData)
     {
@@ -21,7 +20,7 @@ public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler
             return;
 
         m_Card.SetActiveStatus(false);
-        GameEvents.GameplayEvents.CardDragStartEvent.Raise(m_CurrentCardHandler.CardData, m_Card);
+        GameEvents.GameplayEvents.CardDragStartEvent.Raise(m_Card.CardData, m_Card);
     }
     
     public void OnPointerEnter(PointerEventData eventData)
@@ -33,17 +32,17 @@ public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        m_CurrentCardHandler.RefreshData();
+        m_Card.RefreshCard();
     } 
     
     public void OnDrop(PointerEventData eventData)
     {
-        GameEvents.GameplayEvents.CardReplacedEvent.Raise(m_CurrentCardHandler.CardData);
-        m_CurrentCardHandler.SaveData();
+        GameEvents.GameplayEvents.CardReplacedEvent.Raise(m_Card.CardData);
+        m_Card.SaveData();
     }
 
     protected virtual void SetCardData(CardData cardData, bool isPersistent)
     {
-        m_CurrentCardHandler.SetCardData(cardData, isPersistent);
+        m_Card.SetData(cardData, isPersistent, false);
     }
 }

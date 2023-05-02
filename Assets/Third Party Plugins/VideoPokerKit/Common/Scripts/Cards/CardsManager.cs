@@ -9,7 +9,7 @@ public class CardsManager : MonoBehaviour
 	[Header("The deck"),SerializeField] private CardData [] m_CardsRegistry;
 
 	// screen cards
-	[Header("Player cards"),SerializeField] private CardContainer [] m_GameCardContainers;
+	[Header("Player cards"),SerializeField] private Card [] m_GameCards;
 
 	// temporary cards used for evaluating hand
 	CardData [] workCards;
@@ -37,7 +37,7 @@ public class CardsManager : MonoBehaviour
 	{
 		// make cards vanish
 		for (int i=0; i<5; i++) 			
-			m_GameCardContainers [i].ClearCardData();
+			m_GameCards [i].ClearAfterDeal();
 	}
 
 	//--------------------------------------------------------
@@ -74,18 +74,18 @@ public class CardsManager : MonoBehaviour
 			MainGame.the.gameState = MainGame.STATE_DEALING;
 
 			// set cards values
-			for (int i = 0; i < m_GameCardContainers.Length; i++)
+			for (int i = 0; i < m_GameCards.Length; i++)
 			{
 				// extract new card from the deck and attach it to the screen card
-				m_GameCardContainers[i].SetData(GetNewCardFromTheDeck());
+				m_GameCards[i].SetData(GetNewCardFromTheDeck(), true, true);
 			}
 
 			// // start deal animations for all five cards with a small delay in between
 			// for (int i=0; i<5; i++) 			
-			// 	m_GameCardContainers [i].DealWithDelay (i * firstHandDealDelayBetweenCards);
+			// 	m_GameCards [i].DealWithDelay (i * firstHandDealDelayBetweenCards);
 
 			// we deal 5 cards
-		return m_GameCardContainers.Length;
+		return m_GameCards.Length;
 	}
 
 	//--------------------------------------------------------
@@ -105,7 +105,7 @@ public class CardsManager : MonoBehaviour
 		// copy cards into a separate array of cards
 		// (they will be sorted and better not mess up original cards)
 		for(int i=0; i<5; i++)			
-			workCards[i].CopyInfoFrom( m_GameCardContainers[i].CardData );
+			workCards[i].CopyInfoFrom( m_GameCards[i].CardData );
 
 		// evaluate the temp hand
 		HandEvaluator.Evaluate( workCards, 		                       	
@@ -118,7 +118,7 @@ public class CardsManager : MonoBehaviour
 		// apply auto holds to the cards on the screen or highlight winner cards
 		foreach(CardData workCard in workCards)			
 		{
-			foreach(CardContainer screenCard in m_GameCardContainers)
+			foreach(Card screenCard in m_GameCards)
 			{
 				// compare the work cards and the screen cards
 				if(workCard.sprite == screenCard.CardData.sprite)

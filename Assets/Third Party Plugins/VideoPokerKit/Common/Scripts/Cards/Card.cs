@@ -12,8 +12,9 @@ public class Card : MonoBehaviour
 	[SerializeField] private AudioSource flipSound;
 	[SerializeField] private CardDataHolder m_CardDataHandler;
 
-	private CardData m_CardData = new();
-	public CardData CardData => m_CardData;
+	public CardData CardData => m_CardDataHandler.CardData;
+
+	private Action m_CardDataUpdated;
 	
 	protected virtual void Start ()
 	{
@@ -21,7 +22,22 @@ public class Card : MonoBehaviour
 		flipSound = GetComponent<AudioSource>();
 	}
 
-	public void SetData(CardData cardData,bool isPersistent)
+	public void InitializeWithAction(Action onCardDataUpdated)
+	{
+		m_CardDataUpdated += onCardDataUpdated;
+	}
+
+	public void RefreshCard()
+	{
+		m_CardDataHandler.RefreshData();
+	}
+
+	public void SaveData()
+	{
+		m_CardDataHandler.SaveData();
+	}
+
+	public void SetData(CardData cardData,bool isPersistent,bool isInit)
 	{
 		m_CardDataHandler.SetCardData(cardData, isPersistent);
 
@@ -29,62 +45,40 @@ public class Card : MonoBehaviour
 		{
 			StartFlippingCard();
 		}
+
+		if (isPersistent && !isInit)
+		{
+			OnCardDataUpdatedByPlayer();
+		}
 	}
 
+	private void OnCardDataUpdatedByPlayer()
+	{
+		m_CardDataUpdated?.Invoke();
+	}
+	
 	public void SetActiveStatus(bool status)
 	{
 		m_CardFaceImage.enabled = status;
 		StartFlippingCard();
 	}
 
-	//----------------------------------------------------
-
 	public void SetCardData(CardData cardData)
 	{
-		m_CardData = cardData;
-		CopyInfoFrom(cardData);
+		UpdateCardFaceSprite(cardData.sprite);
 	}
-
-	//----------------------------------------------------
-
-	// this function is not starting the flipping animation, 
-	// instead it is called as an event FROM THE flipping animation which is already runnning
+	
 	public void StartFlippingCard()
 	{		
 		SetCardRotation(0);
 		flipSound.Play();
 	}
 
-	//----------------------------------------------------
-
-	void CopyInfoFrom(CardData other)
-	{
-		try
-		{
-			m_CardData.type = other.type;
-			m_CardData.value = other.value;
-			m_CardData.sprite = other.sprite;
-			m_CardData.hold = other.hold;
-
-			UpdateCardFaceSprite(other.sprite);
-		}
-		catch (Exception e)
-		{
-			Debug.LogError(gameObject, gameObject);
-			throw;
-		}
-	}
-
-	//----------------------------------------------------
-
 	public void UpdateCardFaceSprite(Sprite sprite)
 	{
 		m_CardFaceImage.sprite = sprite;
 	}
 	
-
-	//----------------------------------------------------
-
 	public void SetResultsState(bool bWin)
 	{
 		// if it's a winner card, we start a specific animation for the card (flashing)
@@ -118,19 +112,10 @@ public class Card : MonoBehaviour
 	public void ResetHold()
 	{
 		// disable HOLD
-		m_CardData.hold = false;
+	//	m_CardData.hold = false;
 		// hide hold marker
 		Debug.LogError("Reset Hold");
 	}
-
-	//--------------------------------------------------
-
-	public bool IsHolded()
-	{
-		return m_CardData.hold;
-	}
-
-	//--------------------------------------------------
 
 	public void ClearAfterDeal()
 	{
@@ -171,17 +156,17 @@ public class Card : MonoBehaviour
 
 	public void ToggleHold()
 	{
-		// change hold status
-		m_CardData.hold = !m_CardData.hold;
-		
-		// play HOLD animation if needed
-		if(m_CardData.hold)
-		{
-			// start playing the HOLD animation
-			Debug.LogError("Hold");
-			// play HOLD sound
-			SoundsManager.the.holdSound.Play ();
-		}
+		// // change hold status
+		// m_CardData.hold = !m_CardData.hold;
+		//
+		// // play HOLD animation if needed
+		// if(m_CardData.hold)
+		// {
+		// 	// start playing the HOLD animation
+		// 	Debug.LogError("Hold");
+		// 	// play HOLD sound
+		// 	SoundsManager.the.holdSound.Play ();
+		// }
 	}
 
 	//--------------------------------------------------
