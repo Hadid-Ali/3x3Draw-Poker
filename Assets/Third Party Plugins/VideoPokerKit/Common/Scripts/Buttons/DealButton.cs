@@ -1,13 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class DealButton : GameButton 
 {
+	private void Start()
+	{
+		Invoke(nameof(PressAction), 0.1f);
+	}
+
 	public override void PressAction()
 	{
 		// call the main deal function from MainGame
 		// (it uses the static reference to acces the object instance)
-		MainGame.the.DealCards ();
+		MainGame.the.DealCardsSimple();
 
 		// play sound
 		SoundsManager.the.dealButtonSound.Play ();

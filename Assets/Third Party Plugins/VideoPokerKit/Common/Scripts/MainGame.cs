@@ -162,6 +162,12 @@ public class MainGame : MonoBehaviour
 	}
 
 	//--------------------------------------------
+
+	public void DealCardsSimple()
+	{
+		cardsToDeal = cardsManager.DealCards ( true );
+	}
+	
 	[Button("Deal Cards")]
 	public void DealCards()
 	{

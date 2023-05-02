@@ -17,6 +17,7 @@
     }
   ],
   "dependencies": {
+    "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
     "com.unity-atoms.unity-atoms-base-atoms": "4.4.5",
     "com.unity.cinemachine": "2.8.9",
     "com.unity.collab-proxy": "1.17.1",
@@ -29,6 +30,7 @@
     "com.unity.test-framework": "1.1.31",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.6.4",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.4",
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.7.8",
     "com.veriorpies.parrelsync": "https://github.com/VeriorPies/ParrelSync.git?path=/ParrelSync",
@@ -62,8 +64,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm"
-
+    "com.unity.modules.xr": "1.0.0"
   }
 }
