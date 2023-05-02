@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,14 @@ public class CardsDeck : MonoBehaviour
 {
    [SerializeField] private DeckName m_DeckName;
    [SerializeField] private Card[] m_Cards;
+
+   private void Awake()
+   {
+      // for (int i = 0; i < m_Cards.Length; i++)
+      // {
+      //    m_Cards[i].InitializeWithAction(OnDeckUpdated);
+      // }
+   }
 
    public CardData[] CardsData
    {
@@ -23,7 +32,7 @@ public class CardsDeck : MonoBehaviour
       }
    }
 
-   private void OnDeckUpdated()
+   public void OnDeckUpdated()
    {
       HandType handType = CardsManager.EvaluateDeck(CardsData);
       GameEvents.GameplayEvents.CardDeckUpdated.Raise(m_DeckName, handType);

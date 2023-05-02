@@ -1,16 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class DeckEvaluator : MonoBehaviour
 {
-    [SerializeField] private CardsDeck m_CardsDeck;
-    [SerializeField] private TMP_Text m_DeckType;
-    
-    [ContextMenu("Evaluate Deck")]
-    public void EvaluateDeck()
+    [SerializeField] private DeckName m_DeckName;
+    [SerializeField] private TMP_Text m_HandType;
+
+    private void OnEnable()
     {
-        m_DeckType.text = CardsManager.EvaluateDeck(m_CardsDeck.CardsData).ToString();
+        GameEvents.GameplayEvents.CardDeckUpdated.Register(OnDeckUpdated);
+    }
+
+    private void OnDisable()
+    {
+       GameEvents.GameplayEvents.CardDeckUpdated.UnRegister(OnDeckUpdated);
+    }
+
+    public void OnDeckUpdated(DeckName deckName, HandType handType)
+    {
+        if (m_DeckName != deckName)
+            return;
+        
+        m_HandType.text = handType.ToString();
     }
 }
