@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameCardsMediator : MonoBehaviour
 {
@@ -12,6 +13,12 @@ public class GameCardsMediator : MonoBehaviour
     {
         get; 
         private set;
+    }
+    
+    //TODO: Refactor
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void OnEnable()
