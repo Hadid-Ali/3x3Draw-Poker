@@ -5,6 +5,7 @@ using UnityEngine;
 public class CardsDeck : MonoBehaviour
 {
    [SerializeField] private CardContainer[] m_CardContainers;
+   [SerializeField] private DeckName m_DeckName;
 
    public CardData[] CardsData
    {
@@ -19,5 +20,11 @@ public class CardsDeck : MonoBehaviour
 
          return cards;
       }
+   }
+
+   private void OnDeckUpdated()
+   {
+      HandType handType = CardsManager.EvaluateDeck(CardsData);
+      GameEvents.GameplayEvents.CardDeckUpdated.Raise(m_DeckName, handType);
    }
 }
