@@ -7,21 +7,21 @@ public class NetworkPlayerSpawner : MonoBehaviour
 {
     [SerializeField] private Transform[] m_SpawnPoints;
 
-    private List<GameObject> m_JoinedPlayers = new();
+    private List<PlayerController> m_JoinedPlayers = new();
 
     public void SpawnPlayer()
     {
         int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
         Transform spawnPoint = m_SpawnPoints[playerID - 1];
 
-        PhotonNetwork.Instantiate($"Network/Player{playerID}", spawnPoint.position,
+        PhotonNetwork.Instantiate($"PlayerAvatar", spawnPoint.position,
             spawnPoint.rotation);
     }
 
-    public void RegisterPlayer(GameObject playerController)
+    public void RegisterPlayer(PlayerController playerController)
     {
-        //m_JoinedPlayers.Add(playerController);
+        m_JoinedPlayers.Add(playerController);
     }
 
-    public GameObject GetPlayerAgainstID(int ID) => m_JoinedPlayers[0];
+    public PlayerController GetPlayerAgainstID(int ID) => m_JoinedPlayers.Find(player => player.ID == ID);
 }

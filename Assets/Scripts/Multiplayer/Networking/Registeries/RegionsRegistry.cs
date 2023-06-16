@@ -16,5 +16,5 @@ public class RegionsRegistry : ScriptableObject
     [SerializeField] private List<RegionMapObject> m_RegionsMap;
 
     public string GetRegionName(string regionCode) =>
-        m_RegionsMap.Find(region => region.RegionCode == regionCode).RegionName;
+        m_RegionsMap.Find(region => region.RegionCode == regionCode).RegionName ?? "Unnamed";
 }

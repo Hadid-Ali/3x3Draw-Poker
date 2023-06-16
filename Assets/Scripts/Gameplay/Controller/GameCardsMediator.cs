@@ -15,12 +15,6 @@ public class GameCardsMediator : MonoBehaviour
         private set;
     }
     
-    //TODO: Refactor
-    public void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
     private void OnEnable()
     {
         GameEvents.GameplayEvents.CardDragStartEvent.Register(OnCardDragStart);

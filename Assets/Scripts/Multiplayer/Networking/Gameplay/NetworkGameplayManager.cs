@@ -10,48 +10,45 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 {
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
+    
     [SerializeField] private PhotonView m_NetworkGameplayManagerView;
+
+    private List<NetworkDataObject> m_AllDecks = new();
     
     private void Start()
     {
         m_NetworkPlayerSpawner.SpawnPlayer();
     }
-    
-/// <summary>
-/// Gets Called To Register Players On Master Side
-/// </summary>
-/// <param name="playerController"></param>
-    public void OnGameplayJoined(GameObject playerController)
+
+    private void OnEnable()
     {
-        m_NetworkPlayerSpawner.RegisterPlayer(playerController);
-    }
-    
-    public void MarkPlayerWinner(int ID)
-    {
-     //   m_NetworkPlayerSpawner.GetPlayerAgainstID(ID).MarkAsWinner();
+        GameEvents.GameplayEvents.NetworkSubmitRequest.Register(OnNetworkSubmitRequest);
     }
 
-    public void MarkPlayerLost(int ID,int position)
+    private void OnDisable()
     {
-       // m_NetworkPlayerSpawner.GetPlayerAgainstID(ID).MarkAsLoser(position);
+        GameEvents.GameplayEvents.NetworkSubmitRequest.Unregister(OnNetworkSubmitRequest);
     }
-    
-    public void MarkPlayerReached(int ID)
+
+    private void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            MarkReached(ID);
-        }
-        else
-        {
-            NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(MarkReached),
-                RpcTarget.MasterClient, new object[] { ID });
-        }
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(OnNetworkSubmitRequest_RPC),
+            RpcTarget.MasterClient, new[] { networkDataObject });
     }
 
     [PunRPC]
-    private void MarkReached(int ID)
+    private void OnNetworkSubmitRequest_RPC(NetworkDataObject networkDataObject)
     {
-        m_NetworkMatchManager.MarkPlayerReached(ID);
+        m_AllDecks.Add(networkDataObject);
+    }
+    
+    public void OnGameplayJoined(PlayerController playerController)
+    {
+        m_NetworkPlayerSpawner.RegisterPlayer(playerController);
+    }
+
+    public void SubmitCardsDeck(GameCardsData gameCardsData)
+    {
+        
     }
 }

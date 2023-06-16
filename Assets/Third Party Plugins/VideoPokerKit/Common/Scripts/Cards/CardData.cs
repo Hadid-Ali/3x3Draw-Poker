@@ -64,6 +64,11 @@ public class CardData
 		sprite = other.sprite;
 		hold = other.hold;
 	}
+
+	public override string ToString()
+	{
+		return $"{value} of {type}";
+	}
 }
 
 //--------------------------------------------
