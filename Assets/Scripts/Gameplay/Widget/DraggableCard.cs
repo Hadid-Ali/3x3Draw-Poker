@@ -23,7 +23,7 @@ public class DraggableCard : MonoBehaviour
     public void EnableWithData(CardData cardData)
     {
         //Reset();
-        m_CardImge.sprite = cardData.sprite;
+        m_CardImge.sprite = CardsRegistery.Instance.GetCardSprite(cardData.type, cardData.value);
         SetEnabled(true);
     }
     public void SetEnabled(bool enableStatus)

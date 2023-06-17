@@ -11,6 +11,7 @@ public class GameplayHud : MonoBehaviour
     [Header("Refs")]
     
     [SerializeField] private GameObject m_ButtonsContainer;
+    [SerializeField] private GameObject m_WaitingText;
 
     [Header("UI Components")]
     
@@ -27,6 +28,8 @@ public class GameplayHud : MonoBehaviour
     
     private void SubmitCards()
     {
+        m_ButtonsContainer.SetActive(false);
+        m_WaitingText.SetActive(true);
         GameEvents.GameplayUIEvents.SubmitDecks.Raise();
     }
 

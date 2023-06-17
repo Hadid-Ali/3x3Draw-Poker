@@ -5,17 +5,13 @@ using Photon.Pun;
 
 public class NetworkPlayerSpawner : MonoBehaviour
 {
-    [SerializeField] private Transform[] m_SpawnPoints;
-
     private List<PlayerController> m_JoinedPlayers = new();
 
     public void SpawnPlayer()
     {
         int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
-        Transform spawnPoint = m_SpawnPoints[playerID - 1];
-
-        PhotonNetwork.Instantiate($"PlayerAvatar", spawnPoint.position,
-            spawnPoint.rotation);
+        PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero, 
+            Quaternion.identity);
     }
 
     public void RegisterPlayer(PlayerController playerController)

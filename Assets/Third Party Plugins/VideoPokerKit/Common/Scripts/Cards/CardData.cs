@@ -43,17 +43,12 @@ public class CardData
 	public CardType type = CardType.TYPE_HEARTS;
 	public CardValue value = CardValue.VALUE_2;
 	
-	// image
-	public Sprite sprite;
-
 	// if was dealt or not from the deck (used only for library cards)
 	[HideInInspector]
 	public bool dealt = false;
 	[HideInInspector]
 	public bool hold = false;
 
-	public bool IsNull => sprite == null;
-	
 	//----------------------------------
 
 	// used to make a copy of another card
@@ -61,7 +56,6 @@ public class CardData
 	{
 		type = other.type;
 		value = other.value;
-		sprite = other.sprite;
 		hold = other.hold;
 	}
 

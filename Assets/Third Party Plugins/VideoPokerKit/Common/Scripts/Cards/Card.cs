@@ -65,7 +65,7 @@ public class Card : MonoBehaviour
 
 	public void SetCardData(CardData cardData)
 	{
-		UpdateCardFaceSprite(cardData.sprite);
+		UpdateCardFaceSprite(CardsRegistery.Instance.GetCardSprite(cardData.type, cardData.value));
 	}
 	
 	public void StartFlippingCard()

@@ -18,7 +18,7 @@ public class NetworkSceneManager : MonoBehaviour
     private void LoadGameplaySceneRPC(float wait)
     {
         NetworkManager.Instance.SetStatus("Loading Game...");
-        StartCoroutine(LoadScene("mainscene", wait));
+        StartCoroutine(LoadScene("PokerGame", wait));
     }
 
     private IEnumerator LoadScene(string sceneName,float wait)
