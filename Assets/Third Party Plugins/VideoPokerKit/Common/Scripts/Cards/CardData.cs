@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 //--------------------------------------------
@@ -44,10 +45,13 @@ public class CardData
 	public CardValue value = CardValue.VALUE_2;
 	
 	// if was dealt or not from the deck (used only for library cards)
-	[HideInInspector]
-	public bool dealt = false;
-	[HideInInspector]
-	public bool hold = false;
+	private bool m_dealt = false;
+
+	public bool dealt
+	{
+		get => m_dealt;
+		set => m_dealt = value;
+	}
 
 	//----------------------------------
 
@@ -56,7 +60,6 @@ public class CardData
 	{
 		type = other.type;
 		value = other.value;
-		hold = other.hold;
 	}
 
 	public override string ToString()

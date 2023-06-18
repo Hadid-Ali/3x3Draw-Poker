@@ -44,9 +44,9 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         m_AllDecks.Add(dataObject);
 
+        OnNetworkDeckReceived();
         if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
         {
-            OnNetworkDeckReceived();
         }
     }
 
