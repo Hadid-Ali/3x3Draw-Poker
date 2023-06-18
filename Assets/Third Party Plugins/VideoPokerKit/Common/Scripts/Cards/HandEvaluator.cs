@@ -42,48 +42,7 @@ public class HandEvaluator
 
 	//--------------------------------------------------------
 
-	// from the specified array, hold the card with the passed value and type
-	static void HoldCard(CardData [] cards, CardValue value, CardType type)
-	{
-		foreach(CardData card in cards)
-		{
-			if(card.value == value && card.type == type)
-			{
-				card.hold = true;
-				return;
-			}
-		}
-	}
-
-	// from the specified array, hold all the cards with a specific value
-	static void HoldCardsByValue(CardData [] cards, CardValue value)
-	{
-		foreach(CardData card in cards)
-		{
-			if(card.value == value)
-				card.hold = true;
-		}
-	}
-
-	// from the specified array, hold all the cards with a specific type
-	static void HoldCardsByType(CardData [] cards, CardType type)
-	{
-		foreach(CardData card in cards)
-		{
-			if(card.type == type)
-				card.hold = true;
-		}
-	}
-
-	static void HoldAll(CardData [] cards)
-	{
-		foreach(CardData card in cards)
-			card.hold = true;
-	}
-
-	//--------------------------------------------------------
-
-	public static void Evaluate(CardData[] cards, bool autoHold, bool showWin,out HandType handType)
+	public static void Evaluate(CardData[] cards, out HandType handType)
 	{
 		handType = HandType.HighCard;
 		// define all win flags needed in video poker
@@ -102,27 +61,29 @@ public class HandEvaluator
 
 		// sort cards based of value so that we end up with a sorted array
 		System.Array.Sort(cards, new CardComparer());
-		
+
 		// count cards by value
 		for (int i = 0; i < cardsValueCount.Length; i++)
 		{
 			cardsValueCount[i] = 0; // first reset all counters
 		}
+
 		for (int i = 0; i < cards.Length; i++)
 		{
 			cardsValueCount[(int)cards[i].value]++; // count
 		}
-		
+
 		// count types by type
 		for (int i = 0; i < cardsTypeCount.Length; i++)
 		{
-			cardsTypeCount[i] = 0;			
+			cardsTypeCount[i] = 0;
 		}
+
 		for (int i = 0; i < cards.Length; i++)
 		{
 			cardsTypeCount[(int)cards[i].type]++;
 		}
-		
+
 		for (int i = 0; i < cardsValueCount.Length; i++)
 		{
 			// check one and two pairs
@@ -138,8 +99,7 @@ public class HandEvaluator
 					// show win only if starting from JACKS
 					if (i >= (int)CardValue.VALUE_J)
 					{
-						if (showWin)
-							Paytable.the.SetCurrentWin(Wins.WIN_JACKS_OR_BETTER);
+						Debug.LogError("Jacks Or Better");
 						// if (autoHold)
 						// 	HoldCardsByValue(cards, (CardValue)i);
 					}
@@ -149,15 +109,6 @@ public class HandEvaluator
 					bTwoPair = true;
 					handType = HandType.TwoPair;
 					Debug.Log("Two pair");
-					if (showWin)
-						Paytable.the.SetCurrentWin(Wins.WIN_TWO_PAIR);
-					// if (autoHold)
-					// {
-					// 	HoldCardsByValue(cards, (CardValue)i);
-					// 	// mark first pair too (in case it was missed first time i.e 
-					// 	// if it's lower than JACKS)
-					// 	HoldCardsByValue(cards, (CardValue)firstPairValue);
-					// }
 				}
 			}
 
@@ -167,12 +118,6 @@ public class HandEvaluator
 				bThree = true;
 				handType = HandType.ThreeOfAKind;
 				Debug.Log("Three of a kind");
-				if (showWin)
-				{
-					Paytable.the.SetCurrentWin(Wins.WIN_THREE_OF_A_KIND);
-				}
-				// if (autoHold)
-				// 	HoldCardsByValue(cards, (CardValue)i);
 			}
 
 			// check for of a kind
@@ -181,10 +126,6 @@ public class HandEvaluator
 				bFour = true;
 				Debug.Log("Four of a kind");
 				handType = HandType.FourOfAKind;
-				if (showWin)
-					Paytable.the.SetCurrentWin(Wins.WIN_FOUR_OF_A_KIND);
-				// if (autoHold)
-				// 	HoldCardsByValue(cards, (CardValue)i);
 			}
 		}
 
@@ -195,10 +136,6 @@ public class HandEvaluator
 				bFlush = true;
 				handType = HandType.Flush;
 				Debug.Log("Flush");
-				if (showWin)
-					Paytable.the.SetCurrentWin(Wins.WIN_FLUSH);
-				// if (autoHold)
-				// 	HoldCardsByType(cards, (CardType)i);
 			}
 
 		// check straight
@@ -214,10 +151,6 @@ public class HandEvaluator
 				bStraight = true;
 				Debug.Log("Straight");
 				handType = HandType.Straight;
-				if (showWin)
-					Paytable.the.SetCurrentWin(Wins.WIN_STRAIGHT);
-				// if (autoHold)
-				// 	HoldAll(cards);
 				break;
 			}
 		}
@@ -228,10 +161,6 @@ public class HandEvaluator
 			bFullHouse = true;
 			Debug.Log("Full house");
 			handType = HandType.FullHouse;
-			if (showWin)
-				Paytable.the.SetCurrentWin(Wins.WIN_FULL_HOUSE);
-			// if (autoHold)
-			// 	HoldAll(cards);
 		}
 
 		// check straight flush
@@ -240,10 +169,6 @@ public class HandEvaluator
 			bStraightFlush = true;
 			Debug.Log("Straight flush");
 			handType = HandType.StraightFlush;
-			if (showWin)
-				Paytable.the.SetCurrentWin(Wins.WIN_STRAIGHT_FLUSH);
-			// if (autoHold)
-			// 	HoldAll(cards);
 		}
 
 		Debug.LogError($"Hand Type {handType}");

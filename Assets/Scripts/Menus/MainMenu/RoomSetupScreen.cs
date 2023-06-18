@@ -31,6 +31,7 @@ public class RoomSetupScreen : MainMenuBase
          IsOpen = true,
          IsVisible = true
       });
+      GameData.SessionData.CurrentRoomPlayersCount = m_Roomsize;
       ChangeMenuState(MenuName.ConnectionScreen);
    }
 

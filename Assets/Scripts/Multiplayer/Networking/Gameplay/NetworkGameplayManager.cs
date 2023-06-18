@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Mime;
-using ExitGames.Client.Photon;
 using UnityEngine;
+using System.Collections.Generic;
 using Photon.Pun;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
@@ -11,7 +7,7 @@ using Photon.Pun;
 public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager>
 {
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
-    [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
+    [SerializeField] private HandsEvaluator m_HandsEvaluator;
     
     [SerializeField] private PhotonView m_NetworkGameplayManagerView;
 
@@ -20,7 +16,6 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     private void Start()
     {
         m_NetworkPlayerSpawner.SpawnPlayer();
-    //    PhotonPeer.RegisterType(typeof(NetworkDataObject),Byte.MaxValue, SerializeMethod.)
     }
 
     private void OnEnable()
@@ -48,6 +43,16 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         Debug.LogError($"Size Received {System.Text.Encoding.ASCII.GetBytes(jsonData).Length}");
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         m_AllDecks.Add(dataObject);
+
+        if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
+        {
+            OnNetworkDeckReceived();
+        }
+    }
+
+    private void OnNetworkDeckReceived()
+    {
+        m_HandsEvaluator.OnAllNetworkDecksReceived(m_AllDecks);
     }
     
     public void OnGameplayJoined(PlayerController playerController)
