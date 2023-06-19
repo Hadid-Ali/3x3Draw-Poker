@@ -11,6 +11,9 @@ public class NetworkPlayerController : PlayerController
 
     public PhotonView NetworkView => m_PhotonView;
 
+    private int m_TotalScore = 0;
+    private int m_CurrentAchievedScore = 0;
+
     public override string Name
     {
         set => m_Name = value;
@@ -45,5 +48,25 @@ public class NetworkPlayerController : PlayerController
     {
         GameEvents.GameplayEvents.NetworkSubmitRequest.Raise(
             new NetworkDataObject(GameCardsData.Instance.GetDecksData(), ID));
+    }
+
+    public override void AwardPlayerPoints(int reward)
+    {
+        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(AwardPlayerPoints_RPC), RpcTarget.All,
+            new object[] { reward });
+    }
+
+    [PunRPC]
+    public void AwardPlayerPoints_RPC(int reward)
+    {
+        Debug.LogError("Award Points");
+        if (!IsLocalPlayer)
+            return;
+        
+        m_TotalScore += reward;
+        m_CurrentAchievedScore = reward;
+        
+        GameEvents.GameplayUIEvents.PlayerRewardReceived.Raise(reward);
+        
     }
 }

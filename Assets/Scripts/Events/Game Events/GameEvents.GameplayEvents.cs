@@ -14,5 +14,8 @@ public static partial class GameEvents
         public static GameEvent<DeckName, HandType> CardDeckUpdated = new();
 
         public static GameEvent<NetworkDataObject> NetworkSubmitRequest = new();
+
+        public static GameEvent<Dictionary<int, int>> UserHandsEvaluated = new();
+        public static GameEvent<List<NetworkDataObject>> AllUserHandsReceived = new();
     }
 }

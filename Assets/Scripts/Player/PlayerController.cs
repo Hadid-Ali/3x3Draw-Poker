@@ -17,4 +17,9 @@ public class PlayerController : MonoBehaviour
     {
         
     }
+
+    public virtual void AwardPlayerPoints(int reward)
+    {
+        
+    }
 }

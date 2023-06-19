@@ -5,5 +5,7 @@ public static partial class GameEvents
     {
         public static GameEvent SubmitDecks = new();
         public static GameEvent EvaluateDeck = new();
+
+        public static GameEvent<int> PlayerRewardReceived = new();
     }
 }

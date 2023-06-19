@@ -99,7 +99,7 @@ public class HandEvaluator
 					// show win only if starting from JACKS
 					if (i >= (int)CardValue.VALUE_J)
 					{
-						Debug.LogError("Jacks Or Better");
+						Debug.Log("Jacks Or Better");
 						// if (autoHold)
 						// 	HoldCardsByValue(cards, (CardValue)i);
 					}
@@ -171,6 +171,6 @@ public class HandEvaluator
 			handType = HandType.StraightFlush;
 		}
 
-		Debug.LogError($"Hand Type {handType}");
+		Debug.Log($"Hand Type {handType}");
 	}
 }

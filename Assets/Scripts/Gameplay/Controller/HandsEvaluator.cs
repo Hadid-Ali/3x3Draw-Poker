@@ -5,24 +5,34 @@ using UnityEngine;
 
 public class HandsEvaluator : MonoBehaviour
 {
-    [SerializeField] private int m_DecksCount = 3;
-    [SerializeField] private int m_DeckSize = 5;
+    private void OnEnable()
+    {
+        GameEvents.GameplayEvents.AllUserHandsReceived.Register(OnAllUserHandsReceived);
+    }
 
-    public void OnAllNetworkDecksReceived(List<NetworkDataObject> networkDataObjects)
+    private void OnDisable()
+    {
+        GameEvents.GameplayEvents.AllUserHandsReceived.Unregister(OnAllUserHandsReceived);
+    }
+
+    public void OnAllUserHandsReceived(List<NetworkDataObject> networkDataObjects)
     {
         Dictionary<int, CardData[,]> structuredData = new();
 
+        int deckSize = GameData.MetaData.DeckSize;
+        int deckCount = GameData.MetaData.DecksCount;
+        
         for (int i = 0; i < networkDataObjects.Count; i++)
         {
             NetworkDataObject dataObject = networkDataObjects[i];
 
             int currentPhotonID = dataObject.PhotonViewID;
-            CardData[,] cardsData = new CardData[m_DecksCount, m_DeckSize];
+            CardData[,] cardsData = new CardData[deckCount, deckSize];
 
             int min = 0;
-            int max = m_DeckSize;
+            int max = deckSize;
 
-            for (int j = 0; j < m_DecksCount; j++)
+            for (int j = 0; j < deckCount; j++)
             {
                 int x = 0;
 
@@ -34,8 +44,8 @@ public class HandsEvaluator : MonoBehaviour
                 if (max >= dataObject.PlayerDecks.Count)
                     break;
 
-                min += m_DeckSize;
-                max += m_DeckSize;
+                min += deckSize;
+                max += deckSize;
             }
 
             structuredData[currentPhotonID] = cardsData;
@@ -43,24 +53,60 @@ public class HandsEvaluator : MonoBehaviour
 
         OnNetworkDataReceivedInternal(structuredData);
     }
-
+    
     private void OnNetworkDataReceivedInternal(Dictionary<int, CardData[,]> cardsData)
     {
+        int deckSize = GameData.MetaData.DeckSize;
+        int deckCount = GameData.MetaData.DecksCount;
+        
         Dictionary<int, int> userScores = new();
 
-        for (int i = 0; i < m_DecksCount; i++)
+
+        foreach (KeyValuePair<int, CardData[,]> kvp in cardsData)
         {
+            userScores[kvp.Key] = 0;
+        }
+        
+        for (int i = 0; i < deckCount; i++)
+        {
+            Dictionary<int, CardData[]> currentHand = new();
             foreach (KeyValuePair<int, CardData[,]> kvp in cardsData)
             {
-                CardData[,] data = kvp.Value;
+                int photonID = kvp.Key;
+                CardData[,] cards = kvp.Value;
 
-                CardData[] deck = new CardData[m_DeckSize];
+                CardData[] deck = new CardData[deckSize];
 
-                for (int j = 0; j < m_DeckSize; j++)
+                for (int j = 0; j < deckSize; j++)
                 {
+                    deck[j] = cards[i, j];  
                 }
+
+                currentHand[photonID] = deck;
             }
+
+            CompareHand(currentHand,out int winner);
+            userScores[winner] +=  GameData.MetaData.HandWinReward;
         }
+        GameEvents.GameplayEvents.UserHandsEvaluated.Raise(userScores);
     }
-    
+
+    private void CompareHand(Dictionary<int, CardData[]> handsData,out int Winner)
+    {
+        Dictionary<int, HandType> userHands = new();
+
+        foreach (KeyValuePair<int, CardData[]> kvp in handsData)
+        {
+            int photonID = kvp.Key;
+            CardData[] cards = kvp.Value;
+            
+            HandEvaluator.Evaluate(cards, out HandType handType);
+            userHands[photonID] = handType;
+        }
+
+        var sortedHands = userHands.OrderBy(x => (int)x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+        List<KeyValuePair<int, HandType>> userHandsList = sortedHands.ToList();
+        Winner = userHandsList[0].Key;
+    }
 }
