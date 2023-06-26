@@ -1,12 +1,21 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHandler,IPointerUpHandler
+public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHandler,IPointerUpHandler,IPointerExitHandler
 {
     [SerializeField] private CardsDeckViewHandler m_ViewHandler;
+
+    private VerticalLayoutGroup m_VerticalLayout;
     
     private bool m_Dragging = false;
     private int m_LastHoverDeck;
+
+    private void Start()
+    {
+        m_VerticalLayout = GetComponentInParent<VerticalLayoutGroup>();
+    }
 
     private void Update()
     {
@@ -18,7 +27,7 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
         }
     }
 
-    private void OnTriggerStay2D(Collider2D col)
+    private void OnTriggerEnter2D(Collider2D col)
     {
         if (m_Dragging)
         {
@@ -45,6 +54,12 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
     }
 
     public void OnPointerUp(PointerEventData eventData)
+    {
+        m_ViewHandler.SetFocused(false);
+        m_VerticalLayout.SetLayoutVertical();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
     {
         m_ViewHandler.SetFocused(false);
     }
