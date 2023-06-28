@@ -10,23 +10,13 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
     private VerticalLayoutGroup m_VerticalLayout;
     
     private bool m_Dragging = false;
-    private int m_LastHoverDeck;
+    private int m_LastHoverDeck = -1;
 
     private void Start()
     {
         m_VerticalLayout = GetComponentInParent<VerticalLayoutGroup>();
     }
-
-    private void Update()
-    {
-        if (Input.GetMouseButtonUp(0))
-        {
-            m_Dragging = false;
-            if (m_LastHoverDeck != -1)
-                transform.SetSiblingIndex(m_LastHoverDeck);
-        }
-    }
-
+    
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (!m_Dragging)
@@ -40,7 +30,7 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        m_LastHoverDeck = -1;
+        ResetDeckIndex();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -55,12 +45,26 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        m_ViewHandler.SetFocused(false);
+        m_Dragging = false;
+
+        if (m_LastHoverDeck != -1)
+        {
+            transform.SetSiblingIndex(m_LastHoverDeck);
+            ResetDeckIndex();
+        }
+
         m_VerticalLayout.SetLayoutVertical();
+        GameEvents.GameplayUIEvents.DeckArrangementUpdated.Raise();
+        m_ViewHandler.SetFocused(false);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         m_ViewHandler.SetFocused(false);
+    }
+
+    private void ResetDeckIndex()
+    {
+        m_LastHoverDeck = -1;
     }
 }

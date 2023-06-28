@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class GameCardsData : SceneBasedSingleton<GameCardsData>
 {
-    [SerializeField] private CardsDeck[] m_Decks;
+    [SerializeField] private Transform m_DecksContainer;
 
     public List<CardData[]> GetDecksData()
     {
+        List<CardsDeck> decks = new();
         List<CardData[]> data = new();
-        Array.ForEach(m_Decks,deck => data.Add(deck.CardsData));
-
+      
+        int childCount = m_DecksContainer.childCount;
+      
+        for (int i = 0; i < childCount; i++)
+        {
+            decks.Add(m_DecksContainer.GetChild(i).GetComponent<CardsDeck>());
+        }
+        
+        decks.ForEach(deck => data.Add(deck.CardsData));
         return data;
     }
 }

@@ -47,6 +47,7 @@ public class CardsManager : MonoBehaviour
 
 	private void OnCardsArrangementUpdated(Card[] cards)
 	{
+		m_GameCards = null;
 		m_GameCards = cards;
 	}
 	
