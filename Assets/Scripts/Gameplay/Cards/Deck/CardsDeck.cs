@@ -1,21 +1,13 @@
-   using System;
+using System;
 using UnityEngine;
 
 public class CardsDeck : MonoBehaviour
 {
    [SerializeField] private DeckName m_DeckName;
    [SerializeField] private Card[] m_Cards;
-
-   private void OnEnable()
-   {
-      GameEvents.GameplayUIEvents.EvaluateDeck.Register(EvaluateDeckInternal);
-   }
-
-   private void OnDisable()
-   {
-      GameEvents.GameplayUIEvents.EvaluateDeck.Unregister(EvaluateDeckInternal);
-   }
-
+   
+   public Card[] Cards => m_Cards;
+   
    public CardData[] CardsData
    {
       get
@@ -29,6 +21,16 @@ public class CardsDeck : MonoBehaviour
 
          return cards;
       }
+   }
+   
+   private void OnEnable()
+   {
+      GameEvents.GameplayUIEvents.EvaluateDeck.Register(EvaluateDeckInternal);
+   }
+
+   private void OnDisable()
+   {
+      GameEvents.GameplayUIEvents.EvaluateDeck.Unregister(EvaluateDeckInternal);
    }
 
    public void PrintDeck()

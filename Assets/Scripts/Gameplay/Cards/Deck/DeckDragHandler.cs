@@ -29,12 +29,12 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (m_Dragging)
+        if (!m_Dragging)
+            return;
+
+        if (col.gameObject.CompareTag("Deck"))
         {
-            if (col.gameObject.CompareTag("Deck"))
-            {
-                m_LastHoverDeck = col.transform.GetSiblingIndex();
-            }
+            m_LastHoverDeck = col.transform.GetSiblingIndex();
         }
     }
 
