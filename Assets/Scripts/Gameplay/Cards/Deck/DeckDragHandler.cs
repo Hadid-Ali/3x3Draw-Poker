@@ -49,7 +49,7 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
 
         if (m_LastHoverDeck != -1)
         {
-            transform.SetSiblingIndex(m_LastHoverDeck);
+            transform.SetSiblingIndex(m_LastHoverDeck); 
             ResetDeckIndex();
         }
 

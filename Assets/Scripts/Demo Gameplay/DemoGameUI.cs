@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class DemoGameUI : MonoBehaviour
 {
-   [SerializeField] private TextMeshProUGUI m_CurrentHandTypeText;
    [SerializeField] private GameplayHandTypeEvent m_OnHandUpdatedEvent;
 
    private void OnEnable()
@@ -21,6 +20,6 @@ public class DemoGameUI : MonoBehaviour
 
    private void OnHandTypeUpdateEvent(HandType handType)
    {
-      m_CurrentHandTypeText.text = $"Hand Type <color=yellow>{handType}</color>";
+     // m_CurrentHandTypeText.text = $"Hand Type <color=yellow>{handType}</color>";
    }
 }
