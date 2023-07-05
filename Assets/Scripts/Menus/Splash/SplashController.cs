@@ -7,11 +7,20 @@ public class SplashController : MonoBehaviour
 {
     public void LoadMenuScene()
     {
-        Invoke(nameof(LoadSceneInternal), 2f);
+        StartCoroutine(LoadSceneInternal());
     }
 
-    private void LoadSceneInternal()
+    IEnumerator LoadSceneInternal()
     {
-        SceneManager.LoadScene("GameMenu");   
+        yield return new WaitForSeconds(2f);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("GameMenu");
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        // SceneManager.LoadScene("GameMenu");   
     }
 }
