@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Serialization;
 using UnityEngine.XR;
+using Random = UnityEngine.Random;
 
 public class CardsManager : MonoBehaviour 
 {
@@ -31,7 +33,23 @@ public class CardsManager : MonoBehaviour
 			workCards[i] = new CardData();
 	}
 
+	private void OnEnable()
+	{
+		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Register(OnCardsArrangementUpdated);
+	}
+
+	private void OnDisable()
+	{
+		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Unregister(OnCardsArrangementUpdated);
+	}
+
 	//----------------------------------------------------
+
+	private void OnCardsArrangementUpdated(Card[] cards)
+	{
+		m_GameCards = null;
+		m_GameCards = cards;
+	}
 	
 	public void ClearHand()
 	{
