@@ -25,6 +25,6 @@ public class RoundCompleteMenu : MonoBehaviour
     private void OnPlayerRewardReceived(int reward)
     {
         m_Container.SetActive(true);
-        m_RewardText.text = reward > 0 ? $"You Received {reward} Score" : "You Didn't Win through any deck";
+        m_RewardText.text = reward > 0 ? $"You Received {reward} Score" : "You Didn't Win through any Hand";
     }
 }
