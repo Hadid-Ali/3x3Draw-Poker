@@ -22,7 +22,7 @@ public class PlayerLoginScreen : MainMenuBase
 
     private void OnFieldValueChange(string value)
     {
-        m_LoginButton.interactable = !string.IsNullOrEmpty(value) && value.Length > 3;
+        m_LoginButton.interactable = !string.IsNullOrEmpty(value);
     }
 
     public void OnLoginBtnEvent()
