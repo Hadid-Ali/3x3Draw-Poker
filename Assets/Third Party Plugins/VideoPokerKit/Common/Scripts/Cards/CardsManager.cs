@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Serialization;
 using UnityEngine.XR;
 using Random = UnityEngine.Random;
@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 public class CardsManager : MonoBehaviour 
 {
 	// all the cards in the deck (set in the inspector)
-	[Header("The deck"),SerializeField] private CardData [] m_CardsRegistry;
+	[Header("The deck"),SerializeField] private List<CardData> m_CardsRegistry;
 
 	// screen cards
 	[Header("Player cards"),SerializeField] private Card [] m_GameCards;
@@ -23,6 +23,16 @@ public class CardsManager : MonoBehaviour
 
 
 	[SerializeField] private GameplayHandTypeEvent m_HandTypeEvent;
+
+	private CardData GetRandomCard()
+	{
+		int index = Random.Range(0, m_CardsRegistry.Count);
+		CardData data = m_CardsRegistry[index];
+		
+		m_CardsRegistry.RemoveAt(index);
+		return data;
+	}
+	
 	//--------------------------------------------------------
 
 	// Use this for initialization
@@ -63,31 +73,13 @@ public class CardsManager : MonoBehaviour
 	public void ResetDeck()
 	{
 		// mark all cards as not dealt
-		for(int i = 0; i<m_CardsRegistry.Length; i++)
+		for(int i = 0; i<m_CardsRegistry.Count; i++)
 			m_CardsRegistry[i].dealt = false;
 	}
-
+	
 	//--------------------------------------------------------
 
-	public CardData GetNewCardFromTheDeck()
-	{
-		int idx = 0;
-		do
-		{
-			// get a random card
-			idx = Random.Range(0,52);
-		}
-		while( m_CardsRegistry[idx].dealt ); // check to see if it's already drawn
-
-		// mark the new card as drawn
-		m_CardsRegistry[idx].dealt = true;
-
-		return m_CardsRegistry[idx];
-	}
-
-	//--------------------------------------------------------
-
-	public int DealCards(bool firstHand)
+	public int DealCards()
 	{
 			MainGame.the.gameState = MainGame.STATE_DEALING;
 
@@ -95,13 +87,8 @@ public class CardsManager : MonoBehaviour
 			for (int i = 0; i < m_GameCards.Length; i++)
 			{
 				// extract new card from the deck and attach it to the screen card
-				m_GameCards[i].SetData(GetNewCardFromTheDeck(), true, true);
+				m_GameCards[i].SetData(GetRandomCard(), true, true);
 			}
-
-			// // start deal animations for all five cards with a small delay in between
-			// for (int i=0; i<5; i++) 			
-			// 	m_GameCards [i].DealWithDelay (i * firstHandDealDelayBetweenCards);
-
 			// we deal 5 cards
 		return m_GameCards.Length;
 	}

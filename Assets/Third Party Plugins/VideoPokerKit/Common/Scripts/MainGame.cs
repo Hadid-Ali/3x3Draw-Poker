@@ -165,55 +165,13 @@ public class MainGame : MonoBehaviour
 
 	public void DealCardsSimple()
 	{
-		cardsToDeal = cardsManager.DealCards ( true );
+		cardsToDeal = cardsManager.DealCards();
 	}
-	
+
 	[Button("Deal Cards")]
 	public void DealCards()
 	{
-		// if we are in the results stage, make sure we cleanup the old game
-		if(gameState == STATE_SHOW_RESULTS)
-			ResetGame();
-
-		// if we need to deal the first hand
-		if(gameState == STATE_IDLE)
-		{
-			// try to substract the credit needed for the deal
-			// if successfull, deal the cards
-			if( ChargeCreditForBet() )
-				cardsToDeal = cardsManager.DealCards ( true );
-
-			// we receive the number of cards that will be dealt in the 'cardsToDeal' var
-			// we use it later to count the cards that are completing the deal animation
-			// so that we know when the dealing is finished
-		}
-		// second hand
-		if(gameState == STATE_WAIT_HOLD)		
-		{
-			cardsToDeal = cardsManager.DealCards ( false );
-			// special case where all cards were holded, just check results
-			if(cardsToDeal == 0)
-				CheckResults();
-		}
-	}
-
-	//--------------------------------------------
-
-	bool ChargeCreditForBet()
-	{
-		// check if we have enough credit left
-		if(playerCredit >= playerBet)
-		{
-			// substract the current bet
-			playerCredit -= playerBet;
-			// notify credit listeners that the credit has changed
-			if (CreditUpdated != null)
-				CreditUpdated (playerCredit);
-			// returns OK
-			return true;
-		}
-		else
-			return false; // no credit, cannot continue
+		cardsToDeal = cardsManager.DealCards();
 	}
 
 	//--------------------------------------------
