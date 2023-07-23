@@ -6,7 +6,7 @@ public class NetworkPlayerController : PlayerController
 {
     [SerializeField] private PhotonView m_PhotonView;
 
-    public bool IsLocalPlayer => m_PhotonView != null && m_PhotonView.IsMine;
+    public override  bool IsLocalPlayer => m_PhotonView != null && m_PhotonView.IsMine;
     public override int ID => m_PhotonView.ViewID;
 
     public PhotonView NetworkView => m_PhotonView;
@@ -67,6 +67,20 @@ public class NetworkPlayerController : PlayerController
         m_CurrentAchievedScore = reward;
         
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Raise(reward);
-        
+    }
+    
+    public override void SubmitCardData(string data)
+    {
+        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(ReceiveHandFromNetwork), RpcTarget.All,
+            new object[] { data });
+    }
+
+    [PunRPC]
+    public void ReceiveHandFromNetwork(string data)
+    {
+        if (!m_PhotonView.IsMine)
+            return;
+
+        GameEvents.NetworkEvents.PlayerReceiveCardsData.Raise(data);
     }
 }

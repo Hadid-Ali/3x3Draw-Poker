@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using Photon.Pun;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
-[RequireComponent(typeof(NetworkMatchManager))]
 public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager>
 {
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] private PhotonView m_NetworkGameplayManagerView;
 
-    [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
+    [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
+    [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
+
+    protected override void SingletonAwake()
+    {
+        base.SingletonAwake();
+        m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
+    }
+
     private void Start()
     {
+        Debug.LogError("Spawn Player", gameObject); 
         m_NetworkPlayerSpawner.SpawnPlayer();
     }
 
@@ -28,6 +36,11 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         GameEvents.GameplayEvents.UserHandsEvaluated.Unregister(OnRoundScoreEvaluated);
     }
 
+    private void OnPlayerSpawned(PlayerController playerController)
+    {
+        m_NetworkMatchManager.OnPlayerSpawnedInMatch(playerController);
+    }
+    
     private void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
     {
         string jsonData = NetworkDataObject.Serialize(networkDataObject);
@@ -43,6 +56,8 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         m_AllDecks.Add(dataObject);
 
+        Debug.LogError(m_AllDecks.Count);
+        
         if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
         {
             OnNetworkDeckReceived();

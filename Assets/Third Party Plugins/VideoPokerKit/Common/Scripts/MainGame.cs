@@ -165,13 +165,13 @@ public class MainGame : MonoBehaviour
 
 	public void DealCardsSimple()
 	{
-		cardsToDeal = cardsManager.DealCards();
+		//cardsToDeal = cardsManager.DealCards();
 	}
 
 	[Button("Deal Cards")]
 	public void DealCards()
 	{
-		cardsToDeal = cardsManager.DealCards();
+		//cardsToDeal = cardsManager.DealCards();
 	}
 
 	//--------------------------------------------
