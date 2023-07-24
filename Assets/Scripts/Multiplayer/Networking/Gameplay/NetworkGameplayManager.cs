@@ -28,12 +28,14 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     {
         GameEvents.GameplayEvents.NetworkSubmitRequest.Register(OnNetworkSubmitRequest);
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
+        GameEvents.GameplayUIEvents.RestartGame.Register(RestartGame);
     }
 
     private void OnDisable()
     {
         GameEvents.GameplayEvents.NetworkSubmitRequest.Unregister(OnNetworkSubmitRequest);
         GameEvents.GameplayEvents.UserHandsEvaluated.Unregister(OnRoundScoreEvaluated);
+        GameEvents.GameplayUIEvents.RestartGame.Unregister(RestartGame);
     }
 
     private void OnPlayerSpawned(PlayerController playerController)
@@ -77,15 +79,21 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
             m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value);
         }
     }
-    
 
     public void OnGameplayJoined(PlayerController playerController)
     {
         m_NetworkPlayerSpawner.RegisterPlayer(playerController);
     }
 
-    public void SubmitCardsDeck(GameCardsData gameCardsData)
+    public void RestartGame()
     {
-        
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.All,
+            null);
+    }
+
+    [PunRPC]
+    public void RestartGame_RPC()
+    {
+        m_NetworkMatchManager.RestartMatch();
     }
 }
