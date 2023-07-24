@@ -1,3 +1,4 @@
+using System;
 using Photon.Pun;
 using UnityEngine;
 
@@ -42,6 +43,11 @@ public class NetworkPlayerController : PlayerController
     void InitializeControls()
     {
         GameEvents.GameplayUIEvents.SubmitDecks.Register(OnSubmitDeck);
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.GameplayUIEvents.SubmitDecks.Unregister(OnSubmitDeck);
     }
 
     private void OnSubmitDeck()
