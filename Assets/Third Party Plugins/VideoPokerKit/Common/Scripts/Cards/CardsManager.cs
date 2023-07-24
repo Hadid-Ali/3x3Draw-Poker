@@ -30,12 +30,14 @@ public class CardsManager : MonoBehaviour
 	private void OnEnable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Register(OnCardsArrangementUpdated);
-		GameEvents.GameplayEvents.
+		GameEvents.GameplayEvents.UserHandReceivedEvent.Register(DealCards);
 	}
 
 	private void OnDisable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Unregister(OnCardsArrangementUpdated);
+		GameEvents.GameplayEvents.UserHandReceivedEvent.Unregister(DealCards);
+
 	}
 
 	private void OnCardsArrangementUpdated(Card[] cards)
@@ -64,6 +66,7 @@ public class CardsManager : MonoBehaviour
 	
 	public void DealCards(CardData[] cardsData)
 	{
+		MainGame.the.gameState = MainGame.STATE_DEALING;
 		for (int i = 0; i < m_GameCards.Length; i++)
 		{
 			// extract new card from the deck and attach it to the screen card
