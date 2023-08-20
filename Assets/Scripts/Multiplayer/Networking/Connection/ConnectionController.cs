@@ -116,9 +116,10 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         base.OnPlayerEnteredRoom(newPlayer);
-        if (PhotonNetwork.PlayerList.Length >= m_RequiredPlayersCount)
+        if (PhotonNetwork.PlayerList.Length >= m_RequiredPlayersCount && PhotonNetwork.IsMasterClient)
         {
             NetworkManager.Instance.LoadGameplay();
+            PhotonNetwork.CurrentRoom.IsOpen = false;
         }
     }
 }

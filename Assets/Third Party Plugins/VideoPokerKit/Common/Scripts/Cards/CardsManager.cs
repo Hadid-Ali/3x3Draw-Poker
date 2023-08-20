@@ -5,33 +5,17 @@ using UnityEngine.Serialization;
 using UnityEngine.XR;
 using Random = UnityEngine.Random;
 
-public class CardsManager : MonoBehaviour 
+public class CardsManager : MonoBehaviour
 {
-	// all the cards in the deck (set in the inspector)
-	[Header("The deck"),SerializeField] private List<CardData> m_CardsRegistry;
-
+	[SerializeField] private DecksHandler m_DecksHandler;
 	// screen cards
 	[Header("Player cards"),SerializeField] private Card [] m_GameCards;
+
+	[SerializeField] private GameplayHandTypeEvent m_HandTypeEvent;
 
 	// temporary cards used for evaluating hand
 	CardData [] workCards;
 
-	// change these timers in the Inspector for faster/slower deals
-	[Header("Deal settings")]
-	public float firstHandDealDelayBetweenCards = 0.4f;
-	public float secondHandDealDelayBetweenCards = 0.3f;
-
-
-	[SerializeField] private GameplayHandTypeEvent m_HandTypeEvent;
-
-	private CardData GetRandomCard()
-	{
-		int index = Random.Range(0, m_CardsRegistry.Count);
-		CardData data = m_CardsRegistry[index];
-		
-		m_CardsRegistry.RemoveAt(index);
-		return data;
-	}
 	
 	//--------------------------------------------------------
 
@@ -46,14 +30,15 @@ public class CardsManager : MonoBehaviour
 	private void OnEnable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Register(OnCardsArrangementUpdated);
+		GameEvents.GameplayEvents.UserHandReceivedEvent.Register(DealCards);
 	}
 
 	private void OnDisable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Unregister(OnCardsArrangementUpdated);
-	}
+		GameEvents.GameplayEvents.UserHandReceivedEvent.Unregister(DealCards);
 
-	//----------------------------------------------------
+	}
 
 	private void OnCardsArrangementUpdated(Card[] cards)
 	{
@@ -73,23 +58,35 @@ public class CardsManager : MonoBehaviour
 	public void ResetDeck()
 	{
 		// mark all cards as not dealt
-		for(int i = 0; i<m_CardsRegistry.Count; i++)
-			m_CardsRegistry[i].dealt = false;
+	//	for(int i = 0; i<m_CardsRegistry.Count; i++)
+	//		m_CardsRegistry[i].dealt = false;
 	}
 	
 	//--------------------------------------------------------
+	
+	public void DealCards(CardData[] cardsData)
+	{
+		MainGame.the.gameState = MainGame.STATE_DEALING;
+		for (int i = 0; i < m_GameCards.Length; i++)
+		{
+			// extract new card from the deck and attach it to the screen card
+			m_GameCards[i].SetData(cardsData[i], true, true);
+		}
+	}
 
 	public int DealCards()
 	{
-			MainGame.the.gameState = MainGame.STATE_DEALING;
+		MainGame.the.gameState = MainGame.STATE_DEALING;
 
-			// set cards values
-			for (int i = 0; i < m_GameCards.Length; i++)
-			{
-				// extract new card from the deck and attach it to the screen card
-				m_GameCards[i].SetData(GetRandomCard(), true, true);
-			}
-			// we deal 5 cards
+		CardData[] data = m_DecksHandler.GetRandomHand(m_GameCards.Length);
+		// set cards values
+		for (int i = 0; i < m_GameCards.Length; i++)
+		{
+			// extract new card from the deck and attach it to the screen card
+			m_GameCards[i].SetData(data[i], true, true);
+		}
+
+		// we deal 5 cards
 		return m_GameCards.Length;
 	}
 

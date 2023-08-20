@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoundCompleteMenu : MonoBehaviour
 {
@@ -11,7 +12,14 @@ public class RoundCompleteMenu : MonoBehaviour
 
     [Header("Components")] 
     [SerializeField] private TMP_Text m_RewardText;
-    
+
+    [SerializeField] private Button m_RestartButton;
+
+    private void Start()
+    {
+        m_RestartButton.onClick.AddListener(OnRestartTap);
+    }
+
     private void OnEnable()
     {
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Register(OnPlayerRewardReceived);
@@ -25,6 +33,11 @@ public class RoundCompleteMenu : MonoBehaviour
     private void OnPlayerRewardReceived(int reward)
     {
         m_Container.SetActive(true);
-        m_RewardText.text = reward > 0 ? $"You Received {reward} Score" : "You Didn't Win through any Hand";
+        m_RewardText.text = reward > 0 ? $"You Received {reward} Points" : "You Didn't Win any Hand";
+    }
+
+    private void OnRestartTap()
+    {
+        GameEvents.GameplayUIEvents.RestartGame.Raise();
     }
 }

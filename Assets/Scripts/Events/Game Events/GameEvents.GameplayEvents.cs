@@ -17,5 +17,7 @@ public static partial class GameEvents
 
         public static GameEvent<Dictionary<int, int>> UserHandsEvaluated = new();
         public static GameEvent<List<NetworkDataObject>> AllUserHandsReceived = new();
+
+        public static GameEvent<CardData[]> UserHandReceivedEvent = new();
     }
 }

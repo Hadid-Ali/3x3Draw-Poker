@@ -24,7 +24,7 @@ public class NetworkDataObject
     {
         string data = JsonUtility.ToJson(networkDataObject);
         
-        Debug.LogError($"{data}");
+     //   Debug.LogError($"{data}");
         return data;
     }
 

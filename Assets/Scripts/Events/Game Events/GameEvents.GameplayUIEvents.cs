@@ -10,5 +10,7 @@ public static partial class GameEvents
         
         public static GameEvent<Card[]> CardsArrangementUpdated = new();
         public static GameEvent DeckArrangementUpdated = new();
+
+        public static GameEvent RestartGame = new();
     }
 }
