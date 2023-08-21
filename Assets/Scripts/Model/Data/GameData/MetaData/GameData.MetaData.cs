@@ -9,5 +9,6 @@ public static partial class GameData
         public const int HandWinReward = 5;
         public const int DecksCount = 3;
         public const int DeckSize = 5;
+        public const int OffsetCards = 2;
     }
 }

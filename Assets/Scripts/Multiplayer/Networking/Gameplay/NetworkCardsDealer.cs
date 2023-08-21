@@ -12,7 +12,7 @@ public class NetworkCardsDealer : MonoBehaviour
 
     private void Start()
     {
-        m_HandSize = GameData.MetaData.DeckSize * GameData.MetaData.DecksCount;
+        m_HandSize = (GameData.MetaData.DeckSize * GameData.MetaData.DecksCount) + GameData.MetaData.OffsetCards;
     }
 
     private void OnEnable()
