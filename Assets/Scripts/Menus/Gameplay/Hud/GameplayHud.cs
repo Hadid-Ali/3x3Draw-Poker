@@ -13,6 +13,8 @@ public class GameplayHud : MonoBehaviour
     [SerializeField] private GameObject m_ButtonsContainer;
     [SerializeField] private GameObject m_WaitingText;
 
+    [SerializeField] private GameObject m_GameCardsContainer;
+    
     [Header("UI Components")]
     
     [SerializeField] private Button m_SubmitButton;
