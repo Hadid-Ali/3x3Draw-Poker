@@ -1,19 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraResolutionAdjuster : MonoBehaviour
 {
-    [SerializeField] private CameraResolutionConfig[] m_CameraConfigs;
+    [Header("Components")]
+    
+    [SerializeField] private GameObject m_PhonesCamera;
+    [SerializeField] private GameObject m_TabsCamera;
+
+    [Header("Values")]
+    
+    [SerializeField] private float m_ResolutionThreshold = 1.5f;
+
+    private void Start()
+    {
+        AdjustResolution();
+    }
 
     void AdjustResolution()
     {
         float screenRatio = (float)Screen.width / Screen.height;
-        float resolutionToUse = m_CameraConfigs[0].OrthographicSize;
 
-        for (int i = 0; i < m_CameraConfigs.Length; i++)
-        {
-            
-        }
+        bool isPhoneRes = screenRatio >= m_ResolutionThreshold;
+        
+        m_PhonesCamera.SetActive(isPhoneRes);
+        m_TabsCamera.SetActive(!isPhoneRes);
     }
 }

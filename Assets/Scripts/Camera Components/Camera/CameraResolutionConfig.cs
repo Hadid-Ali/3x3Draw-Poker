@@ -4,6 +4,6 @@ using UnityEngine;
 [Serializable]
 public class CameraResolutionConfig
 {
-    [field: SerializeField] public float ResolutionThreshold { get; set; }
-    [field: SerializeField] public float OrthographicSize { get; set; }
+    [field: SerializeField] public float ResolutionThreshold { get; private set; }
+    [field: SerializeField] public GameObject CamerasContainer { get; private set; }
 }
