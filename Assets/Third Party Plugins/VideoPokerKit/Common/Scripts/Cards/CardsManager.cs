@@ -66,10 +66,8 @@ public class CardsManager : MonoBehaviour
 	
 	public void DealCards(CardData[] cardsData)
 	{
-		MainGame.the.gameState = MainGame.STATE_DEALING;
 		for (int i = 0; i < m_GameCards.Length; i++)
 		{
-			// extract new card from the deck and attach it to the screen card
 			m_GameCards[i].SetData(cardsData[i], true, true);
 		}
 	}
