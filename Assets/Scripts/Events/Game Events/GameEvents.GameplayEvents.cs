@@ -19,5 +19,8 @@ public static partial class GameEvents
         public static GameEvent<List<NetworkDataObject>> AllUserHandsReceived = new();
 
         public static GameEvent<CardData[]> UserHandReceivedEvent = new();
+        
+        public static GameEvent<GameplayState> GameplayStateSwitched = new();
+        public static GameEvent<bool> GameplayCardsStateChanged = new();
     }
 }
