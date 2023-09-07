@@ -54,6 +54,7 @@ public class HandEvaluator
 		bool bFullHouse = false;
 		bool bFour = false;
 		bool bStraightFlush = false;
+		bool bRoyalFlush = false;
 
 		// remember first pair value in case we need it later
 		// (for 2 pair wins)
@@ -169,6 +170,28 @@ public class HandEvaluator
 			bStraightFlush = true;
 			Debug.Log("Straight flush");
 			handType = HandType.StraightFlush;
+		}
+		
+		//Check Royal-Flush
+		{
+			CardValue[] RoyalFlushSequence = new CardValue[] { CardValue.VALUE_10, CardValue.VALUE_J, CardValue.VALUE_Q, CardValue.VALUE_K, CardValue.VALUE_A };
+			int sameValue = RoyalFlushSequence.Length;
+
+			for (int i = 0; i < RoyalFlushSequence.Length; i++)
+			{
+				if (cards[i].value == RoyalFlushSequence[i] &&
+				    cards[i].type ==
+				    cards[0].type) //If value is in specific order and all types are same as the first card type(meaning all are sme)
+				{
+					sameValue--;
+				}
+			}
+
+			if (sameValue == 0)
+			{
+				bRoyalFlush = true;
+				handType = HandType.RoyalFlush;
+			}
 		}
 
 		Debug.Log($"Hand Type {handType}");
