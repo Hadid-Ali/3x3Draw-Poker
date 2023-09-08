@@ -24,7 +24,7 @@ public class HandComparer : MonoBehaviour
         m_HandData.Clear();
     }
     
-    public void OnDeckUpdated(DeckName deckName, HandType handType)
+    public void OnDeckUpdated(DeckName deckName, HandTypes handType)
     {
         m_HandData.Add(new HandData()
         {

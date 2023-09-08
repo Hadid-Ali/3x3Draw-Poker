@@ -3,6 +3,6 @@ using System;
 [Serializable]
 public class HandData
 {
-    public HandType HandType;
+    public HandTypes HandType;
     public string HandID;
 }

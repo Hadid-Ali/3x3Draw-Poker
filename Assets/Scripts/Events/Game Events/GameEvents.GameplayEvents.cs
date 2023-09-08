@@ -11,7 +11,7 @@ public static partial class GameEvents
         public static GameEvent CardDropEvent = new();
         
         public static GameEvent<CardData> CardReplacedEvent = new();
-        public static GameEvent<DeckName, HandType> CardDeckUpdated = new();
+        public static GameEvent<DeckName, HandTypes> CardDeckUpdated = new();
 
         public static GameEvent<NetworkDataObject> NetworkSubmitRequest = new();
 

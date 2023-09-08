@@ -18,7 +18,7 @@ public class DemoGameUI : MonoBehaviour
       m_OnHandUpdatedEvent.Unregister(OnHandTypeUpdateEvent);
    }
 
-   private void OnHandTypeUpdateEvent(HandType handType)
+   private void OnHandTypeUpdateEvent(HandTypes handType)
    {
      // m_CurrentHandTypeText.text = $"Hand Type <color=yellow>{handType}</color>";
    }

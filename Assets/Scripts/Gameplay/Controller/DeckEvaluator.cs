@@ -16,7 +16,7 @@ public class DeckEvaluator : MonoBehaviour
        GameEvents.GameplayEvents.CardDeckUpdated.UnRegister(OnDeckUpdated);
     }
 
-    public void OnDeckUpdated(DeckName deckName, HandType handType)
+    public void OnDeckUpdated(DeckName deckName, HandTypes handType)
     {
         if (m_DeckName != deckName)
             return;

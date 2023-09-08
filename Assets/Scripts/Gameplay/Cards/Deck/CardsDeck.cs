@@ -46,7 +46,7 @@ public class CardsDeck : MonoBehaviour
 
    private void EvaluateDeckInternal()
    {
-      HandType handType = CardsManager.EvaluateDeck(CardsData);
+      HandTypes handType = CardsManager.EvaluateDeck(CardsData);
       GameEvents.GameplayEvents.CardDeckUpdated.Raise(m_DeckName, handType);  
    }
 }

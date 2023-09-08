@@ -42,9 +42,9 @@ public class HandEvaluator
 
 	//--------------------------------------------------------
 
-	public static void Evaluate(CardData[] cards, out HandType handType)
+	public static void Evaluate(CardData[] cards, out HandTypes handType)
 	{
-		handType = HandType.HighCard;
+		handType = HandTypes.HighCard;
 		// define all win flags needed in video poker
 		bool bOnePair = false;
 		bool bTwoPair = false;
@@ -95,7 +95,7 @@ public class HandEvaluator
 					bOnePair = true;
 					firstPairValue = i;
 					Debug.Log("One pair");
-					handType = HandType.Pair;
+					handType = HandTypes.Pair;
 
 					// show win only if starting from JACKS
 					if (i >= (int)CardValue.VALUE_J)
@@ -108,7 +108,7 @@ public class HandEvaluator
 				else
 				{
 					bTwoPair = true;
-					handType = HandType.TwoPair;
+					handType = HandTypes.TwoPair;
 					Debug.Log("Two pair");
 				}
 			}
@@ -117,7 +117,7 @@ public class HandEvaluator
 			if (cardsValueCount[i] == 3)
 			{
 				bThree = true;
-				handType = HandType.ThreeOfAKind;
+				handType = HandTypes.ThreeOfAKind;
 				Debug.Log("Three of a kind");
 			}
 
@@ -126,7 +126,7 @@ public class HandEvaluator
 			{
 				bFour = true;
 				Debug.Log("Four of a kind");
-				handType = HandType.FourOfAKind;
+				handType = HandTypes.FourOfAKind;
 			}
 		}
 
@@ -135,7 +135,7 @@ public class HandEvaluator
 			if (cardsTypeCount[i] == 5)
 			{
 				bFlush = true;
-				handType = HandType.Flush;
+				handType = HandTypes.Flush;
 				Debug.Log("Flush");
 			}
 
@@ -151,7 +151,7 @@ public class HandEvaluator
 			{
 				bStraight = true;
 				Debug.Log("Straight");
-				handType = HandType.Straight;
+				handType = HandTypes.Straight;
 				break;
 			}
 		}
@@ -161,7 +161,7 @@ public class HandEvaluator
 		{
 			bFullHouse = true;
 			Debug.Log("Full house");
-			handType = HandType.FullHouse;
+			handType = HandTypes.FullHouse;
 		}
 
 		// check straight flush
@@ -169,7 +169,7 @@ public class HandEvaluator
 		{
 			bStraightFlush = true;
 			Debug.Log("Straight flush");
-			handType = HandType.StraightFlush;
+			handType = HandTypes.StraightFlush;
 		}
 		
 		//Check Royal-Flush
@@ -190,7 +190,7 @@ public class HandEvaluator
 			if (sameValue == 0)
 			{
 				bRoyalFlush = true;
-				handType = HandType.RoyalFlush;
+				handType = HandTypes.RoyalFlush;
 			}
 		}
 

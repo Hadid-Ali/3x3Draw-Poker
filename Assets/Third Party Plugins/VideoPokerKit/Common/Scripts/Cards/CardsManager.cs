@@ -90,10 +90,10 @@ public class CardsManager : MonoBehaviour
 
 	//--------------------------------------------------------
 
-	public static HandType EvaluateDeck(CardData[] cards)
+	public static HandTypes EvaluateDeck(CardData[] cards)
 	{
 		// evaluate the temp hand
-		HandEvaluator.Evaluate(cards, out HandType handType); // show wins only in the RESULTS stage
+		HandEvaluator.Evaluate(cards, out HandTypes handType); // show wins only in the RESULTS stage
 		return handType;
 	}
 
@@ -105,7 +105,7 @@ public class CardsManager : MonoBehaviour
 			workCards[i].CopyInfoFrom( m_GameCards[i].CardData );
 
 		// evaluate the temp hand
-		HandEvaluator.Evaluate( workCards,out HandType handType ); // show wins only in the RESULTS stage
+		HandEvaluator.Evaluate(workCards,out HandTypes handType); // show wins only in the RESULTS stage
 
 		bool cardsWereHolded = false;
 		m_HandTypeEvent.Raise(handType);

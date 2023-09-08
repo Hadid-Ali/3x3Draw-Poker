@@ -85,7 +85,7 @@ public class HandsEvaluator : MonoBehaviour
                 currentHand[photonID] = deck;
             }
 
-            CompareHand(currentHand,out int winner);
+            CompareHand(currentHand, out int winner);
             userScores[winner] +=  GameData.MetaData.HandWinReward;
         }
         GameEvents.GameplayEvents.UserHandsEvaluated.Raise(userScores);
@@ -93,20 +93,20 @@ public class HandsEvaluator : MonoBehaviour
 
     private void CompareHand(Dictionary<int, CardData[]> handsData,out int Winner)
     {
-        Dictionary<int, HandType> userHands = new();
+        Dictionary<int, HandTypes> userHands = new();
 
         foreach (KeyValuePair<int, CardData[]> kvp in handsData)
         {
             int photonID = kvp.Key;
             CardData[] cards = kvp.Value;
             
-            HandEvaluator.Evaluate(cards, out HandType handType);
+            HandEvaluator.Evaluate(cards, out HandTypes handType);
             userHands[photonID] = handType;
         }
 
         var sortedHands = userHands.OrderBy(x => (int)x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-        List<KeyValuePair<int, HandType>> userHandsList = sortedHands.ToList();
+        List<KeyValuePair<int, HandTypes>> userHandsList = sortedHands.ToList();
         Winner = userHandsList[0].Key;
     }
 }
