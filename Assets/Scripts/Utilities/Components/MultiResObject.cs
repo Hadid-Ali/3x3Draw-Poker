@@ -7,7 +7,7 @@ public abstract class MultiResObject : MonoBehaviour
 {
     private DeviceMode m_DeviceMode;
 
-    protected void Start()
+    protected virtual void Start()
     {
         CheckDeviceMode();
     }

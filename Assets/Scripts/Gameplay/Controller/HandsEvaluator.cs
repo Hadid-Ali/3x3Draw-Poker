@@ -161,9 +161,6 @@ public class HandsEvaluator : MonoBehaviour
         //Check if theres a tie
         HighestHandOccurence highestHandOccurence = GetHighestHandOccurence(hands);
         
-        Debug.Log("Highest HandIds are : " + highestHandOccurence.handIDs.Count);
-        Debug.Log("Highest HandIds are : " + highestHandOccurence.handIDs[0]);
-        Debug.Log("Highest HandIds are : " + highestHandOccurence.handIDs[1]);
         if (highestHandOccurence.handIDs.Count > 1)
         {
             List<Hand> winners = new List<Hand>();
@@ -174,8 +171,6 @@ public class HandsEvaluator : MonoBehaviour
                 Hand secondValue = hands.Find(x => x.photonID == highestHandOccurence.handIDs[i + 1]);
 
                 int winner = TieBreakerComponent.DeepEvaluate(firstValue, secondValue);
-
-                Console.WriteLine($"Match {i / 2 + 1}: {firstValue} vs {secondValue}, Winner: {winner}");
 
                 switch (winner)
                 {
@@ -197,7 +192,6 @@ public class HandsEvaluator : MonoBehaviour
 
             Hand finalWinner = winners[0];
             Winner = finalWinner.photonID;
-            Console.WriteLine("\nThe winner is: " + finalWinner);
         }
         else
         {
