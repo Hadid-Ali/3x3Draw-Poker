@@ -14,7 +14,7 @@ public class Card : MonoBehaviour
 
 	public CardData CardData => m_CardDataHandler.CardData;
 
-	private Action m_CardDataUpdated;
+	private GameEvent m_CardDataUpdated = new();
 	
 	protected virtual void Start ()
 	{
@@ -24,7 +24,7 @@ public class Card : MonoBehaviour
 
 	public void InitializeWithAction(Action onCardDataUpdated)
 	{
-		m_CardDataUpdated += onCardDataUpdated;
+		m_CardDataUpdated.Register(onCardDataUpdated);
 	}
 
 	public void RefreshCard()
@@ -45,16 +45,13 @@ public class Card : MonoBehaviour
 		{
 			StartFlippingCard();
 		}
-
-		if (isPersistent && !isInit)
-		{
-			OnCardDataUpdatedByPlayer();
-		}
+		
+		OnCardDataUpdatedByPlayer();
 	}
 
 	private void OnCardDataUpdatedByPlayer()
 	{
-		m_CardDataUpdated?.Invoke();
+		m_CardDataUpdated.Raise();
 	}
 	
 	public void SetActiveStatus(bool status)

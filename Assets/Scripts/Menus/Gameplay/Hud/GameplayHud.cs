@@ -13,7 +13,7 @@ public class GameplayHud : MonoBehaviour
     [SerializeField] private GameObject m_ButtonsContainer;
     [SerializeField] private GameObject m_WaitingText;
 
-    [SerializeField] private GameObject m_GameCardsContainer;
+    [SerializeField] private CanvasGroup m_GameCardsContainer;
     
     [Header("UI Components")]
     
@@ -67,7 +67,8 @@ public class GameplayHud : MonoBehaviour
 
     private void SetGameplayCardsViewState(bool state)
     {
-        m_GameCardsContainer.SetActive(state);
+        m_GameCardsContainer.alpha = state ? 1 : 0;
+        m_GameCardsContainer.interactable = state;
         GameEvents.GameplayEvents.GameplayCardsStateChanged.Raise(state);
     }
     
