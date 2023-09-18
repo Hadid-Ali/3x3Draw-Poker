@@ -12,16 +12,22 @@ public class Card : MonoBehaviour
 	[SerializeField] private AudioSource flipSound;
 	[SerializeField] private CardDataHolder m_CardDataHandler;
 
-	public CardData CardData => m_CardDataHandler.CardData;
-
 	private GameEvent m_CardDataUpdated = new();
 	
-	protected virtual void Start ()
+	public CardData CardData => m_CardDataHandler.CardData;
+	
+	protected virtual void Start () 
 	{
 		m_CardTransform = transform;
 		flipSound = GetComponent<AudioSource>();
+		Initialize();
 	}
 
+	void Initialize()
+	{
+		m_CardDataHandler.Initialize(ClearAfterDeal, SetCardDataView);
+	}
+	
 	public void InitializeWithAction(Action onCardDataUpdated)
 	{
 		m_CardDataUpdated.Register(onCardDataUpdated);
@@ -45,8 +51,6 @@ public class Card : MonoBehaviour
 		{
 			StartFlippingCard();
 		}
-		
-		OnCardDataUpdatedByPlayer();
 	}
 
 	private void OnCardDataUpdatedByPlayer()
@@ -60,9 +64,10 @@ public class Card : MonoBehaviour
 		StartFlippingCard();
 	}
 
-	public void SetCardData(CardData cardData)
+	public void SetCardDataView(CardData cardData)
 	{
 		UpdateCardFaceSprite(CardsRegistery.Instance.GetCardSprite(cardData.type, cardData.value));
+		OnCardDataUpdatedByPlayer();
 	}
 	
 	public void StartFlippingCard()
