@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class HandEvaluator 
@@ -34,9 +35,17 @@ public class HandEvaluator
 	// internal class used to compare 2 cards
 	public class CardComparer : IComparer  
 	{
-		int IComparer.Compare( System.Object x, System.Object y )  		
+		int IComparer.Compare( System.Object x, System.Object y )
 		{
-			return( ((CardData)x).value >= ((CardData)y).value ? 1 : -1 );
+			try
+			{
+				return( ((CardData)x).value >= ((CardData)y).value ? 1 : -1 );
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"Comparing {(CardData)x} with {(CardData)y}");
+				return 1;
+			}
 		}		
 	}
 

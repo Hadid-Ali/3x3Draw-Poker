@@ -8,15 +8,18 @@ public class CardDataHolder : MonoBehaviour
 {
     private CardData m_TempData;
     
-    private Action m_OnCardClear;
-    private Action<CardData> m_SetCardDataInternal;
+    private GameEvent m_OnCardClear = new();
+    private GameEvent m_OnCardDataSet = new();
+    private GameEvent<CardData> m_SetCardDataInternal = new();
+    
     
     public CardData CardData { get; private set; }
 
-    public void Initialize(Action onCardClear, Action<CardData> onSetCardData)
+    public void Initialize(Action onCardClear, Action onCardDataSetPersistent,Action<CardData> onSetCardData)
     {
-        m_OnCardClear = onCardClear;
-        m_SetCardDataInternal = onSetCardData;
+        m_OnCardClear.Register(onCardClear);
+        m_OnCardDataSet.Register(onCardDataSetPersistent);
+        m_SetCardDataInternal.Register(onSetCardData);
     }
 
     public void SetCardData(CardData cardData, bool isPersistent)
@@ -34,6 +37,7 @@ public class CardDataHolder : MonoBehaviour
     public void SaveData()
     {
         CardData = m_TempData;
+        m_OnCardDataSet.Raise();
     }
 
     public void RefreshData()
@@ -46,11 +50,11 @@ public class CardDataHolder : MonoBehaviour
 
     public void ClearCardData()
     {
-        m_OnCardClear.Invoke();
+        m_OnCardClear.Raise();
     }
 
     private void SetCardDataInternal(CardData cardData)
     {
-        m_SetCardDataInternal.Invoke(cardData);
+        m_SetCardDataInternal.Raise(cardData);
     }
 }

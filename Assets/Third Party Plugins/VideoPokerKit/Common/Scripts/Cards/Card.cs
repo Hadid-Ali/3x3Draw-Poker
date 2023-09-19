@@ -18,14 +18,15 @@ public class Card : MonoBehaviour
 	
 	protected virtual void Start () 
 	{
-		m_CardTransform = transform;
-		flipSound = GetComponent<AudioSource>();
 		Initialize();
 	}
 
 	void Initialize()
 	{
-		m_CardDataHandler.Initialize(ClearAfterDeal, SetCardDataView);
+		m_CardTransform = transform;
+		flipSound = GetComponent<AudioSource>();
+
+		m_CardDataHandler.Initialize(ClearAfterDeal, OnCardDataUpdatedByPlayer, SetCardDataView);
 	}
 	
 	public void InitializeWithAction(Action onCardDataUpdated)
@@ -51,6 +52,7 @@ public class Card : MonoBehaviour
 		{
 			StartFlippingCard();
 		}
+
 	}
 
 	private void OnCardDataUpdatedByPlayer()
@@ -67,7 +69,6 @@ public class Card : MonoBehaviour
 	public void SetCardDataView(CardData cardData)
 	{
 		UpdateCardFaceSprite(CardsRegistery.Instance.GetCardSprite(cardData.type, cardData.value));
-		OnCardDataUpdatedByPlayer();
 	}
 	
 	public void StartFlippingCard()
@@ -80,7 +81,7 @@ public class Card : MonoBehaviour
 	{
 		m_CardFaceImage.sprite = sprite;
 	}
-	
+
 	public void SetResultsState(bool bWin)
 	{
 		// if it's a winner card, we start a specific animation for the card (flashing)
