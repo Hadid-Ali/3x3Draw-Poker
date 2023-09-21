@@ -54,8 +54,8 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
         }
 
         m_VerticalLayout.SetLayoutVertical();
-        GameEvents.GameplayUIEvents.DeckArrangementUpdated.Raise();
         m_ViewHandler.SetFocused(false);
+        GameEvents.GameplayUIEvents.DeckArrangementUpdated.Raise();
     }
 
     public void OnPointerExit(PointerEventData eventData)
