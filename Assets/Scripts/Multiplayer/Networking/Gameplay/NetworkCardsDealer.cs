@@ -31,6 +31,7 @@ public class NetworkCardsDealer : MonoBehaviour
         DealCardsToLocalPlayer(handObject.PlayerHand);
     }
     
+    [ContextMenu("DealCards")]
     public void DealCardsToLocalPlayer()
     {
         DealCardsToLocalPlayer(m_DecksHandler.GetRandomHand(m_HandSize));

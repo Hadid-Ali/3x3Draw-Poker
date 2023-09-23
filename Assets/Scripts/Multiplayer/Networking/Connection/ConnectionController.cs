@@ -95,6 +95,12 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         UpdateConnectionStatus("Setting Up Room");
     }
     
+    
+    public virtual void OnCreateRoomFailed(short returnCode, string message)
+    {
+        
+    }    
+    
     public override void OnJoinedLobby()
     {
         UpdateConnectionStatus("Joined Lobby, Finding Match");

@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class RegionSelectionScreen : MainMenuBase
+public class RegionSelectionScreen : UIMenuBase
 {
     [SerializeField] private TMP_Dropdown m_RegionsListDropDown;
     [SerializeField] private TextMeshProUGUI m_BestRegionText;

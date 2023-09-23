@@ -6,7 +6,7 @@ using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameplayHud : MonoBehaviour
+public class GameplayHud : MenusController
 {
     [Header("Refs")]
     

@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoundCompleteMenu : MonoBehaviour
+public class RoundCompleteMenu : UIMenuBase
 {
-    [Header("Refs")]
-    [SerializeField] private GameObject m_Container;
-
     [Header("Components")] 
     [SerializeField] private TMP_Text m_RewardText;
 
@@ -32,12 +30,17 @@ public class RoundCompleteMenu : MonoBehaviour
     
     private void OnPlayerRewardReceived(int reward)
     {
-        m_Container.SetActive(true);
+        SetMenuActiveState(true);
         m_RewardText.text = reward > 0 ? $"You Received {reward} Points" : "You Didn't Win any Hand";
     }
 
     private void OnRestartTap()
     {
+        ChangeMenuState(MenuName.LoadingScreen);
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
         GameEvents.GameplayUIEvents.RestartGame.Raise();
     }
 }

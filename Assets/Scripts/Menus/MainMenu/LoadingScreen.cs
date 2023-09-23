@@ -5,7 +5,7 @@ using TMPro;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
-public class LoadingScreen : MainMenuBase
+public class LoadingScreen : UIMenuBase
 {
     [SerializeField] private StringEvent m_LobbyStatusEvent;
     [SerializeField] private TextMeshProUGUI m_LobbyStatusText;

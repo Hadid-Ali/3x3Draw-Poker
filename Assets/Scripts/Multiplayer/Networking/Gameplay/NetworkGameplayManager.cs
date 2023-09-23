@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 
@@ -59,6 +60,9 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         m_AllDecks.Add(dataObject);
 
         Debug.LogError(m_AllDecks.Count);
+
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         
         if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
         {
@@ -87,13 +91,20 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     public void RestartGame()
     {
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.All,
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.Others,
             null);
+        RestartInternal();
     }
 
     [PunRPC]
     public void RestartGame_RPC()
     {
-        m_NetworkMatchManager.RestartMatch();
+        Invoke(nameof(
+            RestartInternal), 0.5f);
+    }
+
+    private void RestartInternal()
+    {
+        m_NetworkMatchManager.RestartMatch();   
     }
 }

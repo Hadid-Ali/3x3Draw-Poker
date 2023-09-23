@@ -6,7 +6,7 @@ using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerLoginScreen : MainMenuBase
+public class PlayerLoginScreen : UIMenuBase
 {
     [SerializeField] private StringEvent m_PlayerLoginEvent;
     [SerializeField] private TMP_InputField m_InputField;

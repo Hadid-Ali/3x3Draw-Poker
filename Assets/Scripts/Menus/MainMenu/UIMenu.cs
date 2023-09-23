@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : MainMenuBase
+public class UIMenu : UIMenuBase
 {
     [SerializeField] private Button m_PlayButton;
 

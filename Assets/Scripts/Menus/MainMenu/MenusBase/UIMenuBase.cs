@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MainMenuBase : MonoBehaviour
+public abstract class UIMenuBase : MonoBehaviour
 {
     [SerializeField] private MenuName m_MenuName;
     [SerializeField] private GameObject m_MenuContainer;

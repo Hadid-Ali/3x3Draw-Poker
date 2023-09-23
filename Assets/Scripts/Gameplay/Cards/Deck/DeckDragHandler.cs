@@ -15,6 +15,7 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
     private void Start()
     {
         m_VerticalLayout = GetComponentInParent<VerticalLayoutGroup>();
+        Input.multiTouchEnabled = false;
     }
     
     private void OnTriggerEnter2D(Collider2D col)

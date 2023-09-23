@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoomSetupScreen : MainMenuBase
+public class RoomSetupScreen : UIMenuBase
 {
    [SerializeField] private TMP_InputField m_RoomsizeField;
    [SerializeField] private Button m_CreateRoomButton;
