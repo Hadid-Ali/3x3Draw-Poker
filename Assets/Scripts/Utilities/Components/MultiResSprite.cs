@@ -15,6 +15,8 @@ public class MultiResSprite : MultiResObject
 
     protected override void OnDeviceModeInput(DeviceMode deviceMode)
     {
+        m_Transform ??= transform;
+        
         MultiResTransformObject transformObject =
             m_ObjectScales.Find(scaleObject => scaleObject.ResolutionMode == deviceMode);
         
