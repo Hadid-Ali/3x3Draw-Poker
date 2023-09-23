@@ -18,7 +18,6 @@ public class GameplayHud : MonoBehaviour
     [Header("UI Components")]
     
     [SerializeField] private Button m_SubmitButton;
-    [SerializeField] private Button m_EvaluateButton;
     
     [SerializeField] private TMP_Text m_TotalScore;
 
@@ -29,7 +28,6 @@ public class GameplayHud : MonoBehaviour
     private void Start()
     {
         m_SubmitButton.onClick.AddListener(SubmitCards);
-        m_EvaluateButton.onClick.AddListener(EvaluateCards);
         m_CardsContainerWait  = new WaitForSeconds(m_WaitForCardsToShow);
     }
 
