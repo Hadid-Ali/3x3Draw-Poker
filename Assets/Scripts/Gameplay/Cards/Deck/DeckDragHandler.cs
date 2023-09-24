@@ -9,7 +9,7 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
 
     private VerticalLayoutGroup m_VerticalLayout;
     
-    private bool m_Dragging = false;
+    public static bool m_Dragging = false;
     private int m_LastHoverDeck = -1;
 
     private void Start()

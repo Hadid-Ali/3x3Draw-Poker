@@ -31,13 +31,15 @@ public class GameplayHud : MenusController
         m_CardsContainerWait  = new WaitForSeconds(m_WaitForCardsToShow);
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         GameEvents.GameplayEvents.GameplayStateSwitched.Register(OnGameplayStateSwitched);
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         GameEvents.GameplayEvents.GameplayStateSwitched.Unregister(OnGameplayStateSwitched);
     }
 
@@ -75,10 +77,5 @@ public class GameplayHud : MenusController
         m_ButtonsContainer.SetActive(false);
         m_WaitingText.SetActive(true);
         GameEvents.GameplayUIEvents.SubmitDecks.Raise();
-    }
-
-    private void EvaluateCards()
-    {
-        GameEvents.GameplayUIEvents.EvaluateDeck.Raise();
     }
 }

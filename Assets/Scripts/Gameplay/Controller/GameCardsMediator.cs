@@ -51,5 +51,7 @@ public class GameCardsMediator : MonoBehaviour
         m_DraggableCard.SetEnabled(false);
         m_CardAtHand.SetActiveStatus(true);
         CurrentData = null;
+
+        m_CardAtHand = null;
     }
 }
