@@ -74,8 +74,15 @@ public class GameplayHud : MenusController
     
     private void SubmitCards()
     {
-        m_ButtonsContainer.SetActive(false);
-        m_WaitingText.SetActive(true);
-        GameEvents.GameplayUIEvents.SubmitDecks.Raise();
+        try
+        {
+            GameEvents.GameplayUIEvents.SubmitDecks.Raise();
+            m_ButtonsContainer.SetActive(false);
+            m_WaitingText.SetActive(true);
+        }
+        catch (Exception e)
+        {
+         GameEvents.GameplayUIEvents.ErrorOccured.Raise(e.StackTrace);   
+        }
     }
 }

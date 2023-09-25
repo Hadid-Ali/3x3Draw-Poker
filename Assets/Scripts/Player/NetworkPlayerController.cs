@@ -52,8 +52,15 @@ public class NetworkPlayerController : PlayerController
 
     private void OnSubmitDeck()
     {
-        GameEvents.GameplayEvents.NetworkSubmitRequest.Raise(
-            new NetworkDataObject(GameCardsData.Instance.GetDecksData(), ID));
+        try
+        {
+            GameEvents.GameplayEvents.NetworkSubmitRequest.Raise(
+                new NetworkDataObject(GameCardsData.Instance.GetDecksData(), ID));
+        }
+        catch (Exception e)
+        {
+            GameEvents.GameplayUIEvents.ErrorOccured.Raise(e.StackTrace);
+        }
     }
 
     public override void AwardPlayerPoints(int reward)

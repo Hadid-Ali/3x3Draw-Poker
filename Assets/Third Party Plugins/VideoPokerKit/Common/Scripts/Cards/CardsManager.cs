@@ -31,15 +31,29 @@ public class CardsManager : MonoBehaviour
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Register(OnCardsArrangementUpdated);
 		GameEvents.GameplayEvents.UserHandReceivedEvent.Register(DealCards);
+		GameEvents.GameplayEvents.CardReplacedEvent.Register(OnCardDataReplaced);
 	}
 
 	private void OnDisable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Unregister(OnCardsArrangementUpdated);
 		GameEvents.GameplayEvents.UserHandReceivedEvent.Unregister(DealCards);
-
+		GameEvents.GameplayEvents.CardReplacedEvent.Unregister(OnCardDataReplaced);
 	}
 
+	private void OnCardDataReplaced(CardData previousData)
+	{
+		CardData c = GameCardsMediator.CurrentData;
+		Debug.LogError($"Replaced {previousData.value} {previousData.type} with {c.value} {c.type}");
+
+		Card cardA = Array.Find(m_GameCards,
+			card => card.CardData.type == previousData.type && card.CardData.value == previousData.value);
+		Card cardB = Array.Find(m_GameCards, card => card.CardData.type == c.type && card.CardData.value == c.value);
+		
+		cardA.SetData(previousData, true, false);
+		cardB.SetData(c, true, false);
+	}
+	
 	private void OnCardsArrangementUpdated(Card[] cards)
 	{
 		m_GameCards = null;

@@ -13,7 +13,8 @@ public enum MenuName
     ConnectionScreen,
     CreateRoom,
     LoadingScreen,
-    RoundCompleteMenu
+    RoundCompleteMenu,
+    ErrorWindow
 }
 
 public abstract class MenusController : MonoBehaviour

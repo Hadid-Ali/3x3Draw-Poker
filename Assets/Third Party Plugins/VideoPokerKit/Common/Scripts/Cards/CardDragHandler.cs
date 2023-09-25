@@ -34,15 +34,11 @@ public class CardDragHandler : MonoBehaviour, IPointerEnterHandler, IDropHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.LogError("Pointer Exit");
-
         m_Card.RefreshCard();
     } 
     
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.LogError("Pointer Drop");
-
         GameEvents.GameplayEvents.CardReplacedEvent.Raise(m_Card.CardData);
         m_Card.SaveData();
     }

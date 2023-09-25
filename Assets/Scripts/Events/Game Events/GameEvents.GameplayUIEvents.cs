@@ -12,5 +12,6 @@ public static partial class GameEvents
         public static GameEvent DeckArrangementUpdated = new();
 
         public static GameEvent RestartGame = new();
+        public static GameEvent<string> ErrorOccured = new();
     }
 }
