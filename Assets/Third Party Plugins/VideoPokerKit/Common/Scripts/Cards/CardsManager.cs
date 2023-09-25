@@ -50,8 +50,8 @@ public class CardsManager : MonoBehaviour
 			card => card.CardData.type == previousData.type && card.CardData.value == previousData.value);
 		Card cardB = Array.Find(m_GameCards, card => card.CardData.type == c.type && card.CardData.value == c.value);
 		
-		cardA.SetData(previousData, true, false);
-		cardB.SetData(c, true, false);
+		cardA.SetData(c, true, false);
+		cardB.SetData(previousData, true, false);
 	}
 	
 	private void OnCardsArrangementUpdated(Card[] cards)
