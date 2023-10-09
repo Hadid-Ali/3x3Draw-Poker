@@ -29,7 +29,9 @@ public class RoomSetupScreen : UIMenuBase
       {
          MaxPlayers = (byte)m_Roomsize,
          IsOpen = true,
-         IsVisible = true
+         IsVisible = true,
+         PlayerTtl = -1,
+         EmptyRoomTtl = 60000,
       });
       GameData.SessionData.CurrentRoomPlayersCount = m_Roomsize;
       ChangeMenuState(MenuName.ConnectionScreen);
