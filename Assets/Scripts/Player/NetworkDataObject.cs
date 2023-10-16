@@ -23,8 +23,6 @@ public class NetworkDataObject
     public static string Serialize(NetworkDataObject networkDataObject)
     {
         string data = JsonUtility.ToJson(networkDataObject);
-        
-     //   Debug.LogError($"{data}");
         return data;
     }
 

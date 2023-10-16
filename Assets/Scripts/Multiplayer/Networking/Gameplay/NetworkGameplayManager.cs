@@ -55,7 +55,6 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     [PunRPC]
     private void OnNetworkSubmitRequest_RPC(string jsonData)
     {
-        //Debug.LogError($"Size Received {System.Text.Encoding.ASCII.GetBytes(jsonData).Length}");
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         m_AllDecks.Add(dataObject);
 
@@ -75,12 +74,12 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         GameEvents.GameplayEvents.AllUserHandsReceived.Raise(m_AllDecks);
     }
 
-    private void OnRoundScoreEvaluated(Dictionary<int, int> userScores)
+    private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
-        foreach (KeyValuePair<int,int> playerScores in userScores)
+        foreach (KeyValuePair<int, PlayerScoreObject> playerScores in userScores)
         {
-            KeyValuePair<int, int> scoreItem = playerScores;
-            m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value);
+            KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
+            m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
         }
     }
 

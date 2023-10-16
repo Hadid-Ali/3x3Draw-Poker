@@ -67,11 +67,11 @@ public class HandsEvaluator : MonoBehaviour
         int deckSize = GameData.MetaData.DeckSize;
         int deckCount = GameData.MetaData.DecksCount;
         
-        Dictionary<int, int> userScores = new();
+        Dictionary<int, PlayerScoreObject> userScores = new();
         
         foreach (KeyValuePair<int, CardData[,]> kvp in cardsData)
         {
-            userScores[kvp.Key] = 0;
+            userScores[kvp.Key] = new PlayerScoreObject();
         }
         
         for (int i = 0; i < deckCount; i++)
@@ -98,7 +98,7 @@ public class HandsEvaluator : MonoBehaviour
             }
 
             CompareHand(hands, out int winner);
-            userScores[winner] +=  GameData.MetaData.HandWinReward;
+            userScores[winner].AddScore(GameData.MetaData.HandWinReward, i);
         }
         GameEvents.GameplayEvents.UserHandsEvaluated.Raise(userScores);
     }
