@@ -20,7 +20,6 @@ public class ResultHand : MonoBehaviour
     
     private bool m_IsWinnerDeck = false;
     private bool m_IsOccupied = false;
-
     public bool IsOccupied => m_IsOccupied;
     
     public void SetDecksContainer(ResultHandDataObject resultHandDataObject)

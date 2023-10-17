@@ -40,7 +40,7 @@ public class ResultUIController : MonoBehaviour
     {
         m_UsersScoreList = playerScoreObjects;
         InitializePlayerDecks(playerNetworkDataObjects);
-        SetuphowResultUI();
+        SetupShowResultUI();
     }
 
     private void InitializePlayerDecks(List<NetworkDataObject> playerNetworkDataObjects)
@@ -57,12 +57,24 @@ public class ResultUIController : MonoBehaviour
         }
     }
     
-    private void SetuphowResultUI()
+    private void SetupShowResultUI()
     {
-        ShowDecksAtIndex(0);
+        StartCoroutine(ShowResultantUI_Routine());
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Deck_View);
     }
 
+    private IEnumerator ShowResultantUI_Routine()
+    {
+        int index = 0;
+        int totalHands = GameData.MetaData.DecksCount;
+
+        while (index < totalHands)
+        {
+            ShowDecksAtIndex(index++);
+            yield return m_WaitBetweenDecksReveal;
+        }
+    }
+    
     private void ShowDecksAtIndex(int index)
     {
         ResultHandDataObject[] resultObjects = new ResultHandDataObject[m_PlayerDecks.Count];
