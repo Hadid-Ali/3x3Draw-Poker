@@ -6,10 +6,24 @@ using UnityEngine;
 
 public class ResultUIController : MonoBehaviour
 {
+    [Header("Refs")]
+    
     [SerializeField] private ResultUIView m_ResultUiView;
 
+    [Header("Attributes")]
+    
+    [SerializeField] private float m_WaitBeforeWinnerReveal;
+    [SerializeField] private float m_WaitBetweenDecksReveal;
+    
     private List<PlayerScoreObject> m_UsersScoreList = new();
     private List<PlayerDecksObject> m_PlayerDecks = new();
+
+    private WaitForSecondsRealtime m_WaitBetweenDecks;
+
+    private void Start()
+    {
+        m_WaitBetweenDecks = new(m_WaitBetweenDecksReveal);
+    }
 
     private void OnEnable()
     {
@@ -64,7 +78,8 @@ public class ResultUIController : MonoBehaviour
                 Cards = GetCardSprites(cardData),
                 Score = GameData.MetaData.HandWinReward,
                 PlayerName = "User",
-                IsWinner = IsHandIndexWinner(deckObject.userID, index)
+                IsWinner = IsHandIndexWinner(deckObject.userID, index),
+                WinnerRevealDuration = m_WaitBeforeWinnerReveal
             };
         }
         

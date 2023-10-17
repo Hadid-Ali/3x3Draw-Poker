@@ -17,7 +17,7 @@ public class ResultHand : MonoBehaviour
     
     [SerializeField] private TextMeshProUGUI m_NameText;
     [SerializeField] private TextMeshProUGUI m_ScoreText;
-
+    
     private bool m_IsWinnerDeck = false;
     private bool m_IsOccupied = false;
 
@@ -33,9 +33,17 @@ public class ResultHand : MonoBehaviour
         
         m_CardsDeck.SetHandData(resultHandDataObject.Cards);
         SetVisibilityStatus(true);
-    }
-  
 
+        Invoke(nameof(CheckForWinStatus), resultHandDataObject.WinnerRevealDuration);
+    }
+
+    private void CheckForWinStatus()
+    {
+        SetTextVisibilityStatus(m_IsWinnerDeck);
+        SetWinnerNameOverlayStatus(m_IsWinnerDeck);
+        SetLoserOverlayStatus(!m_IsWinnerDeck);
+    }
+    
     private void SetVisibilityStatus(bool status)
     {
         m_HandObjectContainer.SetActive(status);
