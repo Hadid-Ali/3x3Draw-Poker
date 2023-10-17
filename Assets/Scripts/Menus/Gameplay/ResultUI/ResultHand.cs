@@ -27,13 +27,14 @@ public class ResultHand : MonoBehaviour
     {
         m_IsWinnerDeck = resultHandDataObject.IsWinner;
         m_IsOccupied = true;
-        
-        m_ScoreText.text = $"+{resultHandDataObject.Score}";
+
+        m_ScoreText.text = m_IsWinnerDeck ? $"+{resultHandDataObject.Score}" : "0";
         m_NameText.text = resultHandDataObject.PlayerName;
         
         m_CardsDeck.SetHandData(resultHandDataObject.Cards);
         SetVisibilityStatus(true);
     }
+  
 
     private void SetVisibilityStatus(bool status)
     {

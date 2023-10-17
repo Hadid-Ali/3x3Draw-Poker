@@ -62,7 +62,7 @@ public class ResultUIController : MonoBehaviour
             resultObjects[i] = new ResultHandDataObject()
             {
                 Cards = GetCardSprites(cardData),
-                Score = UserScore(deckObject.userID),
+                Score = GameData.MetaData.HandWinReward,
                 PlayerName = "User",
                 IsWinner = IsHandIndexWinner(deckObject.userID, index)
             };
