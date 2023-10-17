@@ -18,12 +18,33 @@ public class ResultHand : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_NameText;
     [SerializeField] private TextMeshProUGUI m_ScoreText;
 
+    private bool m_IsWinnerDeck = false;
+    private bool m_IsOccupied = false;
+
+    public bool IsOccupied => m_IsOccupied;
+    
+    public void SetDecksContainer(ResultHandDataObject resultHandDataObject)
+    {
+        m_IsWinnerDeck = resultHandDataObject.IsWinner;
+        m_IsOccupied = true;
+        
+        m_ScoreText.text = $"+{resultHandDataObject.Score}";
+        m_NameText.text = resultHandDataObject.PlayerName;
+        
+        m_CardsDeck.SetHandData(resultHandDataObject.Cards);
+        SetVisibilityStatus(true);
+    }
 
     private void SetVisibilityStatus(bool status)
     {
         m_HandObjectContainer.SetActive(status);
     }
 
+    private void SetTextVisibilityStatus(bool status)
+    {
+        m_ScoreText.gameObject.SetActive(status);
+    }
+    
     private void SetLoserOverlayStatus(bool status)
     {
         m_LoserHandOverlay.SetActive(status);

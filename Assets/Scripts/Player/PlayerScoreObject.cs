@@ -7,18 +7,18 @@ public class PlayerScoreObject
 {
     public int UserID;
     public int Score;
-    public List<int> WinningHandIndex;
+    public List<int> WinningHandsIndexes;
 
     public PlayerScoreObject(int userID)
     {
         UserID = userID;
         Score = 0;
-        WinningHandIndex = new();
+        WinningHandsIndexes = new();
     }
 
     public void AddScore(int score, int handIndex)
     {
         Score += score;
-        WinningHandIndex.Add(handIndex);
+        WinningHandsIndexes.Add(handIndex);
     }
 }

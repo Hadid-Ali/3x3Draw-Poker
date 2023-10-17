@@ -39,7 +39,7 @@ public class NetworkCardsDealer : MonoBehaviour
 
     public void DealCardsToLocalPlayer(CardData[] cardsData)
     {
-        GameEvents.GameplayEvents.UserHandReceivedEvent.Raise(cardsData);
+        GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Raise(cardsData);
     }
     
     public void DealCardsToNetworkPlayer(PlayerController playerController)

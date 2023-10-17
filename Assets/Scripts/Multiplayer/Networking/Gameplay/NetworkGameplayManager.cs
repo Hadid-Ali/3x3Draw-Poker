@@ -11,11 +11,8 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     [SerializeField] private PhotonView m_NetworkGameplayManagerView;
 
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
-    
     [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
 
-    public SerializableList<PlayerScoreObject> m_Scores = new();
-    
     protected override void SingletonAwake()
     {
         base.SingletonAwake();
@@ -30,14 +27,14 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     private void OnEnable()
     {
-        GameEvents.GameplayEvents.NetworkSubmitRequest.Register(OnNetworkSubmitRequest);
+        GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Register(OnNetworkSubmitRequest);
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameplayUIEvents.RestartGame.Register(RestartGame);
     }
 
     private void OnDisable()
     {
-        GameEvents.GameplayEvents.NetworkSubmitRequest.Unregister(OnNetworkSubmitRequest);
+        GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Unregister(OnNetworkSubmitRequest);
         GameEvents.GameplayEvents.UserHandsEvaluated.Unregister(OnRoundScoreEvaluated);
         GameEvents.GameplayUIEvents.RestartGame.Unregister(RestartGame);
     }
@@ -74,12 +71,15 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     
     private void OnNetworkDeckReceived()
     {
-        GameEvents.GameplayEvents.AllUserHandsReceived.Raise(m_AllDecks);
+        GameEvents.NetworkGameplayEvents.AllUserHandsReceived.Raise(m_AllDecks);
     }
 
     private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
-        m_Scores.Contents = userScores.Values.ToList();
+        SyncUserScoresOverNetwork(new SerializableList<PlayerScoreObject>()
+        {
+            Contents = userScores.Values.ToList()
+        });
         
         foreach (KeyValuePair<int, PlayerScoreObject> playerScores in userScores)
         {
@@ -88,25 +88,14 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         }
     }
 
-    private string dataString = string.Empty;
-    private List<PlayerScoreObject> m_ScoreObject = new();
-    
-    [ContextMenu("Serialize Data")]
-    public void Serilaize()
+    private void SyncUserScoresOverNetwork(SerializableList<PlayerScoreObject> playerScores)
     {
-        dataString = JsonUtility.ToJson(m_Scores);
-        Debug.LogError(dataString);
-    }
-
-    [ContextMenu("Deserialize Data")]
-    public void Deserialize()
-    {
-        m_ScoreObject = JsonUtility.FromJson<List<PlayerScoreObject>>(dataString);
+        string dataString = JsonUtility.ToJson(playerScores);
         
-        for (int i = 0; i < m_ScoreObject.Count; i++)
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(SyncUserScores_RPC),RpcTarget.All,new object[]
         {
-            Debug.LogError(m_ScoreObject);
-        }
+            dataString
+        });
     }
 
     public void OnGameplayJoined(PlayerController playerController)
@@ -119,6 +108,16 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.Others,
             null);
         RestartInternal();
+    }
+
+    [PunRPC]
+    public void SyncUserScores_RPC(string data)
+    {
+        Debug.LogError($"Receive Data {data}");
+        
+        SerializableList<PlayerScoreObject> playerScores =
+            JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
+        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
     }
 
     [PunRPC]

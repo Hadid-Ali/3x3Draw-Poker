@@ -13,6 +13,28 @@ public class NetworkDataObject
         PlayerDecks = decks;
         PhotonViewID = photonViewID;
     }
+
+    public List<CardData[]> GetDeck()
+    {
+        List<CardData[]> decks = new();
+
+        int handSize = GameData.MetaData.DeckSize;
+        int handCount = GameData.MetaData.DecksCount;
+
+        int cardIndex = 0;
+        
+        for (int i = 0; i < handCount; i++)
+        {
+            decks.Add(new CardData[handSize]);
+            
+            for (int j = 0; j < handSize; j++)
+            {
+                decks[i][j] = PlayerDecks[cardIndex++];
+            }
+        }
+
+        return decks;
+    }
     
     public static string Serialize(NetworkDataObject networkDataObject)
     {

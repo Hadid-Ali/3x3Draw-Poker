@@ -13,12 +13,12 @@ public class HandsEvaluator : MonoBehaviour
 {
     private void OnEnable()
     {
-        GameEvents.GameplayEvents.AllUserHandsReceived.Register(OnAllUserHandsReceived);
+        GameEvents.NetworkGameplayEvents.AllUserHandsReceived.Register(OnAllUserHandsReceived);
     }
 
     private void OnDisable()
     {
-        GameEvents.GameplayEvents.AllUserHandsReceived.Unregister(OnAllUserHandsReceived);
+        GameEvents.NetworkGameplayEvents.AllUserHandsReceived.Unregister(OnAllUserHandsReceived);
     }
 
     public void OnAllUserHandsReceived(List<NetworkDataObject> networkDataObjects)

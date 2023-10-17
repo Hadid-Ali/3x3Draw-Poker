@@ -7,7 +7,7 @@ public class GameplayStateView : MonoBehaviour
     
     [SerializeField] private CanvasGroup m_GameCardsContainer;
     [SerializeField] private GameObject m_CasinoViewObject;
-    [SerializeField] private ResultUIHandler m_ResultUIHandler;
+    [SerializeField] private ResultUIView mResultUIView;
     
     [Header("Properties")]
     
@@ -79,7 +79,7 @@ public class GameplayStateView : MonoBehaviour
 
     private void SetResultView(bool status)
     {
-        m_ResultUIHandler.SetActiveState(status);
+        mResultUIView.SetActiveState(status);
     }
     
     private void SetGameplayCardsViewState(bool state)

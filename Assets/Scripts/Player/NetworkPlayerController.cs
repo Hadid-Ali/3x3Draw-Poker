@@ -52,7 +52,7 @@ public class NetworkPlayerController : PlayerController
 
     private void OnSubmitDeck()
     {
-        GameEvents.GameplayEvents.NetworkSubmitRequest.Raise(
+        GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Raise(
             new NetworkDataObject(GameCardsData.Instance.GetDecksData(), ID));
     }
 
