@@ -8,15 +8,9 @@ public class NetworkDataObject
     public List<CardData> PlayerDecks = new();
     public int PhotonViewID;
 
-    public NetworkDataObject(List<CardData[]> decks, int photonViewID)
+    public NetworkDataObject(List<CardData> decks, int photonViewID)
     {
-        for (int i = 0; i < decks.Count; i++)
-        {
-            for (int j = 0; j < decks[i].Length; j++)
-            {
-                PlayerDecks.Add(decks[i][j]);
-            }
-        }
+        PlayerDecks = decks;
         PhotonViewID = photonViewID;
     }
     

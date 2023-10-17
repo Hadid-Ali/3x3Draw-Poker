@@ -6,10 +6,10 @@ public class GameCardsData : SceneBasedSingleton<GameCardsData>
 {
     [SerializeField] private Transform m_DecksContainer;
 
-    public List<CardData[]> GetDecksData()
+    public List<CardData> GetDecksData()
     {
         List<CardsDeck> decks = new();
-        List<CardData[]> data = new();
+        List<CardData> data = new();
       
         int childCount = m_DecksContainer.childCount;
       
@@ -18,7 +18,7 @@ public class GameCardsData : SceneBasedSingleton<GameCardsData>
             decks.Add(m_DecksContainer.GetChild(i).GetComponent<CardsDeck>());
         }
         
-        decks.ForEach(deck => data.Add(deck.CardsData));
+        decks.ForEach(deck => data.AddRange(deck.CardsData));
         return data;
     }
 }
