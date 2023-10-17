@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,10 +7,11 @@ public class GameplayStateView : MonoBehaviour
     
     [SerializeField] private CanvasGroup m_GameCardsContainer;
     [SerializeField] private GameObject m_CasinoViewObject;
+    [SerializeField] private ResultUIHandler m_ResultUIHandler;
+    
+    [Header("Properties")]
     
     [SerializeField] private Animator m_CasinoViewAnimator;
-    
-    
     [SerializeField] private float m_WaitForCardsToShow = 2f;
 
     private WaitForSeconds m_CardsContainerWait;
@@ -36,30 +36,50 @@ public class GameplayStateView : MonoBehaviour
 
     private void OnGameplayStateSwitched(GameplayState gameplayState)
     {
-        StartCoroutine(OnGameplayStateSwitchedInternal(gameplayState));
-    }
-
-    private IEnumerator OnGameplayStateSwitchedInternal(GameplayState gameplayState)
-    {
         switch (gameplayState)
         {
             case GameplayState.Casino_View:
-                SetCasinoViewObjectState(true);
-                SetGameplayCardsViewState(false);
+                SwitchToCasinoView();
                 break;
 
             case GameplayState.Cards_View:
-                SetCasinoViewAnimatorState(false);
-
-                yield return m_CardsContainerWait;
-
-                SetGameplayCardsViewState(true);
-                SetCasinoViewObjectState(false);
-
+                StartCoroutine(SwitchToCardsView());
+                break;
+            
+            case GameplayState.Result_Deck_View:
+                SwitchToResultantView();
                 break;
         }
+    }
 
-        yield return null;
+    private void SwitchToCasinoView()
+    {
+        SetCasinoViewObjectState(true);
+        SetGameplayCardsViewState(false);
+        SetResultView(false);
+    }
+
+    private IEnumerator SwitchToCardsView()
+    {
+        SetResultView(false);
+        SetCasinoViewAnimatorState(false);
+
+        yield return m_CardsContainerWait;
+
+        SetGameplayCardsViewState(true);
+        SetCasinoViewObjectState(false);
+    }
+
+    private void SwitchToResultantView()
+    {
+        SetResultView(true);
+        SetGameplayCardsViewState(false);
+        SetCasinoViewObjectState(false);
+    }
+
+    private void SetResultView(bool status)
+    {
+        m_ResultUIHandler.SetActiveState(status);
     }
     
     private void SetGameplayCardsViewState(bool state)

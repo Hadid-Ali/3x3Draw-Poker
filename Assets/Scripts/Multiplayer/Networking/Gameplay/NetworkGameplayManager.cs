@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
@@ -13,6 +14,8 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     
     [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
 
+    public SerializableList<PlayerScoreObject> m_Scores = new();
+    
     protected override void SingletonAwake()
     {
         base.SingletonAwake();
@@ -49,7 +52,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         string jsonData = NetworkDataObject.Serialize(networkDataObject);
 
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(OnNetworkSubmitRequest_RPC),
-            RpcTarget.MasterClient, new object[] { jsonData });
+            RpcTarget.All, new object[] { jsonData });
     }
 
     [PunRPC]
@@ -76,10 +79,33 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
+        m_Scores.Contents = userScores.Values.ToList();
+        
         foreach (KeyValuePair<int, PlayerScoreObject> playerScores in userScores)
         {
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
             m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
+        }
+    }
+
+    private string dataString = string.Empty;
+    private List<PlayerScoreObject> m_ScoreObject = new();
+    
+    [ContextMenu("Serialize Data")]
+    public void Serilaize()
+    {
+        dataString = JsonUtility.ToJson(m_Scores);
+        Debug.LogError(dataString);
+    }
+
+    [ContextMenu("Deserialize Data")]
+    public void Deserialize()
+    {
+        m_ScoreObject = JsonUtility.FromJson<List<PlayerScoreObject>>(dataString);
+        
+        for (int i = 0; i < m_ScoreObject.Count; i++)
+        {
+            Debug.LogError(m_ScoreObject);
         }
     }
 

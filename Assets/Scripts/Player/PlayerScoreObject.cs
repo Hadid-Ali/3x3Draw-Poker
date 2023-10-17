@@ -5,11 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerScoreObject
 {
+    public int UserID;
     public int Score;
     public List<int> WinningHandIndex;
 
-    public PlayerScoreObject()
+    public PlayerScoreObject(int userID)
     {
+        UserID = userID;
         Score = 0;
         WinningHandIndex = new();
     }

@@ -66,6 +66,7 @@ public class NetworkPlayerController : PlayerController
     public void AwardPlayerPoints_RPC(int reward)
     {
         Debug.LogError("Award Points");
+        
         if (!IsLocalPlayer)
             return;
         

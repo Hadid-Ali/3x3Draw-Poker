@@ -7,8 +7,6 @@ struct HighestHandOccurence
 {
     public HandTypes HighestHandType;
     public List<int> handIDs;
-    
-    
 }
 
 public class HandsEvaluator : MonoBehaviour
@@ -71,7 +69,7 @@ public class HandsEvaluator : MonoBehaviour
         
         foreach (KeyValuePair<int, CardData[,]> kvp in cardsData)
         {
-            userScores[kvp.Key] = new PlayerScoreObject();
+            userScores[kvp.Key] = new PlayerScoreObject(kvp.Key);
         }
         
         for (int i = 0; i < deckCount; i++)
