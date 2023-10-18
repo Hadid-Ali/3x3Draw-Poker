@@ -18,7 +18,7 @@ public class ResultUIController : MonoBehaviour
     private List<PlayerScoreObject> m_UsersScoreList = new();
     private List<PlayerDecksObject> m_PlayerDecks = new();
 
-    private WaitForSecondsRealtime m_WaitBetweenDecks;
+    private WaitForSeconds m_WaitBetweenDecks;
 
     private void Start()
     {
@@ -68,10 +68,12 @@ public class ResultUIController : MonoBehaviour
         int index = 0;
         int totalHands = GameData.MetaData.DecksCount;
 
+        Debug.LogError("Routine Start");
         while (index < totalHands)
         {
             ShowDecksAtIndex(index++);
-            yield return m_WaitBetweenDecksReveal;
+            yield return m_WaitBetweenDecks;
+            Debug.LogError("Show Hand");
         }
     }
     
@@ -94,8 +96,8 @@ public class ResultUIController : MonoBehaviour
                 WinnerRevealDuration = m_WaitBeforeWinnerReveal
             };
         }
-        
-        m_ResultUiView.SetResultData(resultObjects);
+
+        m_ResultUiView.SetResultData(resultObjects, index);
     }
 
     private Sprite[] GetCardSprites(CardData[] cardData)

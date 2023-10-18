@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -19,13 +20,16 @@ public class ResultHand : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_ScoreText;
     
     private bool m_IsWinnerDeck = false;
-    private bool m_IsOccupied = false;
-    public bool IsOccupied => m_IsOccupied;
-    
+
+    private void Start()
+    {
+        Reset();
+    }
+
     public void SetDecksContainer(ResultHandDataObject resultHandDataObject)
     {
+        Reset();
         m_IsWinnerDeck = resultHandDataObject.IsWinner;
-        m_IsOccupied = true;
 
         m_ScoreText.text = m_IsWinnerDeck ? $"+{resultHandDataObject.Score}" : "0";
         m_NameText.text = resultHandDataObject.PlayerName;
@@ -34,6 +38,13 @@ public class ResultHand : MonoBehaviour
         SetVisibilityStatus(true);
 
         Invoke(nameof(CheckForWinStatus), resultHandDataObject.WinnerRevealDuration);
+    }
+
+    private void Reset()
+    {
+        SetLoserOverlayStatus(false);
+        SetTextVisibilityStatus(false);
+        SetWinnerNameOverlayStatus(false);
     }
 
     private void CheckForWinStatus()
