@@ -91,7 +91,7 @@ public class ResultUIController : MonoBehaviour
             {
                 Cards = GetCardSprites(cardData),
                 Score = GameData.MetaData.HandWinReward,
-                PlayerName = "User",
+                PlayerName = Dependencies.PlayersContainer.GetPlayerName(deckObject.userID),
                 IsWinner = IsHandIndexWinner(deckObject.userID, index),
                 WinnerRevealDuration = m_WaitBeforeWinnerReveal
             };

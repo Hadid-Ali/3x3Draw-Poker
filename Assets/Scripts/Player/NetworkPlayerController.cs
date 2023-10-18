@@ -15,12 +15,6 @@ public class NetworkPlayerController : PlayerController
     private int m_TotalScore = 0;
     private int m_CurrentAchievedScore = 0;
 
-    public override string Name
-    {
-        set => m_Name = value;
-        get => IsLocalPlayer ? PhotonNetwork.NickName : m_Name;
-    }
-    
     protected override void Start()
     {
         base.Start();
@@ -29,15 +23,19 @@ public class NetworkPlayerController : PlayerController
 
     public void OnSpawn()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            NetworkGameplayManager.Instance.OnGameplayJoined(this);
-        }
-        
+        NetworkGameplayManager.Instance.OnGameplayJoined(this);
+
         if (!IsLocalPlayer)
             return;
-        
-        InitializeControls();  
+
+        InitializeControls();
+        SetNameOverServer();
+    }s
+
+    void SetNameOverServer()
+    {
+        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetName_RPC), RpcTarget.All,
+            new object[] { PhotonNetwork.LocalPlayer.NickName });
     }
 
     void InitializeControls()
@@ -89,5 +87,11 @@ public class NetworkPlayerController : PlayerController
             return;
 
         GameEvents.NetworkEvents.PlayerReceiveCardsData.Raise(data);
+    }
+
+    [PunRPC]
+    public void SetName_RPC(string name)
+    {
+        Name = name;
     }
 }

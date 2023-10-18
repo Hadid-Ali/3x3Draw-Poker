@@ -10,6 +10,11 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     private GameEvent<PlayerController> m_OnPlayerSpawned = new();
 
+    private void Start()
+    {
+        Dependencies.PlayersContainer = this;
+    }
+
     public void Initialize(Action<PlayerController> onPlayerSpawned)
     {
         m_OnPlayerSpawned.Register(onPlayerSpawned);
@@ -28,4 +33,6 @@ public class NetworkPlayerSpawner : MonoBehaviour
     }
     
     public PlayerController GetPlayerAgainstID(int ID) => m_JoinedPlayers.Find(player => player.ID == ID);
+
+    public string GetPlayerName(int ID) => GetPlayerAgainstID(ID).Name;
 }
