@@ -75,6 +75,7 @@ public class ResultUIController : MonoBehaviour
             yield return m_WaitBetweenDecks;
             Debug.LogError("Show Hand");
         }
+        gameObject.SetActive(false);
     }
     
     private void ShowDecksAtIndex(int index)

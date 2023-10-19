@@ -30,7 +30,7 @@ public class NetworkPlayerController : PlayerController
 
         InitializeControls();
         SetNameOverServer();
-    }s
+    }
 
     void SetNameOverServer()
     {
