@@ -40,6 +40,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         Debug.LogError($"{cause}");
+        PhotonNetwork.ReconnectAndRejoin();
     }
 
     private void ConnectToServer()
@@ -94,11 +95,10 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinOrCreateRoom("Game", roomOptions, TypedLobby.Default);
         UpdateConnectionStatus("Setting Up Room");
     }
-    
-    
+
     public virtual void OnCreateRoomFailed(short returnCode, string message)
     {
-        
+        Debug.LogError("Room Creation Failed");
     }    
     
     public override void OnJoinedLobby()

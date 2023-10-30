@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,11 +15,18 @@ public class GameplayHud : MenusController
     [Header("UI Components")]
     
     [SerializeField] private Button m_SubmitButton;
+    [SerializeField] private Button m_DisconnectButton;
     [SerializeField] private TMP_Text m_TotalScore;
 
     private void Start()
     {
         m_SubmitButton.onClick.AddListener(SubmitCards);
+        m_DisconnectButton.onClick.AddListener(Disconnect);
+    }
+
+    private void Disconnect()
+    {
+        PhotonNetwork.Disconnect();
     }
 
     private void SubmitCards()
