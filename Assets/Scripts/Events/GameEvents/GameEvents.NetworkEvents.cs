@@ -9,5 +9,6 @@ public static partial class GameEvents
         public static GameEvent<PlayerController> NetworkPlayerJoined = new();
         
         public static GameEvent<string> PlayerReceiveCardsData = new();
+        public static GameEvent PlayersJoined = new();
     }
 }

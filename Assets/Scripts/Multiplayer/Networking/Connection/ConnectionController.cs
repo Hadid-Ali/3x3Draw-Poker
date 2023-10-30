@@ -124,7 +124,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         base.OnPlayerEnteredRoom(newPlayer);
         if (PhotonNetwork.PlayerList.Length >= m_RequiredPlayersCount && PhotonNetwork.IsMasterClient)
         {
-            NetworkManager.Instance.LoadGameplay();
+            GameEvents.NetworkEvents.PlayersJoined.Raise();
             PhotonNetwork.CurrentRoom.IsOpen = false;
         }
     }
