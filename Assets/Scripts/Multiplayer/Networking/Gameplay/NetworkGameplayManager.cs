@@ -49,7 +49,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         string jsonData = NetworkDataObject.Serialize(networkDataObject);
 
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(OnNetworkSubmitRequest_RPC),
-            RpcTarget.All, new object[] { jsonData });
+            RpcTarget.AllBuffered, new object[] { jsonData });
     }
 
     [PunRPC]
@@ -92,7 +92,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     {
         string dataString = JsonUtility.ToJson(playerScores);
         
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(SyncUserScores_RPC),RpcTarget.All,new object[]
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(SyncUserScores_RPC),RpcTarget.AllBuffered,new object[]
         {
             dataString
         });
@@ -105,7 +105,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     public void RestartGame()
     {
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.Others,
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.OthersBuffered,
             null);
         RestartInternal();
     }
