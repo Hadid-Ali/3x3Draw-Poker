@@ -21,8 +21,10 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     private void Start()
     {
-        Debug.LogError("Spawn Player", gameObject); 
-        m_NetworkPlayerSpawner.SpawnPlayer();
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
+        StartMatch();
     }
 
     private void OnEnable()
@@ -49,7 +51,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         string jsonData = NetworkDataObject.Serialize(networkDataObject);
 
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(OnNetworkSubmitRequest_RPC),
-            RpcTarget.AllBuffered, new object[] { jsonData });
+            RpcTarget.All, new object[] { jsonData });
     }
 
     [PunRPC]
@@ -92,7 +94,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     {
         string dataString = JsonUtility.ToJson(playerScores);
         
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(SyncUserScores_RPC),RpcTarget.AllBuffered,new object[]
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(SyncUserScores_RPC),RpcTarget.All,new object[]
         {
             dataString
         });
@@ -105,15 +107,40 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     public void RestartGame()
     {
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.OthersBuffered,
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.All,
             null);
-        RestartInternal();
+    }
+
+    public void StartMatch()
+    {
+        int count = GameData.SessionData.CurrentRoomPlayersCount;
+        
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
+            RpcTarget.All, new object[]
+            {
+                count
+            });
+
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(SpawnPlayer_RPC),
+            RpcTarget.AllBuffered, null);
     }
 
     [PunRPC]
+    private void SpawnPlayer_RPC()
+    {
+        m_NetworkPlayerSpawner.SpawnPlayer();
+    }
+
+    [PunRPC]
+    public void StartMatch_RPC(int count)
+    {
+        GameData.SessionData.CurrentRoomPlayersCount = count;
+    }
+    
+    [PunRPC]
     public void SyncUserScores_RPC(string data)
     {
-        Debug.LogError($"Receive Data {data}");
+//        Debug.LogError($"Receive Data {data}");
         
         SerializableList<PlayerScoreObject> playerScores =
             JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
@@ -122,12 +149,6 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     [PunRPC]
     public void RestartGame_RPC()
-    {
-        Invoke(nameof(
-            RestartInternal), 0.5f);
-    }
-
-    private void RestartInternal()
     {
         m_NetworkMatchManager.RestartMatch();   
     }

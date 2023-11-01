@@ -68,12 +68,12 @@ public class ResultUIController : MonoBehaviour
         int index = 0;
         int totalHands = GameData.MetaData.DecksCount;
 
-        Debug.LogError("Routine Start");
+  //      Debug.LogError("Routine Start");
         while (index < totalHands)
         {
             ShowDecksAtIndex(index++);
             yield return m_WaitBetweenDecks;
-            Debug.LogError("Show Hand");
+     //       Debug.LogError("Show Hand");
         }
         gameObject.SetActive(false);
     }

@@ -10,5 +10,8 @@ public static partial class GameEvents
         
         public static GameEvent<string> PlayerReceiveCardsData = new();
         public static GameEvent PlayersJoined = new();
+
+        public static GameEvent NetworkJoinedEvent = new();
+        public static GameEvent NetworkDisconnectedEvent = new();
     }
 }

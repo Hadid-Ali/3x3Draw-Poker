@@ -18,10 +18,29 @@ public class GameplayHud : MenusController
     [SerializeField] private Button m_DisconnectButton;
     [SerializeField] private TMP_Text m_TotalScore;
 
+    [SerializeField] private GameObject m_DisconnectedLabel;
+    
     private void Start()
     {
         m_SubmitButton.onClick.AddListener(SubmitCards);
         m_DisconnectButton.onClick.AddListener(Disconnect);
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnected);
+    }
+    
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        GameEvents.NetworkEvents.NetworkDisconnectedEvent.Unregister(OnNetworkDisconnected);
+    }
+
+    private void OnNetworkDisconnected()
+    {
+        m_DisconnectedLabel.SetActive(true);
     }
 
     private void Disconnect()
