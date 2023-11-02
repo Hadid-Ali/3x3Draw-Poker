@@ -19,20 +19,20 @@ public enum CardType
 // card values
 public enum CardValue
 {
-	VALUE_2,
-	VALUE_3,
-	VALUE_4,
-	VALUE_5,
-	VALUE_6,
-	VALUE_7,
-	VALUE_8,
-	VALUE_9,
-	VALUE_10,
-	VALUE_J,
-	VALUE_Q,
-	VALUE_K,
-	VALUE_A,
-	VALUES_NO
+	VALUE_2 = 0,
+	VALUE_3 = 1,
+	VALUE_4 = 2,
+	VALUE_5 = 3,
+	VALUE_6 = 4,
+	VALUE_7 = 5,
+	VALUE_8 = 6,
+	VALUE_9 = 7,
+	VALUE_10 = 8,
+	VALUE_J = 9,
+	VALUE_Q = 10,
+	VALUE_K = 11,
+	VALUE_A = 12,
+	VALUES_NO = 13,
 }
 
 //--------------------------------------------

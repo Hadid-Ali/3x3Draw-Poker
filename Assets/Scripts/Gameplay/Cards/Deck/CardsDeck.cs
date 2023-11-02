@@ -5,8 +5,8 @@ public class CardsDeck : MonoBehaviour
 {
    [SerializeField] private DeckName m_DeckName;
    [SerializeField] private Card[] m_Cards;
-   
-   public Card[] Cards => m_Cards;
+
+   private int m_CardsCount = 0;
    
    public CardData[] CardsData
    {
@@ -22,7 +22,15 @@ public class CardsDeck : MonoBehaviour
          return cards;
       }
    }
-   
+
+   private void Awake()
+   {
+      for (int i = 0; i < m_Cards.Length; i++)
+      {
+         m_Cards[i].InitializeWithAction(OnDeckCardUpdated);
+      }
+   }
+
    private void OnEnable()
    {
       GameEvents.GameplayUIEvents.EvaluateDeck.Register(EvaluateDeckInternal);
@@ -30,23 +38,30 @@ public class CardsDeck : MonoBehaviour
 
    private void OnDisable()
    {
-      GameEvents.GameplayUIEvents.EvaluateDeck.Unregister(EvaluateDeckInternal);
+      GameEvents.GameplayUIEvents.EvaluateDeck.UnRegister(EvaluateDeckInternal);
    }
 
    public void PrintDeck()
    {
       Array.ForEach(CardsData, card => Debug.LogError($"Data : {card}"));
-      CardType type = CardsData[0].type;
    }
-   
-   public void OnDeckUpdated()
+
+   private void OnDeckCardUpdated()
    {
-      EvaluateDeckInternal();
+      if (m_CardsCount < GameData.MetaData.DeckSize)
+      {
+         m_CardsCount++;  
+      }
+
+      if (m_CardsCount >= GameData.MetaData.DeckSize)
+      {
+         EvaluateDeckInternal();
+      }
    }
 
    private void EvaluateDeckInternal()
    {
-      HandType handType = CardsManager.EvaluateDeck(CardsData);
+      HandTypes handType = CardsManager.EvaluateDeck(CardsData);
       GameEvents.GameplayEvents.CardDeckUpdated.Raise(m_DeckName, handType);  
    }
 }

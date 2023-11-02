@@ -30,16 +30,30 @@ public class CardsManager : MonoBehaviour
 	private void OnEnable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Register(OnCardsArrangementUpdated);
-		GameEvents.GameplayEvents.UserHandReceivedEvent.Register(DealCards);
+		GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Register(DealCards);
+		GameEvents.GameplayEvents.CardReplacedEvent.Register(OnCardDataReplaced);
 	}
 
 	private void OnDisable()
 	{
-		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Unregister(OnCardsArrangementUpdated);
-		GameEvents.GameplayEvents.UserHandReceivedEvent.Unregister(DealCards);
-
+		GameEvents.GameplayUIEvents.CardsArrangementUpdated.UnRegister(OnCardsArrangementUpdated);
+		GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.UnRegister(DealCards);
+		GameEvents.GameplayEvents.CardReplacedEvent.UnRegister(OnCardDataReplaced);
 	}
 
+	private void OnCardDataReplaced(CardData previousData)
+	{
+		CardData c = GameCardsMediator.CurrentData;
+		Debug.LogError($"Replaced {previousData.value} {previousData.type} with {c.value} {c.type}");
+
+		Card cardA = Array.Find(m_GameCards,
+			card => card.CardData.type == previousData.type && card.CardData.value == previousData.value);
+		Card cardB = Array.Find(m_GameCards, card => card.CardData.type == c.type && card.CardData.value == c.value);
+		
+		cardA.SetData(c, true, false);
+		cardB.SetData(previousData, true, false);
+	}
+	
 	private void OnCardsArrangementUpdated(Card[] cards)
 	{
 		m_GameCards = null;
@@ -72,28 +86,10 @@ public class CardsManager : MonoBehaviour
 		}
 	}
 
-	public int DealCards()
-	{
-		MainGame.the.gameState = MainGame.STATE_DEALING;
-
-		CardData[] data = m_DecksHandler.GetRandomHand(m_GameCards.Length);
-		// set cards values
-		for (int i = 0; i < m_GameCards.Length; i++)
-		{
-			// extract new card from the deck and attach it to the screen card
-			m_GameCards[i].SetData(data[i], true, true);
-		}
-
-		// we deal 5 cards
-		return m_GameCards.Length;
-	}
-
-	//--------------------------------------------------------
-
-	public static HandType EvaluateDeck(CardData[] cards)
+	public static HandTypes EvaluateDeck(CardData[] cards)
 	{
 		// evaluate the temp hand
-		HandEvaluator.Evaluate(cards, out HandType handType); // show wins only in the RESULTS stage
+		HandEvaluator.Evaluate(cards, out HandTypes handType); // show wins only in the RESULTS stage
 		return handType;
 	}
 
@@ -105,47 +101,11 @@ public class CardsManager : MonoBehaviour
 			workCards[i].CopyInfoFrom( m_GameCards[i].CardData );
 
 		// evaluate the temp hand
-		HandEvaluator.Evaluate( workCards,out HandType handType ); // show wins only in the RESULTS stage
+		HandEvaluator.Evaluate(workCards,out HandTypes handType); // show wins only in the RESULTS stage
 
 		bool cardsWereHolded = false;
 		m_HandTypeEvent.Raise(handType);
 
-		// // apply auto holds to the cards on the screen or highlight winner cards
-		// foreach(CardData workCard in workCards)			
-		// {
-		// 	foreach(Card screenCard in m_GameCards)
-		// 	{
-		// 		// compare the work cards and the screen cards
-		// 		if(workCard.sprite == screenCard.CardData.sprite)
-		// 		{
-		// 			// if we are after first deal
-		// 			if(MainGame.the.gameState == MainGame.STATE_WAIT_HOLD)
-		// 			{
-		// 				// if the card was auto-holded, mark it on the screen
-		// 				if(workCard.hold)
-		// 				{
-		// 					cardsWereHolded = true;
-		// 				}
-		// 			}
-		// 			// else // game end
-		// 			// 	if(MainGame.the.gameState == MainGame.STATE_SHOW_RESULTS)							
-		// 			// 		screenCard.SetResultsState( workCard.hold );
-		//
-		// 			//*****************
-		// 			// NOTE
-		// 			// the cards are 'holded' internally in the second hand too,
-		// 			// but are not updated on the screen with the HOLD tag because
-		// 			// we don't need this in the final results stage
-		// 			//*****************
-		//
-		// 			break;
-		// 		}
-		// 	}
-		// }
-		//
-		// // play autohold sound
-		// if(cardsWereHolded)
-		// 	SoundsManager.the.autoHoldSound.Play();
 	}
 
 	//--------------------------------------------------------

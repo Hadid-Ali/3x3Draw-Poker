@@ -40,6 +40,8 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         Debug.LogError($"{cause}");
+        PhotonNetwork.ReconnectAndRejoin();
+        GameEvents.NetworkEvents.NetworkDisconnectedEvent.Raise();
     }
 
     private void ConnectToServer()
@@ -50,7 +52,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        Debug.LogError("Connected to Master");
+   //     Debug.LogError("Connected to Master");
         if (m_IsTestConnection)
         {
             UpdateConnectionStatus("Connected to Server, Finding Best Regions to Connect");
@@ -91,9 +93,14 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public void CreateRoom(RoomOptions roomOptions)
     {
         m_RequiredPlayersCount = roomOptions.MaxPlayers;
-        PhotonNetwork.JoinOrCreateRoom("Game", roomOptions, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom(Guid.NewGuid().ToString(), roomOptions, TypedLobby.Default);
         UpdateConnectionStatus("Setting Up Room");
     }
+
+    public virtual void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError("Room Creation Failed");
+    }    
     
     public override void OnJoinedLobby()
     {
@@ -118,7 +125,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         base.OnPlayerEnteredRoom(newPlayer);
         if (PhotonNetwork.PlayerList.Length >= m_RequiredPlayersCount && PhotonNetwork.IsMasterClient)
         {
-            NetworkManager.Instance.LoadGameplay();
+            GameEvents.NetworkEvents.PlayersJoined.Raise();
             PhotonNetwork.CurrentRoom.IsOpen = false;
         }
     }

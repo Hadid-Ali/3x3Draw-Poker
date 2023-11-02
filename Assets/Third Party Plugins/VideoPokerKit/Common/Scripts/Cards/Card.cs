@@ -12,19 +12,26 @@ public class Card : MonoBehaviour
 	[SerializeField] private AudioSource flipSound;
 	[SerializeField] private CardDataHolder m_CardDataHandler;
 
-	public CardData CardData => m_CardDataHandler.CardData;
-
-	private Action m_CardDataUpdated;
+	private GameEvent m_CardDataUpdated = new();
 	
-	protected virtual void Start ()
+	public CardData CardData => m_CardDataHandler.CardData;
+	
+	protected virtual void Start () 
+	{
+		Initialize();
+	}
+
+	void Initialize()
 	{
 		m_CardTransform = transform;
 		flipSound = GetComponent<AudioSource>();
-	}
 
+		m_CardDataHandler.Initialize(ClearAfterDeal, OnCardDataUpdatedByPlayer, SetCardDataView);
+	}
+	
 	public void InitializeWithAction(Action onCardDataUpdated)
 	{
-		m_CardDataUpdated += onCardDataUpdated;
+		m_CardDataUpdated.Register(onCardDataUpdated);
 	}
 
 	public void RefreshCard()
@@ -46,15 +53,11 @@ public class Card : MonoBehaviour
 			StartFlippingCard();
 		}
 
-		if (isPersistent && !isInit)
-		{
-			OnCardDataUpdatedByPlayer();
-		}
 	}
 
 	private void OnCardDataUpdatedByPlayer()
 	{
-		m_CardDataUpdated?.Invoke();
+		m_CardDataUpdated.Raise();
 	}
 	
 	public void SetActiveStatus(bool status)
@@ -63,7 +66,7 @@ public class Card : MonoBehaviour
 		StartFlippingCard();
 	}
 
-	public void SetCardData(CardData cardData)
+	public void SetCardDataView(CardData cardData)
 	{
 		UpdateCardFaceSprite(CardsRegistery.Instance.GetCardSprite(cardData.type, cardData.value));
 	}
@@ -78,7 +81,7 @@ public class Card : MonoBehaviour
 	{
 		m_CardFaceImage.sprite = sprite;
 	}
-	
+
 	public void SetResultsState(bool bWin)
 	{
 		// if it's a winner card, we start a specific animation for the card (flashing)

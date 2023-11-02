@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RandomizedSprite : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer m_SpriteRenderer;
+    [SerializeField] private Image m_ImageComponent;
     [SerializeField] private Sprite[] m_SpritesToAssign;
     
     void Start()
@@ -14,6 +15,6 @@ public class RandomizedSprite : MonoBehaviour
 
     private void AssignRandomSprite()
     {
-        m_SpriteRenderer.sprite = m_SpritesToAssign[Random.Range(0, m_SpritesToAssign.Length)];
+        m_ImageComponent.sprite = m_SpritesToAssign[Random.Range(0, m_SpritesToAssign.Length)];
     }
 }

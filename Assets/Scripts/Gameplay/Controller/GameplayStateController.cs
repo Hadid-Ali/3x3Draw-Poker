@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +10,25 @@ public class GameplayStateController : MonoBehaviour
     
     void Start()
     {
-        Invoke(nameof(ChangeToCardsView), m_WaitBeforeCardsFocus);
+       GameEvents.GameFlowEvents.RoundStart.Raise();
     }
 
+    private void OnEnable()
+    {
+        GameEvents.GameFlowEvents.RoundStart.Register(LoadCardsView);
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(LoadCardsView);
+    }
+
+    private void LoadCardsView()
+    {
+        ChangeState(GameplayState.Casino_View);
+        Invoke(nameof(ChangeToCardsView), m_WaitBeforeCardsFocus);
+    }
+    
     private void ChangeToCardsView()
     {
         ChangeState(GameplayState.Cards_View);

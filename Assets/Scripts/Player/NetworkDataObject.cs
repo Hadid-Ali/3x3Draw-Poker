@@ -8,23 +8,37 @@ public class NetworkDataObject
     public List<CardData> PlayerDecks = new();
     public int PhotonViewID;
 
-    public NetworkDataObject(List<CardData[]> decks, int photonViewID)
+    public NetworkDataObject(List<CardData> decks, int photonViewID)
     {
-        for (int i = 0; i < decks.Count; i++)
+        PlayerDecks = decks;
+        PhotonViewID = photonViewID;
+    }
+
+    public List<CardData[]> GetDeck()
+    {
+        List<CardData[]> decks = new();
+
+        int handSize = GameData.MetaData.DeckSize;
+        int handCount = GameData.MetaData.DecksCount;
+
+        int cardIndex = 0;
+        
+        for (int i = 0; i < handCount; i++)
         {
-            for (int j = 0; j < decks[i].Length; j++)
+            decks.Add(new CardData[handSize]);
+            
+            for (int j = 0; j < handSize; j++)
             {
-                PlayerDecks.Add(decks[i][j]);
+                decks[i][j] = PlayerDecks[cardIndex++];
             }
         }
-        PhotonViewID = photonViewID;
+
+        return decks;
     }
     
     public static string Serialize(NetworkDataObject networkDataObject)
     {
         string data = JsonUtility.ToJson(networkDataObject);
-        
-     //   Debug.LogError($"{data}");
         return data;
     }
 

@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Photon.Pun;
 using UnityEngine;
+using Photon.Pun;
 using UnityEngine.SceneManagement;
 
 public class NetworkMatchManager : MonoBehaviour
@@ -25,6 +23,6 @@ public class NetworkMatchManager : MonoBehaviour
 
     public void RestartMatch()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameEvents.GameFlowEvents.RoundStart.Raise();
     }
 }

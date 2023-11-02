@@ -7,16 +7,26 @@ using Random = UnityEngine.Random;
 public class DecksHandler : MonoBehaviour
 {
     [Header("The deck"),SerializeField] private List<CardData> m_CardsRegistry;
+    
     private int m_CurrentNumberOfDecksToUse = 1;
-
     private List<CardData> m_CurrentGameDeck = new();
 
-    private void Start()
+    private void OnEnable()
     {
-        SetDecksCount(1);
+        GameEvents.GameFlowEvents.RoundStart.Register(LoadInternalDecks);
     }
 
-    public CardData GetRandomCard()
+    private void OnDisable()
+    {
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(LoadInternalDecks);
+    }
+
+    private void LoadInternalDecks()
+    {
+        SetDecksCount(m_CurrentNumberOfDecksToUse);
+    }
+
+    private CardData GetRandomCard()
     {
         int index = Random.Range(0, m_CurrentGameDeck.Count);
         

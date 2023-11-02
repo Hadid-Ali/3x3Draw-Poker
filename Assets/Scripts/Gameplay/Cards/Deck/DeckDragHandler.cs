@@ -9,12 +9,13 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
 
     private VerticalLayoutGroup m_VerticalLayout;
     
-    private bool m_Dragging = false;
+    public static bool m_Dragging = false;
     private int m_LastHoverDeck = -1;
 
     private void Start()
     {
         m_VerticalLayout = GetComponentInParent<VerticalLayoutGroup>();
+        Input.multiTouchEnabled = false;
     }
     
     private void OnTriggerEnter2D(Collider2D col)
@@ -54,8 +55,8 @@ public class DeckDragHandler : MonoBehaviour, IBeginDragHandler,IPointerDownHand
         }
 
         m_VerticalLayout.SetLayoutVertical();
-        GameEvents.GameplayUIEvents.DeckArrangementUpdated.Raise();
         m_ViewHandler.SetFocused(false);
+        GameEvents.GameplayUIEvents.DeckArrangementUpdated.Raise();
     }
 
     public void OnPointerExit(PointerEventData eventData)

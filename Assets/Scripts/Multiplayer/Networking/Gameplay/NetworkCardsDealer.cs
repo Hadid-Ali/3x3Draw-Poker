@@ -10,7 +10,7 @@ public class NetworkCardsDealer : MonoBehaviour
 
     private int m_HandSize;
 
-    private void Start()
+    private void Awake()
     {
         m_HandSize = (GameData.MetaData.DeckSize * GameData.MetaData.DecksCount) + GameData.MetaData.OffsetCards;
     }
@@ -22,7 +22,7 @@ public class NetworkCardsDealer : MonoBehaviour
 
     private void OnDisable()
     {
-        GameEvents.NetworkEvents.PlayerReceiveCardsData.Unregister(ReceiveHandData);
+        GameEvents.NetworkEvents.PlayerReceiveCardsData.UnRegister(ReceiveHandData);
     }
 
     private void ReceiveHandData(string data)
@@ -31,6 +31,7 @@ public class NetworkCardsDealer : MonoBehaviour
         DealCardsToLocalPlayer(handObject.PlayerHand);
     }
     
+    [ContextMenu("DealCards")]
     public void DealCardsToLocalPlayer()
     {
         DealCardsToLocalPlayer(m_DecksHandler.GetRandomHand(m_HandSize));
@@ -38,7 +39,7 @@ public class NetworkCardsDealer : MonoBehaviour
 
     public void DealCardsToLocalPlayer(CardData[] cardsData)
     {
-        GameEvents.GameplayEvents.UserHandReceivedEvent.Raise(cardsData);
+        GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Raise(cardsData);
     }
     
     public void DealCardsToNetworkPlayer(PlayerController playerController)

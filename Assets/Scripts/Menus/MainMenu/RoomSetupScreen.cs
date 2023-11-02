@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoomSetupScreen : MainMenuBase
+public class RoomSetupScreen : UIMenuBase
 {
    [SerializeField] private TMP_InputField m_RoomsizeField;
    [SerializeField] private Button m_CreateRoomButton;
@@ -29,7 +29,9 @@ public class RoomSetupScreen : MainMenuBase
       {
          MaxPlayers = (byte)m_Roomsize,
          IsOpen = true,
-         IsVisible = true
+         IsVisible = true,
+         PlayerTtl = -1,
+         EmptyRoomTtl = 60000,
       });
       GameData.SessionData.CurrentRoomPlayersCount = m_Roomsize;
       ChangeMenuState(MenuName.ConnectionScreen);

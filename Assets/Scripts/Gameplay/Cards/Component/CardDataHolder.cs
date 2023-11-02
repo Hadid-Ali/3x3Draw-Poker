@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,21 @@ using UnityEngine.Serialization;
 
 public class CardDataHolder : MonoBehaviour
 {
-    [SerializeField] private Card m_CardComponent;
-
     private CardData m_TempData;
+    
+    private GameEvent m_OnCardClear = new();
+    private GameEvent m_OnCardDataSet = new();
+    private GameEvent<CardData> m_SetCardDataInternal = new();
+    
+    
     public CardData CardData { get; private set; }
+
+    public void Initialize(Action onCardClear, Action onCardDataSetPersistent,Action<CardData> onSetCardData)
+    {
+        m_OnCardClear.Register(onCardClear);
+        m_OnCardDataSet.Register(onCardDataSetPersistent);
+        m_SetCardDataInternal.Register(onSetCardData);
+    }
 
     public void SetCardData(CardData cardData, bool isPersistent)
     {
@@ -25,6 +37,7 @@ public class CardDataHolder : MonoBehaviour
     public void SaveData()
     {
         CardData = m_TempData;
+        m_OnCardDataSet.Raise();
     }
 
     public void RefreshData()
@@ -37,11 +50,11 @@ public class CardDataHolder : MonoBehaviour
 
     public void ClearCardData()
     {
-        m_CardComponent.ClearAfterDeal();
+        m_OnCardClear.Raise();
     }
 
     private void SetCardDataInternal(CardData cardData)
     {
-        m_CardComponent.SetCardData(cardData);
+        m_SetCardDataInternal.Raise(cardData);
     }
 }
