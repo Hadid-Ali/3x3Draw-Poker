@@ -158,6 +158,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     {
         ResetMatch();
         m_NetworkMatchManager.RestartMatch();   
+        m_NetworkPlayerSpawner.ReIteratePlayerSpawns();
     }
     
     private void ResetMatch()

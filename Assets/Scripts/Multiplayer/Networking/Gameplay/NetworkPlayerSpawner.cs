@@ -29,7 +29,20 @@ public class NetworkPlayerSpawner : MonoBehaviour
     public void RegisterPlayer(PlayerController playerController)
     {
         m_JoinedPlayers.Add(playerController);
+        OnPlayerSpawned(playerController);
+    }
+    
+    private void OnPlayerSpawned(PlayerController playerController)
+    {
         m_OnPlayerSpawned.Raise(playerController);
+    }
+
+    public void ReIteratePlayerSpawns()
+    {
+        for (int i = 0; i < m_JoinedPlayers.Count; i++)
+        {
+            OnPlayerSpawned(m_JoinedPlayers[i]);
+        }
     }
     
     public PlayerController GetPlayerAgainstID(int ID) => m_JoinedPlayers.Find(player => player.ID == ID);
