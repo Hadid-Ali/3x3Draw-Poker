@@ -14,7 +14,7 @@ public class PlaceHolderCardsContainer : MonoBehaviour
 
     private void OnDisable()
     {
-        GameEvents.GameplayEvents.GameplayCardsStateChanged.Unregister(OnGameplayCardsStateChanged);
+        GameEvents.GameplayEvents.GameplayCardsStateChanged.UnRegister(OnGameplayCardsStateChanged);
     }
 
     private void OnGameplayCardsStateChanged(bool status)

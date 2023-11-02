@@ -17,7 +17,7 @@ public class DecksContainer : MonoBehaviour
 
     private void OnDisable()
     {
-        GameEvents.GameplayUIEvents.DeckArrangementUpdated.Unregister(SetDeckNames);
+        GameEvents.GameplayUIEvents.DeckArrangementUpdated.UnRegister(SetDeckNames);
     }
 
     private void SetDeckNames()

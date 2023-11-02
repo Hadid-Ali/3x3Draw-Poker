@@ -21,11 +21,18 @@ public class RoundCompleteMenu : UIMenuBase
     private void OnEnable()
     {
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Register(OnPlayerRewardReceived);
+        GameEvents.GameFlowEvents.RoundStart.Register(DisableMenu);
     }
 
     private void OnDisable()
     {
-        GameEvents.GameplayUIEvents.PlayerRewardReceived.Unregister(OnPlayerRewardReceived);
+        GameEvents.GameplayUIEvents.PlayerRewardReceived.UnRegister(OnPlayerRewardReceived);
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(DisableMenu);
+    }
+
+    private void DisableMenu()
+    {
+        SetMenuActiveState(false);
     }
     
     private void OnPlayerRewardReceived(int reward)
@@ -36,11 +43,10 @@ public class RoundCompleteMenu : UIMenuBase
 
     private void OnRestartTap()
     {
-        ChangeMenuState(MenuName.LoadingScreen);
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
         }
-        GameEvents.GameplayUIEvents.RestartGame.Raise();
+        GameEvents.GameFlowEvents.RestartRound.Raise();
     }
 }

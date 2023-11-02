@@ -45,7 +45,7 @@ public class NetworkPlayerController : PlayerController
 
     private void OnDisable()
     {
-        GameEvents.GameplayUIEvents.SubmitDecks.Unregister(OnSubmitDeck);
+        GameEvents.GameplayUIEvents.SubmitDecks.UnRegister(OnSubmitDeck);
     }
 
     private void OnSubmitDeck()

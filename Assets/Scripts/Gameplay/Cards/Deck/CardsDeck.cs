@@ -38,7 +38,7 @@ public class CardsDeck : MonoBehaviour
 
    private void OnDisable()
    {
-      GameEvents.GameplayUIEvents.EvaluateDeck.Unregister(EvaluateDeckInternal);
+      GameEvents.GameplayUIEvents.EvaluateDeck.UnRegister(EvaluateDeckInternal);
    }
 
    public void PrintDeck()

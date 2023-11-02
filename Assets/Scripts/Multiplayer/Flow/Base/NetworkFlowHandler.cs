@@ -12,7 +12,7 @@ public abstract class NetworkFlowHandler : MonoBehaviour
 
     private void OnDisable()
     {
-        GameEvents.NetworkEvents.PlayersJoined.Unregister(OnPlayersJoined);
+        GameEvents.NetworkEvents.PlayersJoined.UnRegister(OnPlayersJoined);
     }
 
     protected abstract void OnPlayersJoined();

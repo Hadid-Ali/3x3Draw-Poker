@@ -9,7 +9,7 @@ public class GameEvent
         Event += method;
     }
     
-    public void Unregister(Action method)
+    public void UnRegister(Action method)
     {
         Event -= method;
     }
@@ -29,7 +29,7 @@ public class GameEvent<T>
         Event += method;
     }
     
-    public void Unregister(Action<T> method)
+    public void UnRegister(Action<T> method)
     {
         Event -= method;
     }

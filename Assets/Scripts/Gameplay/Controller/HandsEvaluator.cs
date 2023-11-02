@@ -18,7 +18,7 @@ public class HandsEvaluator : MonoBehaviour
 
     private void OnDisable()
     {
-        GameEvents.NetworkGameplayEvents.AllUserHandsReceived.Unregister(OnAllUserHandsReceived);
+        GameEvents.NetworkGameplayEvents.AllUserHandsReceived.UnRegister(OnAllUserHandsReceived);
     }
 
     public void OnAllUserHandsReceived(List<NetworkDataObject> networkDataObjects)

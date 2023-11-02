@@ -6,18 +6,17 @@ public class GameplayStateView : MonoBehaviour
     [Header("Components")]
     
     [SerializeField] private CanvasGroup m_GameCardsContainer;
-    [SerializeField] private GameObject m_CasinoViewObject;
+
+    [SerializeField] private CasinoViewObject m_CasinoViewObject;
     [SerializeField] private ResultUIView mResultUIView;
     
     [Header("Properties")]
     
-    [SerializeField] private Animator m_CasinoViewAnimator;
     [SerializeField] private float m_WaitForCardsToShow = 2f;
 
     private WaitForSeconds m_CardsContainerWait;
     
-    private int m_ScaleInParamter => Animator.StringToHash("ScaleIn");
-    private int m_ScaleOutParamter => Animator.StringToHash("ScaleOut");
+  
 
     private void Start()
     {
@@ -31,7 +30,7 @@ public class GameplayStateView : MonoBehaviour
     
     private void OnDisable()
     {
-        GameEvents.GameplayEvents.GameplayStateSwitched.Unregister(OnGameplayStateSwitched);
+        GameEvents.GameplayEvents.GameplayStateSwitched.UnRegister(OnGameplayStateSwitched);
     }
 
     private void OnGameplayStateSwitched(GameplayState gameplayState)
@@ -54,15 +53,16 @@ public class GameplayStateView : MonoBehaviour
 
     private void SwitchToCasinoView()
     {
-        SetCasinoViewObjectState(true);
+        Debug.LogError("Switch To Casino View");
         SetGameplayCardsViewState(false);
         SetResultView(false);
+        SetCasinoViewObjectState(true);
     }
 
     private IEnumerator SwitchToCardsView()
     {
         SetResultView(false);
-        SetCasinoViewAnimatorState(false);
+        m_CasinoViewObject.SetCasinoViewAnimatorState(false);
 
         yield return m_CardsContainerWait;
 
@@ -89,13 +89,9 @@ public class GameplayStateView : MonoBehaviour
         GameEvents.GameplayEvents.GameplayCardsStateChanged.Raise(state);
     }
 
-    private void SetCasinoViewAnimatorState(bool scaleOut)
-    {
-        m_CasinoViewAnimator.SetTrigger(scaleOut ? m_ScaleOutParamter : m_ScaleInParamter);
-    }
-
+    
     private void SetCasinoViewObjectState(bool state)
     {
-        m_CasinoViewObject.SetActive(state);
+        m_CasinoViewObject.SetViewState(state);
     }
 }

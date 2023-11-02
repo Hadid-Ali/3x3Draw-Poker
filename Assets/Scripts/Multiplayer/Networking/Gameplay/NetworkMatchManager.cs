@@ -23,6 +23,6 @@ public class NetworkMatchManager : MonoBehaviour
 
     public void RestartMatch()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameEvents.GameFlowEvents.RoundStart.Raise();
     }
 }

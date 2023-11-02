@@ -36,9 +36,9 @@ public class CardsManager : MonoBehaviour
 
 	private void OnDisable()
 	{
-		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Unregister(OnCardsArrangementUpdated);
-		GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Unregister(DealCards);
-		GameEvents.GameplayEvents.CardReplacedEvent.Unregister(OnCardDataReplaced);
+		GameEvents.GameplayUIEvents.CardsArrangementUpdated.UnRegister(OnCardsArrangementUpdated);
+		GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.UnRegister(DealCards);
+		GameEvents.GameplayEvents.CardReplacedEvent.UnRegister(OnCardDataReplaced);
 	}
 
 	private void OnCardDataReplaced(CardData previousData)

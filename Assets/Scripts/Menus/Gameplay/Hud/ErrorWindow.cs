@@ -15,7 +15,7 @@ public class ErrorWindow : UIMenuBase
 
     private void OnDisable()
     {
-        GameEvents.GameplayUIEvents.ErrorOccured.Unregister(OnErrorOccured);
+        GameEvents.GameplayUIEvents.ErrorOccured.UnRegister(OnErrorOccured);
     }
 
     void OnErrorOccured(string errorString)

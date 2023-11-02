@@ -32,8 +32,8 @@ public class GameCardsMediator : MonoBehaviour
     private void OnDisable()
     {
         GameEvents.GameplayEvents.CardDragStartEvent.UnRegister(OnCardDragStart);
-        GameEvents.GameplayEvents.CardDropEvent.Unregister(OnCardDrop);
-        GameEvents.GameplayEvents.CardReplacedEvent.Unregister(OnCardDataReplaced);
+        GameEvents.GameplayEvents.CardDropEvent.UnRegister(OnCardDrop);
+        GameEvents.GameplayEvents.CardReplacedEvent.UnRegister(OnCardDataReplaced);
     }
 
     private void OnCardDataReplaced(CardData previousData)

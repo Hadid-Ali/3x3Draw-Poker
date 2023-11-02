@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,24 +22,29 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
 
     private void Start()
     {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
-        
-        StartMatch();
+        StartMatchInternal();
     }
 
     private void OnEnable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Register(OnNetworkSubmitRequest);
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
-        GameEvents.GameplayUIEvents.RestartGame.Register(RestartGame);
+        GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
     }
 
     private void OnDisable()
     {
-        GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Unregister(OnNetworkSubmitRequest);
-        GameEvents.GameplayEvents.UserHandsEvaluated.Unregister(OnRoundScoreEvaluated);
-        GameEvents.GameplayUIEvents.RestartGame.Unregister(RestartGame);
+        GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
+        GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
+        GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
+    }
+    
+    private void StartMatchInternal()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
+        StartMatch();
     }
 
     private void OnPlayerSpawned(PlayerController playerController)
@@ -116,7 +122,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
-            RpcTarget.All, new object[]
+            RpcTarget.AllBuffered, new object[]
             {
                 count
             });
@@ -150,6 +156,12 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     [PunRPC]
     public void RestartGame_RPC()
     {
+        ResetMatch();
         m_NetworkMatchManager.RestartMatch();   
+    }
+    
+    private void ResetMatch()
+    {
+        m_AllDecks.Clear();   
     }
 }

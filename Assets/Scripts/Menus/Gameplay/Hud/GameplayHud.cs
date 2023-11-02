@@ -30,12 +30,14 @@ public class GameplayHud : MenusController
     {
         base.OnEnable();
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnected);
+        GameEvents.GameFlowEvents.RoundStart.Register(EnableSubmitButton);
     }
     
     protected override void OnDisable()
     {
         base.OnDisable();
-        GameEvents.NetworkEvents.NetworkDisconnectedEvent.Unregister(OnNetworkDisconnected);
+        GameEvents.NetworkEvents.NetworkDisconnectedEvent.UnRegister(OnNetworkDisconnected);
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(EnableSubmitButton);
     }
 
     private void OnNetworkDisconnected()
@@ -53,12 +55,22 @@ public class GameplayHud : MenusController
         try
         {
             GameEvents.GameplayUIEvents.SubmitDecks.Raise();
-            m_ButtonsContainer.SetActive(false);
-            m_WaitingText.SetActive(true);
+            SetSubmitButtonStatus(false);
         }
         catch (Exception e)
         {
             Debug.LogError(e.StackTrace);
         }
+    }
+
+    private void EnableSubmitButton()
+    {
+        SetSubmitButtonStatus(true);
+    }
+    
+    private void SetSubmitButtonStatus(bool status)
+    {
+        m_ButtonsContainer.SetActive(status);
+        m_WaitingText.SetActive(!status);
     }
 }

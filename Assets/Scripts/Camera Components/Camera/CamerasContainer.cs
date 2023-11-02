@@ -15,7 +15,7 @@ public class CamerasContainer : MonoBehaviour
 
   private void OnDisable()
   {
-    GameEvents.GameplayEvents.GameplayStateSwitched.Unregister(OnGameplayStateSwitched);
+    GameEvents.GameplayEvents.GameplayStateSwitched.UnRegister(OnGameplayStateSwitched);
   }
 
   private void OnGameplayStateSwitched(GameplayState gameplayState)
