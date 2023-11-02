@@ -43,10 +43,13 @@ public class RoundCompleteMenu : UIMenuBase
 
     private void OnRestartTap()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
-            return;
+            GameEvents.GameFlowEvents.RestartRound.Raise();
         }
-        GameEvents.GameFlowEvents.RestartRound.Raise();
+        else
+        {
+            ChangeMenuState(MenuName.LoadingScreen);
+        }
     }
 }

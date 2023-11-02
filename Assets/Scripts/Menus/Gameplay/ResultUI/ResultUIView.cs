@@ -23,4 +23,12 @@ public class ResultUIView : MonoBehaviour
             m_ResultHands[i].SetDecksContainer(resultHandDataObject[i]);
         }
     }
+
+    public void Reset()
+    {
+        for (int i = 0; i < m_ResultHands.Length; i++)
+        {
+            m_ResultHands[i].Reset();
+        }
+    }
 }

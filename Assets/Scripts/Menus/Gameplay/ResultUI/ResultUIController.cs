@@ -9,7 +9,7 @@ public class ResultUIController : MonoBehaviour
     [Header("Refs")]
     
     [SerializeField] private ResultUIView m_ResultUiView;
-
+    
     [Header("Attributes")]
     
     [SerializeField] private float m_WaitBeforeWinnerReveal;
@@ -40,11 +40,13 @@ public class ResultUIController : MonoBehaviour
     {
         m_UsersScoreList = playerScoreObjects;
         InitializePlayerDecks(playerNetworkDataObjects);
+        
         SetupShowResultUI();
     }
 
     private void InitializePlayerDecks(List<NetworkDataObject> playerNetworkDataObjects)
     {
+        m_PlayerDecks.Clear();
         for (int i = 0; i < playerNetworkDataObjects.Count; i++)
         {
             NetworkDataObject obj = playerNetworkDataObjects[i];
@@ -75,9 +77,11 @@ public class ResultUIController : MonoBehaviour
             yield return m_WaitBetweenDecks;
      //       Debug.LogError("Show Hand");
         }
-        gameObject.SetActive(false);
+
+        m_ResultUiView.Reset();
+        m_ResultUiView.SetActiveState(false);
     }
-    
+
     private void ShowDecksAtIndex(int index)
     {
         ResultHandDataObject[] resultObjects = new ResultHandDataObject[m_PlayerDecks.Count];

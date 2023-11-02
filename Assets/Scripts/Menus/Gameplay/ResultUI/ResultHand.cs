@@ -23,12 +23,12 @@ public class ResultHand : MonoBehaviour
 
     private void Start()
     {
-        Reset();
+        ResetInternal();
     }
 
     public void SetDecksContainer(ResultHandDataObject resultHandDataObject)
     {
-        Reset();
+        ResetInternal();
         m_IsWinnerDeck = resultHandDataObject.IsWinner;
 
         m_ScoreText.text = m_IsWinnerDeck ? $"+{resultHandDataObject.Score}" : "0";
@@ -40,7 +40,13 @@ public class ResultHand : MonoBehaviour
         Invoke(nameof(CheckForWinStatus), resultHandDataObject.WinnerRevealDuration);
     }
 
-    private void Reset()
+    public void Reset()
+    {
+        ResetInternal();
+        SetVisibilityStatus(false);
+    }
+    
+    private void ResetInternal()
     {
         SetLoserOverlayStatus(false);
         SetTextVisibilityStatus(false);
