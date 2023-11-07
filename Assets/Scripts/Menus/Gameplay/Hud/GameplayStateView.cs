@@ -92,6 +92,6 @@ public class GameplayStateView : MonoBehaviour
     
     private void SetCasinoViewObjectState(bool state)
     {
-        m_CasinoViewObject.SetViewState(state);
+     //   m_CasinoViewObject.SetViewState(state);
     }
 }
