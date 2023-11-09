@@ -157,12 +157,17 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     public void RestartGame_RPC()
     {
         ResetMatch();
-        m_NetworkMatchManager.RestartMatch();   
-        m_NetworkPlayerSpawner.ReIteratePlayerSpawns();
+        m_NetworkMatchManager.RestartMatch();
+        Invoke(nameof(DelayedReIteratePlayers), 1f);
     }
     
     private void ResetMatch()
     {
         m_AllDecks.Clear();   
+    }
+
+    private void DelayedReIteratePlayers()
+    {
+        m_NetworkPlayerSpawner.ReIteratePlayerSpawns();
     }
 }
