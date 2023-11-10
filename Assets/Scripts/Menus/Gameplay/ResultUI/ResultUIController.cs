@@ -91,14 +91,16 @@ public class ResultUIController : MonoBehaviour
             PlayerDecksObject deckObject = m_PlayerDecks[i];
             
             CardData [] cardData = deckObject.Decks[index];
-
+            HandEvaluator.Evaluate(cardData, out HandTypes handTypes);
+            
             resultObjects[i] = new ResultHandDataObject()
             {
                 Cards = GetCardSprites(cardData),
                 Score = GameData.MetaData.HandWinReward,
                 PlayerName = Dependencies.PlayersContainer.GetPlayerName(deckObject.userID),
                 IsWinner = IsHandIndexWinner(deckObject.userID, index),
-                WinnerRevealDuration = m_WaitBeforeWinnerReveal
+                WinnerRevealDuration = m_WaitBeforeWinnerReveal,
+                HandName = DeckHandsRegistry.Instance.GetHandTypeName(handTypes)
             };
         }
 

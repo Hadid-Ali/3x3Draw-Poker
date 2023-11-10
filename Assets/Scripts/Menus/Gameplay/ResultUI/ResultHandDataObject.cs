@@ -8,5 +8,6 @@ public class ResultHandDataObject
     public bool IsWinner;
     public int Score;
     public string PlayerName;
+    public string HandName;
     public float WinnerRevealDuration;
 }
