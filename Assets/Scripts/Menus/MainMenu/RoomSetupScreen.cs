@@ -20,20 +20,24 @@ public class RoomSetupScreen : UIMenuBase
       m_CreateRoomButton.onClick.AddListener(CreateRoom);
       m_RoomsizeField.onValueChanged.AddListener(OnRoomSizeValueChanged);
 
-      OnRoomSizeValueChanged("2");
+   }
+
+   protected override void OnContainerEnable()
+   {
+      base.OnContainerEnable();
+      Invoke(nameof(CreateRoom), 0.5f);
    }
 
    private void CreateRoom()
    {
       m_RoomCreationEvent.Raise(new RoomOptions()
       {
-         MaxPlayers = (byte)m_Roomsize,
+         MaxPlayers = GameData.MetaData.MaxPlayersLimit,
          IsOpen = true,
          IsVisible = true,
          PlayerTtl = -1,
-         EmptyRoomTtl = 60000,
       });
-      GameData.SessionData.CurrentRoomPlayersCount = m_Roomsize;
+      GameData.SessionData.CurrentRoomPlayersCount = GameData.MetaData.MaxPlayersLimit;
       ChangeMenuState(MenuName.ConnectionScreen);
    }
 

@@ -7,17 +7,16 @@ using UnityEngine;
 
 public class LoadingScreen : UIMenuBase
 {
-    [SerializeField] private StringEvent m_LobbyStatusEvent;
     [SerializeField] private TextMeshProUGUI m_LobbyStatusText;
 
     private void OnEnable()
     {
-        m_LobbyStatusEvent.Register(UpdateLobbyStatus);
+        GameEvents.MenuEvents.NetworkStatusUpdated.Register(UpdateLobbyStatus);
     }
 
     private void OnDisable()
     {
-        m_LobbyStatusEvent.Unregister(UpdateLobbyStatus);
+        GameEvents.MenuEvents.NetworkStatusUpdated.UnRegister(UpdateLobbyStatus);
     }
 
     private void UpdateLobbyStatus(string status)

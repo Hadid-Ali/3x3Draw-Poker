@@ -14,6 +14,21 @@ public abstract class UIMenuBase : MonoBehaviour
     public void SetMenuActiveState(bool isActive)
     {
         m_MenuContainer.SetActive(isActive);
+
+        if (isActive)
+            OnContainerEnable();
+        else
+            OnContainerDisable();
+    }
+
+    protected virtual void OnContainerEnable()
+    {
+        
+    }
+
+    protected virtual void OnContainerDisable()
+    {
+        
     }
 
     public void ChangeMenuState(MenuName menuName)
