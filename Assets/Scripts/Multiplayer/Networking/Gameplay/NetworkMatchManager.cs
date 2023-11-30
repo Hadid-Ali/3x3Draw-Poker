@@ -5,12 +5,17 @@ using UnityEngine.SceneManagement;
 public class NetworkMatchManager : MonoBehaviour
 {
     [SerializeField] private NetworkCardsDealer m_CardsDealer;
-
+    [SerializeField] private bool m_CanDeal = true;
+    
+    private int numberOfTimesDealt = 0;
+    
     public void OnPlayerSpawnedInMatch(PlayerController playerController)
     {
-        if (!PhotonNetwork.IsMasterClient)
+        Invoke(nameof(StopFurtherDealing), 1f);
+        
+        if (!PhotonNetwork.IsMasterClient || !m_CanDeal)
             return;
-
+        
         if (playerController.IsLocalPlayer)
         {
             m_CardsDealer.DealCardsToLocalPlayer();
@@ -19,6 +24,11 @@ public class NetworkMatchManager : MonoBehaviour
         {
             m_CardsDealer.DealCardsToNetworkPlayer(playerController);
         }
+    }
+
+    private void StopFurtherDealing()
+    {
+        m_CanDeal = false;
     }
 
     public void RestartMatch()

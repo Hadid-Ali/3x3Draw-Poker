@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Photon.Pun;
 using UnityEngine;
+using Photon.Pun;
 
 public class NetworkMatchStartHandler : MonoBehaviour
 {
@@ -27,8 +24,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
         if (m_IsAutoStartRequestSent)
             return;
         
-        if (CurrentPlayersCount >= GameData.MetaData.MinimumRequiredPlayers &&
-            PhotonNetwork.IsMasterClient)
+        if (CurrentPlayersCount >= GameData.MetaData.MinimumRequiredPlayers)
         {
             GameEvents.TimerEvents.ExecuteActionRequest.Raise(GameData.MetaData.WaitBeforeAutomaticMatchStart, StartMatchInternal);
             m_IsAutoStartRequestSent = true;
@@ -37,7 +33,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
 
     private void CheckForMaximumPlayersCount()
     {
-        if (CurrentPlayersCount >= m_MaxPlayers && PhotonNetwork.IsMasterClient)
+        if (CurrentPlayersCount >= m_MaxPlayers)
         {
             TerminateAutoMatchStartRequest();
             StartMatchInternal();
@@ -46,7 +42,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
 
     public void OnPlayerLeftRoom()
     {
-        if (CurrentPlayersCount < GameData.MetaData.MinimumRequiredPlayers && PhotonNetwork.IsMasterClient)
+        if (CurrentPlayersCount < GameData.MetaData.MinimumRequiredPlayers)
             TerminateAutoMatchStartRequest();
     }
 
@@ -56,7 +52,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
         m_IsAutoStartRequestSent = false;
     }
 
-    private void StartMatchInternal()
+    public void StartMatchInternal()
     {
         GameData.SessionData.CurrentRoomPlayersCount = CurrentPlayersCount;
         GameEvents.NetworkEvents.PlayersJoined.Raise();

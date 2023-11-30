@@ -6,8 +6,6 @@ using Photon.Realtime;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
-
-
 public class ConnectionController : MonoBehaviourPunCallbacks
 {
     [SerializeField] private NetworkMatchStartHandler m_MatchStartHandler;
@@ -23,7 +21,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
         GameEvents.MenuEvents.NetworkStatusUpdated.Raise(status);
     }
-    
+
     private void OnDestroy()
     {
         PhotonNetwork.Disconnect();
@@ -39,8 +37,9 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         Debug.LogError($"{cause}");
-        PhotonNetwork.ReconnectAndRejoin();
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Raise();
+        
+        PhotonNetwork.ReconnectAndRejoin();
     }
 
     private void ConnectToServer()
@@ -121,12 +120,30 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
+        
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
         m_MatchStartHandler.OnPlayerLeftRoom();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         base.OnPlayerEnteredRoom(newPlayer);
+        
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         m_MatchStartHandler.OnPlayerEnteredInRoom();
+    }
+
+    public void Disconnect()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
+    public void StartMatch()
+    {
+        m_MatchStartHandler.StartMatchInternal();
     }
 }
