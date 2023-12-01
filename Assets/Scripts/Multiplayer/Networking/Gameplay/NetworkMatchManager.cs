@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,22 @@ public class NetworkMatchManager : MonoBehaviour
     [SerializeField] private bool m_CanDeal = true;
     
     private int numberOfTimesDealt = 0;
+
+    private void OnEnable()
+    {
+        GameEvents.GameFlowEvents.RestartRound.Register(OnRestartRound);
+    }
+
+
+    private void OnDisable()
+    {
+        GameEvents.GameFlowEvents.RestartRound.UnRegister(OnRestartRound);
+    }
+
+    private void OnRestartRound()
+    {
+        m_CanDeal = true;
+    }
     
     public void OnPlayerSpawnedInMatch(PlayerController playerController)
     {
