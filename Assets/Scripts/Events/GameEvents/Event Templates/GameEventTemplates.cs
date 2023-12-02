@@ -18,6 +18,11 @@ public class GameEvent
     {
         Event?.Invoke();
     }
+
+    public void UnRegisterAll()
+    {
+        Event = null;
+    }
 }
 
 public class GameEvent<T>

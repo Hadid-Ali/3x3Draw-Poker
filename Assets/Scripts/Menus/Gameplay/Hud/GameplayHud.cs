@@ -42,7 +42,7 @@ public class GameplayHud : MenusController
 
     private void OnNetworkDisconnected()
     {
-        m_DisconnectedLabel.SetActive(true);
+    //    m_DisconnectedLabel.SetActive(true);
     }
 
     private void Disconnect()

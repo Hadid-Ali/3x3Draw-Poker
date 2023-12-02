@@ -24,12 +24,19 @@ public class NetworkPlayerController : PlayerController
     public void OnSpawn()
     {
         NetworkGameplayManager.Instance.OnGameplayJoined(this);
+        PhotonNetwork.RegisterPhotonView(m_PhotonView);
+        GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnect);
 
         if (!IsLocalPlayer)
             return;
 
         InitializeControls();
         SetNameOverServer();
+    }
+
+    private void OnNetworkDisconnect()
+    {
+      //  Destroy(gameObject);
     }
 
     void SetNameOverServer()
@@ -45,6 +52,7 @@ public class NetworkPlayerController : PlayerController
 
     private void OnDisable()
     {
+        GameEvents.NetworkEvents.NetworkDisconnectedEvent.UnRegister(OnNetworkDisconnect);
         GameEvents.GameplayUIEvents.SubmitDecks.UnRegister(OnSubmitDeck);
     }
 

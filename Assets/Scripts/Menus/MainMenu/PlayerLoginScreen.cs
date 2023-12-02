@@ -17,17 +17,28 @@ public class PlayerLoginScreen : UIMenuBase
     {
         m_InputField.onValueChanged.AddListener(OnFieldValueChange);
         m_LoginButton.onClick.AddListener(OnLoginBtnEvent);
+
+        SetButtonInteractionStatus(false);
+        
         OnFieldValueChange(string.Empty);
+        m_InputField.characterLimit = GameData.MetaData.MaximumNameLength;
     }
 
     private void OnFieldValueChange(string value)
     {
-        m_LoginButton.interactable = !string.IsNullOrEmpty(value);
+        bool hasValidLenght = value.Length >= GameData.MetaData.MinimumNameLength;
+
+        SetButtonInteractionStatus(!string.IsNullOrEmpty(value) && hasValidLenght);
     }
 
     public void OnLoginBtnEvent()
     {
         m_PlayerLoginEvent.Raise(m_InputField.text);
         ChangeMenuState(MenuName.ConnectionScreen);
+    }
+
+    private void SetButtonInteractionStatus(bool status)
+    {
+        m_LoginButton.interactable = status;
     }
 }

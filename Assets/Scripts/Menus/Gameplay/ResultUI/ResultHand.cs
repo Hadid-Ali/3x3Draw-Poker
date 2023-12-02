@@ -18,6 +18,7 @@ public class ResultHand : MonoBehaviour
     
     [SerializeField] private TextMeshProUGUI m_NameText;
     [SerializeField] private TextMeshProUGUI m_ScoreText;
+    [SerializeField] private TextMeshProUGUI m_HandNameText;
     
     private bool m_IsWinnerDeck = false;
 
@@ -33,6 +34,7 @@ public class ResultHand : MonoBehaviour
 
         m_ScoreText.text = m_IsWinnerDeck ? $"+{resultHandDataObject.Score}" : "0";
         m_NameText.text = resultHandDataObject.PlayerName;
+        m_HandNameText.text = resultHandDataObject.HandName;
         
         m_CardsDeck.SetHandData(resultHandDataObject.Cards);
         SetVisibilityStatus(true);
