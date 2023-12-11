@@ -27,12 +27,16 @@ public sealed class TimerController : MonoBehaviour
       GameEvents.TimerEvents.CancelActionRequest.UnRegister(OnRequestCancel);
    }
 
-   private void OnExecuteActionRequest(string title, float timeDuration, Action eventToExecute)
+   private void OnExecuteActionRequest(TimerDataObject timerDataObject)
    {
-      m_TimeToWait = timeDuration;
-      
-      InitializeEvent(eventToExecute);
-      GameEvents.MenuEvents.TimeBasedActionRequested.Raise(title, timeDuration);
+      float timeDuration = timerDataObject.TimeDuration;
+
+      m_TimeToWait = timerDataObject.TimeDuration;
+      InitializeEvent(timerDataObject.ActionToExecute);
+
+      if (timerDataObject.IsNetworkGlobal)
+         GameEvents.NetworkEvents.NetworkTimerStartRequest.Raise(timerDataObject.Title, timeDuration);
+
       m_RequestRoutine = StartCoroutine(EventRequestRoutine());
    }
 
