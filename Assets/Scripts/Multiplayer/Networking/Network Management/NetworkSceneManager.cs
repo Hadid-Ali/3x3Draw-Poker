@@ -17,7 +17,7 @@ public class NetworkSceneManager : MonoBehaviour
     [PunRPC]
     private void LoadGameplaySceneRPC(float wait)
     {
-        GameEvents.MenuEvents.NetworkStatusUpdated.Raise("Loading Game...");
+        GameEvents.MenuEvents.NetworkStatusUpdated.Raise("\t\tLoading Game");
         StartCoroutine(LoadScene("PokerGame", wait));
     }
 
@@ -25,6 +25,6 @@ public class NetworkSceneManager : MonoBehaviour
     {
         Debug.LogError("Load Scene");
         yield return new WaitForSeconds(wait);
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }

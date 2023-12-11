@@ -27,11 +27,12 @@ public sealed class TimerController : MonoBehaviour
       GameEvents.TimerEvents.CancelActionRequest.UnRegister(OnRequestCancel);
    }
 
-   private void OnExecuteActionRequest(float timeDuration, Action eventToExecute)
+   private void OnExecuteActionRequest(string title, float timeDuration, Action eventToExecute)
    {
       m_TimeToWait = timeDuration;
+      
       InitializeEvent(eventToExecute);
-
+      GameEvents.MenuEvents.TimeBasedActionRequested.Raise(title, timeDuration);
       m_RequestRoutine = StartCoroutine(EventRequestRoutine());
    }
 

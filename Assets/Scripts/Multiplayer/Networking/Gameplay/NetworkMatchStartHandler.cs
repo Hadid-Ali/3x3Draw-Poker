@@ -26,7 +26,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
         
         if (CurrentPlayersCount >= GameData.MetaData.MinimumRequiredPlayers)
         {
-            GameEvents.TimerEvents.ExecuteActionRequest.Raise(GameData.MetaData.WaitBeforeAutomaticMatchStart, StartMatchInternal);
+            GameEvents.TimerEvents.ExecuteActionRequest.Raise("Starting The Match",GameData.MetaData.WaitBeforeAutomaticMatchStart, StartMatchInternal);
             m_IsAutoStartRequestSent = true;
         }
     }
