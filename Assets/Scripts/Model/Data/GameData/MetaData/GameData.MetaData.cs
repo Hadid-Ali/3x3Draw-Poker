@@ -16,6 +16,6 @@ public static partial class GameData
 
         public const int MaxPlayersLimit = 3;
         public const int MinimumRequiredPlayers = 2;
-        public const int WaitBeforeAutomaticMatchStart = 15;
+        public const int WaitBeforeAutomaticMatchStart = 10;
     }
 }
