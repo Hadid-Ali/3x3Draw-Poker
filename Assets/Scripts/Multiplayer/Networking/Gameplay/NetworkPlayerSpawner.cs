@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class NetworkPlayerSpawner : MonoBehaviour
+public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 {
     private List<PlayerController> m_JoinedPlayers = new();
 
@@ -19,10 +19,10 @@ public class NetworkPlayerSpawner : MonoBehaviour
     {
         m_OnPlayerSpawned.Register(onPlayerSpawned);
     }
-    
+
     public void SpawnPlayer()
     {
-        PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero, 
+        PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
             Quaternion.identity);
     }
 
@@ -30,11 +30,8 @@ public class NetworkPlayerSpawner : MonoBehaviour
     {
         m_JoinedPlayers.Add(playerController);
         OnPlayerSpawned(playerController);
-    }
-    
-    private void OnPlayerSpawned(PlayerController playerController)
-    {
-        m_OnPlayerSpawned.Raise(playerController);
+        
+        m_JoinedPlayers.RemoveAll(player => player == null);
     }
 
     public void ReIteratePlayerSpawns()
@@ -44,8 +41,13 @@ public class NetworkPlayerSpawner : MonoBehaviour
             OnPlayerSpawned(m_JoinedPlayers[i]);
         }
     }
-    
+
     public PlayerController GetPlayerAgainstID(int ID) => m_JoinedPlayers.Find(player => player.ID == ID);
 
     public string GetPlayerName(int ID) => GetPlayerAgainstID(ID).Name;
+
+    private void OnPlayerSpawned(PlayerController playerController)
+    {
+        m_OnPlayerSpawned.Raise(playerController);
+    }
 }

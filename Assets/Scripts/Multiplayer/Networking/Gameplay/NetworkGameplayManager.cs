@@ -6,7 +6,7 @@ using System.Linq;
 using Photon.Pun;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
-public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager>
+public class NetworkGameplayManager : MonoBehaviour
 {
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] private PhotonView m_NetworkGameplayManagerView;
@@ -14,9 +14,8 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
 
-    protected override void SingletonAwake()
+    private void Awake()
     {
-        base.SingletonAwake();
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
     }
 
@@ -28,6 +27,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     private void OnEnable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Register(OnNetworkSubmitRequest);
+        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Register(OnGameplayJoined);
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
     }
@@ -35,6 +35,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
+        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.UnRegister(OnGameplayJoined);
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
     }

@@ -23,7 +23,7 @@ public class NetworkPlayerController : PlayerController
 
     public void OnSpawn()
     {
-        NetworkGameplayManager.Instance.OnGameplayJoined(this);
+        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Raise(this);
         PhotonNetwork.RegisterPhotonView(m_PhotonView);
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnect);
 
