@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using UnityEngine;
 using Photon.Pun;
 
@@ -13,6 +14,25 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     private void Start()
     {
         Dependencies.PlayersContainer = this;
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Register(OnPlayerScoresReceived);
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
+    }
+
+    private void OnPlayerScoresReceived(List<NetworkDataObject> networkDataObjects, List<PlayerScoreObject> playerScoreObjects)
+    {
+        int ownID = m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
+        PlayerScoreObject obje = playerScoreObjects.Find(player => player.UserID == ownID);
+        
+        GameData.RuntimeData.AddToTotalScore(obje.Score);
+        Debug.LogError($"ID {PhotonNetwork.LocalPlayer.ActorNumber.ToString()}");
     }
 
     public void Initialize(Action<PlayerController> onPlayerSpawned)

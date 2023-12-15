@@ -14,6 +14,8 @@ public class NetworkGameplayManager : MonoBehaviour
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
 
+    private List<PlayerScoreObject> m_PlayersScoreObjects = new();
+
     private void Awake()
     {
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
@@ -147,10 +149,10 @@ public class NetworkGameplayManager : MonoBehaviour
     [PunRPC]
     public void SyncUserScores_RPC(string data)
     {
-//        Debug.LogError($"Receive Data {data}");
-        
         SerializableList<PlayerScoreObject> playerScores =
             JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
+        
+        m_PlayersScoreObjects = playerScores.Contents;
         GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
     }
 
