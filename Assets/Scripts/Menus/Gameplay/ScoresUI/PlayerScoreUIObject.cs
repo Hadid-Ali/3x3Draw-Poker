@@ -5,9 +5,22 @@ using UnityEngine;
 
 public class PlayerScoreUIObject : MonoBehaviour
 {
+    [Header("Components")]
+    
     [SerializeField] private TextMeshProUGUI m_NameText;
     [SerializeField] private TextMeshProUGUI m_ScoreText;
 
+    [Header("Attributes")]
+    
+    [SerializeField] private int m_PositionIndex;
+
+    public int PositionIndex => m_PositionIndex;
+
+    public void SetContainerStatus(GameObject activeState)
+    {
+        gameObject.SetActive(activeState);
+    }
+    
     public void SetName(string text)
     {
         m_NameText.text = text;

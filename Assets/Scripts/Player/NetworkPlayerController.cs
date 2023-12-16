@@ -9,7 +9,6 @@ public class NetworkPlayerController : PlayerController
 
     public override  bool IsLocalPlayer => m_PhotonView != null && m_PhotonView.IsMine;
     public override int ID => m_PhotonView.ViewID;
-
     public PhotonView NetworkView => m_PhotonView;
 
     private int m_TotalScore = 0;

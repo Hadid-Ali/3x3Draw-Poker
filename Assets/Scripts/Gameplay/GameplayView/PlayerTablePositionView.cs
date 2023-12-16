@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class PlayerTablePositionView : MonoBehaviour
 {
-    [SerializeField] private GameObject m_CharacterAvatarContainer;
+    [SerializeField] private EnableObjectComponent m_CharacterAvatarContainer;
 
     public void SetPositionEnabled(bool status)
     {
-        m_CharacterAvatarContainer.SetActive(status);
+        m_CharacterAvatarContainer.SetContainerActiveState(status);
+    }
+
+    public void SelectCharacterAtIndex(int index)
+    {
+        m_CharacterAvatarContainer.EnableAtIndex(index);
     }
 }

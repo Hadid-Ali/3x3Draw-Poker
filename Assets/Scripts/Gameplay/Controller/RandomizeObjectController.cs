@@ -14,6 +14,6 @@ public class RandomizeObjectController : MonoBehaviour
 
     private void EnableRandomObject()
     {
-        m_RandomObjects[Random.Range(0,m_RandomObjects.Count)].SetActive(true);
+        m_RandomObjects.GetRandomObject().SetActive(true);
     }
 }
