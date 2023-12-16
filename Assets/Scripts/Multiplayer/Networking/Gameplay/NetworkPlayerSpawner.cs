@@ -8,9 +8,10 @@ using Photon.Pun;
 public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 {
     private List<PlayerController> m_JoinedPlayers = new();
-
     private GameEvent<PlayerController> m_OnPlayerSpawned = new();
 
+    public int GetLocalPlayerID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
+    
     private void Start()
     {
         Dependencies.PlayersContainer = this;
@@ -18,12 +19,12 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 
     private void OnEnable()
     {
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Register(OnPlayerScoresReceived);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Register(OnPlayerScoresReceived);
     }
 
     private void OnDisable()
     {
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
     }
 
     private void OnPlayerScoresReceived(List<NetworkDataObject> networkDataObjects, List<PlayerScoreObject> playerScoreObjects)
@@ -32,7 +33,6 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
         PlayerScoreObject obje = playerScoreObjects.Find(player => player.UserID == ownID);
         
         GameData.RuntimeData.AddToTotalScore(obje.Score);
-        Debug.LogError($"ID {PhotonNetwork.LocalPlayer.ActorNumber.ToString()}");
     }
 
     public void Initialize(Action<PlayerController> onPlayerSpawned)

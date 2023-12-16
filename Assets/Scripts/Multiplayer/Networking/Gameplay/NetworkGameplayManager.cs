@@ -16,6 +16,8 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private List<PlayerScoreObject> m_PlayersScoreObjects = new();
 
+    public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
+
     private void Awake()
     {
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
@@ -153,7 +155,7 @@ public class NetworkGameplayManager : MonoBehaviour
             JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
         
         m_PlayersScoreObjects = playerScores.Contents;
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
     }
 
     [PunRPC]

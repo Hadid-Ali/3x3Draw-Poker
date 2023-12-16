@@ -13,11 +13,9 @@ public class GameplayStateView : MonoBehaviour
     [Header("Properties")]
     
     [SerializeField] private float m_WaitForCardsToShow = 2f;
-
+    
     private WaitForSeconds m_CardsContainerWait;
     
-  
-
     private void Start()
     {
         m_CardsContainerWait  = new WaitForSeconds(m_WaitForCardsToShow);

@@ -41,5 +41,11 @@ public class GameplayStateController : MonoBehaviour
         
         m_GameplayState = gameplayState;
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(gameplayState);
+        OnGameStateChanged(gameplayState);
+    }
+
+    private void OnGameStateChanged(GameplayState gameplayState)
+    {
+        Debug.LogError($"Gameplay State {gameplayState}");
     }
 }

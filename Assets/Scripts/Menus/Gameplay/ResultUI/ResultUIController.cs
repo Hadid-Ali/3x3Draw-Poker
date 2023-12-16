@@ -27,12 +27,12 @@ public class ResultUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Register(OnPlayerScoresReceived);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Register(OnPlayerScoresReceived);
     }
 
     private void OnDisable()
     {
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
     }
 
     void OnPlayerScoresReceived(List<NetworkDataObject> playerNetworkDataObjects,
@@ -63,6 +63,7 @@ public class ResultUIController : MonoBehaviour
     {
         StartCoroutine(ShowResultantUI_Routine());
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Deck_View);
+        GameEvents.GameplayEvents.RoundCompleted.Raise();
     }
 
     private IEnumerator ShowResultantUI_Routine()

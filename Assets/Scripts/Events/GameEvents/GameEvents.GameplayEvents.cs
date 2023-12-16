@@ -14,5 +14,6 @@ public static partial class GameEvents
         public static GameEvent<Dictionary<int, PlayerScoreObject>> UserHandsEvaluated = new();
         public static GameEvent<GameplayState> GameplayStateSwitched = new();
         public static GameEvent<bool> GameplayCardsStateChanged = new();
+        public static GameEvent RoundCompleted = new();
     }
 }
