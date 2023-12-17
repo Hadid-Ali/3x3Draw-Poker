@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     [SerializeField] private NetworkGameplayManager m_NetworkGameplayHandler;
     
     private Dictionary<int,int> m_PlayerScoreObjects = new();
+    private GameEvent<int> m_OnPlayerWin = new();
     
     private void OnEnable()
     {
@@ -20,9 +22,9 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameplayEvents.RoundCompleted.UnRegister(OnRoundCompleted);
     }
 
-    private void OnRoundCompleted()
+    public void Initialize(Action<int> onPlayerWin)
     {
-        SyncNetworkScoreObjectOverNetwork();
+        m_OnPlayerWin.Register(onPlayerWin);
     }
 
     public int GetUserScore(int playerID) => m_PlayerScoreObjects[playerID];
@@ -46,5 +48,39 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
         Debug.LogError($"Score {score} ID {localID}");
         GameEvents.GameplayEvents.PlayerScoreReceived.Raise(score, localID);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            
+        }
+    }
+
+    //TODO: Implement Tie Breaker
+    private void CheckForWinner()
+    {
+        var entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
+
+        List<KeyValuePair<int,int>> keyValuePairs = entries.ToList();
+        
+        if (!keyValuePairs.Any())
+            return;
+
+        KeyValuePair<int,int> highestPair = keyValuePairs.OrderByDescending(pair => pair.Value).FirstOrDefault();
+        
+        m_OnPlayerWin.Raise(highestPair.Key);
+        DispatchSortedScores();
+    }
+
+    private void OnRoundCompleted()
+    {
+        SyncNetworkScoreObjectOverNetwork();
+    }
+
+    private void DispatchSortedScores()
+    {
+        List<KeyValuePair<int, int>> sortedScores = m_PlayerScoreObjects.ToList();
+        sortedScores.OrderByDescending(pair => pair.Value);
+        
+        GameEvents.GameplayUIEvents.DispatchScores.Raise(sortedScores);
     }
 }

@@ -8,19 +8,21 @@ using Photon.Pun;
 [RequireComponent(typeof(NetworkPlayerSpawner))]
 public class NetworkGameplayManager : MonoBehaviour
 {
+    [Header("Component Refs")]
+    
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] private PhotonView m_NetworkGameplayManagerView;
-
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
-    [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
-
-    private List<PlayerScoreObject> m_PlayersScoreObjects = new();
-
+    
+    [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
+    
+    private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
 
     private void Awake()
     {
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
+        m_NetworkScoreHandler.Initialize(OnPlayerWin);
     }
 
     private void Start()
@@ -43,7 +45,15 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
     }
-    
+
+    private void OnPlayerWin(int networkViewID)
+    {
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(AnnounceWinner_RPC),RpcTarget.All,new object[]
+        {
+            networkViewID
+        });
+    }
+
     private void StartMatchInternal()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -137,6 +147,13 @@ public class NetworkGameplayManager : MonoBehaviour
     }
 
     [PunRPC]
+    private void AnnounceWinner_RPC(int winnerNetworkViewID)
+    {
+        GameEvents.NetworkGameplayEvents.MatchWinnerAnnounced.Raise(winnerNetworkViewID);
+        GameEvents.GameFlowEvents.MatchOver.Raise();
+    }
+    
+    [PunRPC]
     private void SpawnPlayer_RPC()
     {
         m_NetworkPlayerSpawner.SpawnPlayer();
@@ -154,7 +171,6 @@ public class NetworkGameplayManager : MonoBehaviour
         SerializableList<PlayerScoreObject> playerScores =
             JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
         
-        m_PlayersScoreObjects = playerScores.Contents;
         GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
     }
 
@@ -165,6 +181,7 @@ public class NetworkGameplayManager : MonoBehaviour
         m_NetworkMatchManager.RestartMatch();
         Invoke(nameof(DelayedReIteratePlayers), 1f);
     }
+    
     
     private void ResetMatch()
     {

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Photon.Pun;
 using TMPro;
+using UnityAtoms;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,9 +17,11 @@ public class GameplayHud : MenusController
     
     [SerializeField] private Button m_SubmitButton;
     [SerializeField] private Button m_DisconnectButton;
+    
     [SerializeField] private TMP_Text m_TotalScore;
-
     [SerializeField] private GameObject m_DisconnectedLabel;
+
+    private bool m_ShowMatchoverMenu = false;
     
     private void Start()
     {
@@ -31,6 +34,7 @@ public class GameplayHud : MenusController
         base.OnEnable();
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnected);
         GameEvents.GameFlowEvents.RoundStart.Register(EnableSubmitButton);
+        GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
     }
     
     protected override void OnDisable()
@@ -38,8 +42,25 @@ public class GameplayHud : MenusController
         base.OnDisable();
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.UnRegister(OnNetworkDisconnected);
         GameEvents.GameFlowEvents.RoundStart.UnRegister(EnableSubmitButton);
+        GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
     }
 
+    public void ShowScoreOnUI()
+    {
+        m_TotalScore.text = $"{GameData.RuntimeData.TOTAL_SCORE} pts";
+    }
+
+    public void ShowResultMenu()
+    {
+        Debug.LogError("Show Result Menu");
+        SetMenuState(m_ShowMatchoverMenu ? MenuName.MatchCompleteMenu : MenuName.RoundCompleteMenu);
+    }
+    
+    private void OnMatchOver()
+    {
+        m_ShowMatchoverMenu = true;
+    }
+    
     private void OnNetworkDisconnected()
     {
     //    m_DisconnectedLabel.SetActive(true);

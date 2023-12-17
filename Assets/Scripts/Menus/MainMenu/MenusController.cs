@@ -4,23 +4,9 @@ using System.Collections.Generic;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
-public enum MenuName
-{
-    None,
-    MainMenu,
-    LoginScreen,
-    RegionSelectionScreen,
-    ConnectionScreen,
-    CreateRoom,
-    LoadingScreen,
-    RoundCompleteMenu,
-    ErrorWindow
-}
-
 public abstract class MenusController : MonoBehaviour
 {
     [SerializeField] private List<UIMenuBase> m_Menus;
-    [SerializeField] private MenuTransitionEvent m_MenuTransitionEvent;
     
     private MenuName m_CurrentMenuStates;
 
@@ -31,13 +17,12 @@ public abstract class MenusController : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        m_MenuTransitionEvent.Register(OnMenuTransition);
+        GameEvents.MenuEvents.MenuTransitionEvent.Register(OnMenuTransition);
     }
 
     protected virtual  void OnDisable()
     {
-        m_MenuTransitionEvent.Unregister(OnMenuTransition);
-
+        GameEvents.MenuEvents.MenuTransitionEvent.UnRegister(OnMenuTransition);
     }
     
     protected void SetMenuState(MenuName menuName)
@@ -59,9 +44,7 @@ public abstract class MenusController : MonoBehaviour
     {
         m_CurrentMenuStates = menuName;
     }
-
-
-
+    
     private void HideAllMenus()
     {
         for (int i = 0; i < m_Menus.Count; i++)
