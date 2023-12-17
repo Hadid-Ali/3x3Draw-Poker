@@ -15,6 +15,14 @@ public class UIMenu : UIMenuBase
 
     public void LoginBtnEvent()
     {
-        ChangeMenuState(MenuName.LoginScreen);
+        if (GameData.RuntimeData.IS_LOGGED_IN)
+        {
+            ChangeMenuState(MenuName.ConnectionScreen);
+        }
+        else
+        {
+
+            ChangeMenuState(MenuName.LoginScreen);
+        }
     }
 }

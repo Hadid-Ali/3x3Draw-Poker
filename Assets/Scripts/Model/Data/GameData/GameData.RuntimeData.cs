@@ -7,6 +7,8 @@ public static partial class GameData
 {
     public static class RuntimeData
     {
+        public static bool IS_LOGGED_IN = false;
+        
         public static int TOTAL_SCORE
         {
             get;

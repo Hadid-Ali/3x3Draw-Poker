@@ -41,7 +41,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     }
 
     [PunRPC]
-    public void SyncNetworkPlayerScoreReceived_RPC(int photonViewID,int score)
+    public void SyncNetworkPlayerScoreReceived_RPC(int photonViewID, int score)
     {
         int localID = Dependencies.PlayersContainer.GetPlayerLocalID(photonViewID);
         m_PlayerScoreObjects[photonViewID] = score;
@@ -49,10 +49,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         Debug.LogError($"Score {score} ID {localID}");
         GameEvents.GameplayEvents.PlayerScoreReceived.Raise(score, localID);
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            
-        }
+        CheckForWinner();
     }
 
     //TODO: Implement Tie Breaker
@@ -70,7 +67,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         m_OnPlayerWin.Raise(highestPair.Key);
         DispatchSortedScores();
     }
-
+    
     private void OnRoundCompleted()
     {
         SyncNetworkScoreObjectOverNetwork();

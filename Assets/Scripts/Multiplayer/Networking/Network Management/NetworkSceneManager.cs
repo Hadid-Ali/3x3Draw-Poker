@@ -21,6 +21,8 @@ public class NetworkSceneManager : MonoBehaviour
         StartCoroutine(LoadScene("PokerGame", wait));
     }
 
+    //TODO: Implement Scene Flow Loader
+    
     private IEnumerator LoadScene(string sceneName,float wait)
     {
         Debug.LogError("Load Scene");
