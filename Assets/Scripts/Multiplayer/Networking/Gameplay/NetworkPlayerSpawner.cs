@@ -10,8 +10,6 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     private List<PlayerController> m_JoinedPlayers = new();
     private GameEvent<PlayerController> m_OnPlayerSpawned = new();
 
-    public int GetLocalPlayerID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
-    
     private void Start()
     {
         Dependencies.PlayersContainer = this;
@@ -27,13 +25,9 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
         GameEvents.NetworkGameplayEvents.PlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
     }
 
-    private void OnPlayerScoresReceived(List<NetworkDataObject> networkDataObjects, List<PlayerScoreObject> playerScoreObjects)
-    {
-        int ownID = m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
-        PlayerScoreObject obje = playerScoreObjects.Find(player => player.UserID == ownID);
-        
-        GameData.RuntimeData.AddToTotalScore(obje.Score);
-    }
+    public int GetPlayerLocalID(int photonViewID) => m_JoinedPlayers.Find(player => player.ID == photonViewID).LocalID;
+    
+    public int GetLocalPlayerNetworkID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
 
     public void Initialize(Action<PlayerController> onPlayerSpawned)
     {
@@ -65,7 +59,16 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     public PlayerController GetPlayerAgainstID(int ID) => m_JoinedPlayers.Find(player => player.ID == ID);
 
     public string GetPlayerName(int ID) => GetPlayerAgainstID(ID).Name;
-
+    
+    private void OnPlayerScoresReceived(List<NetworkDataObject> networkDataObjects, List<PlayerScoreObject> playerScoreObjects)
+    {
+        int ownID = m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
+        PlayerScoreObject obje = playerScoreObjects.Find(player => player.UserID == ownID);
+        
+        GameData.RuntimeData.AddToTotalScore(obje.Score);
+        GameEvents.GameplayEvents.RoundCompleted.Raise();
+    }
+    
     private void OnPlayerSpawned(PlayerController playerController)
     {
         m_OnPlayerSpawned.Raise(playerController);

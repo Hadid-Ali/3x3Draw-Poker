@@ -8,7 +8,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 {
     [SerializeField] private NetworkGameplayManager m_NetworkGameplayHandler;
     
-    private List<NetworkPlayerScoreObject> m_PlayerScoreObjects = new();
+    private Dictionary<int,int> m_PlayerScoreObjects = new();
     
     private void OnEnable()
     {
@@ -20,43 +20,31 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameplayEvents.RoundCompleted.UnRegister(OnRoundCompleted);
     }
 
-    private NetworkPlayerScoreObject GetPlayerScoreObject() => new()
-    {
-        PlayerID = Dependencies.PlayersContainer.GetLocalPlayerID(),
-        TotalScore = GameData.RuntimeData.TOTAL_SCORE
-    };
-    
     private void OnRoundCompleted()
     {
-        Debug.LogError("Setup Round Completed");
-        SyncNetworkScoreObjectOverNetwork(GetPlayerScoreObject());
+        SyncNetworkScoreObjectOverNetwork();
     }
 
-    public int GetUserScore(int playerID) =>
-        m_PlayerScoreObjects.Find(player => player.PlayerID == playerID).TotalScore;
-    
-    public void SyncNetworkScoreObjectOverNetwork(NetworkPlayerScoreObject playerScoreObject)
+    public int GetUserScore(int playerID) => m_PlayerScoreObjects[playerID];
+
+    public void SyncNetworkScoreObjectOverNetwork()
     {
-        string data = NetworkPlayerScoreObject.Serialize(playerScoreObject);
+        Debug.LogError($"Score {GameData.RuntimeData.TOTAL_SCORE}");
+        
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayHandler.NetworkViewComponent,nameof(SyncNetworkPlayerScoreReceived_RPC),RpcTarget.All,new object[]
         {
-            data
+            Dependencies.PlayersContainer.GetLocalPlayerNetworkID(),
+            GameData.RuntimeData.TOTAL_SCORE
         });
     }
 
     [PunRPC]
-    public void SyncNetworkPlayerScoreReceived_RPC(string scoreObjectString)
+    public void SyncNetworkPlayerScoreReceived_RPC(int photonViewID,int score)
     {
-        NetworkPlayerScoreObject scoreObject = NetworkPlayerScoreObject.DeSerialize(scoreObjectString);
-        NetworkPlayerScoreObject currentObject = m_PlayerScoreObjects.Find(obj => obj.PlayerID == scoreObject.PlayerID);
+        int localID = Dependencies.PlayersContainer.GetPlayerLocalID(photonViewID);
+        m_PlayerScoreObjects[photonViewID] = score;
 
-        if (currentObject == null)
-        {
-            m_PlayerScoreObjects.Add(scoreObject);
-        }
-        else
-        {
-            currentObject.TotalScore = scoreObject.TotalScore;
-        }
+        Debug.LogError($"Score {score} ID {localID}");
+        GameEvents.GameplayEvents.PlayerScoreReceived.Raise(score, localID);
     }
 }

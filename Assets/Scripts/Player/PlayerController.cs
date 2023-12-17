@@ -3,15 +3,25 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private string m_Name;
-
     public virtual bool IsLocalPlayer => true;
     public virtual int ID => int.MinValue;
+
+    public int CharacterAvatarID
+    {
+        protected set;
+        get;
+    }
+
+    public int LocalID
+    {
+        protected set;
+        get;
+    }
     
     public string Name
     {
-        protected set => m_Name = value;
-        get => m_Name;
+        protected set;
+        get;
     }
 
     protected virtual void Start()

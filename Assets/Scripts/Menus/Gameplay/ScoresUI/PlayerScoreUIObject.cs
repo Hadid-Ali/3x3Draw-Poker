@@ -16,7 +16,7 @@ public class PlayerScoreUIObject : MonoBehaviour
 
     public int PositionIndex => m_PositionIndex;
 
-    public void SetContainerStatus(GameObject activeState)
+    public void SetContainerStatus(bool activeState)
     {
         gameObject.SetActive(activeState);
     }
@@ -28,6 +28,6 @@ public class PlayerScoreUIObject : MonoBehaviour
 
     public void SetScore(int score)
     {
-        m_ScoreText.text = $"{score.ToString()}$";
+        m_ScoreText.text = $"{score.ToString()} pts";
     }
 }

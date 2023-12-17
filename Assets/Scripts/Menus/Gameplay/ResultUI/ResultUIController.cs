@@ -63,7 +63,6 @@ public class ResultUIController : MonoBehaviour
     {
         StartCoroutine(ShowResultantUI_Routine());
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Deck_View);
-        GameEvents.GameplayEvents.RoundCompleted.Raise();
     }
 
     private IEnumerator ShowResultantUI_Routine()
