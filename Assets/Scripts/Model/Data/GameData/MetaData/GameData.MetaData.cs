@@ -10,7 +10,7 @@ public static partial class GameData
         public const int DecksCount = 3;
         public const int DeckSize = 5;
 
-        public const int TotalScoreToWin = 100;
+        public const int TotalScoreToWin = 10;
         
         public const int OffsetCards = 2;
 
@@ -20,5 +20,8 @@ public static partial class GameData
         public const int MaxPlayersLimit = 3;
         public const int MinimumRequiredPlayers = 2;
         public const int WaitBeforeAutomaticMatchStart = 10;
+
+        public const string PrivacyPolicyLink = "www.google.com";
+        public const string TermsOfUsageLink = "www.google.com";
     }
 }

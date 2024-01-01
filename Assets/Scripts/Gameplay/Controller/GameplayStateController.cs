@@ -7,6 +7,8 @@ public class GameplayStateController : MonoBehaviour
 {
     [SerializeField] private GameplayState m_GameplayState = GameplayState.Casino_View;
     [SerializeField] private float m_WaitBeforeCardsFocus = 2f;
+
+    private bool m_IsGameCompleted = false;
     
     void Start()
     {
@@ -16,16 +18,27 @@ public class GameplayStateController : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.GameFlowEvents.RoundStart.Register(LoadCardsView);
+        GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
     }
 
     private void OnDisable()
     {
         GameEvents.GameFlowEvents.RoundStart.UnRegister(LoadCardsView);
+        GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
+    }
+
+    private void OnMatchOver()
+    {
+        m_IsGameCompleted = true;
     }
 
     private void LoadCardsView()
     {
         ChangeState(GameplayState.Casino_View);
+        
+        if (m_IsGameCompleted)
+            return;
+        
         Invoke(nameof(ChangeToCardsView), m_WaitBeforeCardsFocus);
     }
     

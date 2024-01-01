@@ -55,19 +55,29 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     //TODO: Implement Tie Breaker
     private void CheckForWinner()
     {
-        var entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
-
-        List<KeyValuePair<int,int>> keyValuePairs = entries.ToList();
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         
+        var entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
+        List<KeyValuePair<int, int>> keyValuePairs = entries.ToList();
+
         if (!keyValuePairs.Any())
             return;
 
-        KeyValuePair<int,int> highestPair = keyValuePairs.OrderByDescending(pair => pair.Value).FirstOrDefault();
-        
-        m_OnPlayerWin.Raise(highestPair.Key);
+        keyValuePairs = new(keyValuePairs.OrderByDescending(pair => pair.Value));
+        int highestScore = keyValuePairs.FirstOrDefault().Value;
+
+        List<KeyValuePair<int, int>> highestKVPs = keyValuePairs.FindAll(pair => pair.Value == highestScore);
+
+        if (highestKVPs.Count > 1)
+        {
+            return;
+        }
+
+        m_OnPlayerWin.Raise(highestKVPs.First().Key);
         DispatchSortedScores();
     }
-    
+
     private void OnRoundCompleted()
     {
         SyncNetworkScoreObjectOverNetwork();

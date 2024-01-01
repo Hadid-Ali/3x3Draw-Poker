@@ -149,8 +149,11 @@ public class NetworkGameplayManager : MonoBehaviour
     [PunRPC]
     private void AnnounceWinner_RPC(int winnerNetworkViewID)
     {
-        GameEvents.NetworkGameplayEvents.MatchWinnerAnnounced.Raise(winnerNetworkViewID);
+        GameEvents.NetworkGameplayEvents.MatchWinnerAnnounced.Raise(winnerNetworkViewID,
+            Dependencies.PlayersContainer.GetLocalPlayerNetworkID() == winnerNetworkViewID);
+        
         GameEvents.GameFlowEvents.MatchOver.Raise();
+        Debug.LogError($"Winner is {winnerNetworkViewID}");
     }
     
     [PunRPC]
