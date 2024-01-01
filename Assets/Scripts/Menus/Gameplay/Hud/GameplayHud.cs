@@ -21,6 +21,8 @@ public class GameplayHud : MenusController
     [SerializeField] private TMP_Text m_TotalScore;
     [SerializeField] private GameObject m_DisconnectedLabel;
 
+    [SerializeField] private GameObject m_InputBlocker;
+
     private bool m_ShowMatchoverMenu = false;
     
     private void Start()
@@ -33,7 +35,7 @@ public class GameplayHud : MenusController
     {
         base.OnEnable();
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnected);
-        GameEvents.GameFlowEvents.RoundStart.Register(EnableSubmitButton);
+        GameEvents.GameFlowEvents.RoundStart.Register(AllowGameplayInputs);
         GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
     }
     
@@ -41,7 +43,7 @@ public class GameplayHud : MenusController
     {
         base.OnDisable();
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.UnRegister(OnNetworkDisconnected);
-        GameEvents.GameFlowEvents.RoundStart.UnRegister(EnableSubmitButton);
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(AllowGameplayInputs);
         GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
     }
 
@@ -76,22 +78,23 @@ public class GameplayHud : MenusController
         try
         {
             GameEvents.GameplayUIEvents.SubmitDecks.Raise();
-            SetSubmitButtonStatus(false);
+            SetGameplayInputStatus(false);
         }
         catch (Exception e)
         {
             Debug.LogError(e.StackTrace);
         }
     }
-
-    private void EnableSubmitButton()
-    {
-        SetSubmitButtonStatus(true);
-    }
     
-    private void SetSubmitButtonStatus(bool status)
+    private void AllowGameplayInputs()
+    {
+        SetGameplayInputStatus(true);
+    }
+
+    private void SetGameplayInputStatus(bool status)
     {
         m_ButtonsContainer.SetActive(status);
+        m_InputBlocker.SetActive(!status);
         m_WaitingText.SetActive(!status);
     }
 }
