@@ -1,23 +1,25 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GameplayStateView : MonoBehaviour
 {
-    [Header("Components")]
+    [Header("Components")] 
     
+    [SerializeField] private GameplayHud m_Hud;
     [SerializeField] private CanvasGroup m_GameCardsContainer;
 
-    [SerializeField] private CasinoViewObject m_CasinoViewObject;
-    [SerializeField] private ResultUIView mResultUIView;
+    [SerializeField] private GameObject m_CasinoViewObject;
+    [SerializeField] private ResultUIView m_ResultUIView;
+
+    [SerializeField] private GameplayHud m_GameplayHud;
     
     [Header("Properties")]
     
     [SerializeField] private float m_WaitForCardsToShow = 2f;
-
+    
     private WaitForSeconds m_CardsContainerWait;
     
-  
-
     private void Start()
     {
         m_CardsContainerWait  = new WaitForSeconds(m_WaitForCardsToShow);
@@ -48,6 +50,10 @@ public class GameplayStateView : MonoBehaviour
             case GameplayState.Result_Deck_View:
                 SwitchToResultantView();
                 break;
+            
+            case GameplayState.Result_Score_View:
+                SwitchToResultScoresView();
+                break;
         }
     }
 
@@ -62,7 +68,8 @@ public class GameplayStateView : MonoBehaviour
     private IEnumerator SwitchToCardsView()
     {
         SetResultView(false);
-        m_CasinoViewObject.SetCasinoViewAnimatorState(false);
+        m_CasinoViewObject.SetActive(false);
+        m_Hud.ShowScoreOnUI();
 
         yield return m_CardsContainerWait;
 
@@ -77,9 +84,15 @@ public class GameplayStateView : MonoBehaviour
         SetCasinoViewObjectState(false);
     }
 
+    private void SwitchToResultScoresView()
+    {
+        SetResultView(false);
+        m_Hud.ShowResultMenu();
+    }
+    
     private void SetResultView(bool status)
     {
-        mResultUIView.SetActiveState(status);
+        m_ResultUIView.SetActiveState(status);
     }
     
     private void SetGameplayCardsViewState(bool state)
@@ -92,6 +105,7 @@ public class GameplayStateView : MonoBehaviour
     
     private void SetCasinoViewObjectState(bool state)
     {
+        m_CasinoViewObject.SetActive(true);
      //   m_CasinoViewObject.SetViewState(state);
     }
 }

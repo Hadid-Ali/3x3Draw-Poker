@@ -4,11 +4,11 @@ using UnityEngine;
 
 public abstract class UIMenuBase : MonoBehaviour
 {
+    [Header("Base Menu Refs")]
+    
     [SerializeField] private MenuName m_MenuName;
     [SerializeField] private GameObject m_MenuContainer;
 
-    [SerializeField] private MenuTransitionEvent m_MenuTransitionEvent;
-    
     public MenuName MenuName => m_MenuName;
 
     public void SetMenuActiveState(bool isActive)
@@ -33,7 +33,6 @@ public abstract class UIMenuBase : MonoBehaviour
 
     public void ChangeMenuState(MenuName menuName)
     {
-        if (m_MenuTransitionEvent != null)
-            m_MenuTransitionEvent.Raise(menuName);
+        GameEvents.MenuEvents.MenuTransitionEvent.Raise(menuName);
     }
 }

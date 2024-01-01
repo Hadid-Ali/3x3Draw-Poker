@@ -44,7 +44,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     private void ConnectToServer()
     {
-        UpdateConnectionStatus("Connecting...");
+        UpdateConnectionStatus("\t\tConnecting");
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -53,7 +53,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
    //     Debug.LogError("Connected to Master");
         if (m_IsTestConnection)
         {
-            UpdateConnectionStatus("Connected to Server, Finding Best Regions to Connect");
+            UpdateConnectionStatus("Finding Best Regions to Connect");
             Invoke(nameof(OnRegionsPingCompleted), 1f);
         }
         else
@@ -100,7 +100,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     
     public override void OnJoinedLobby()
     {
-        UpdateConnectionStatus("Joined Lobby, Finding Match");
+        UpdateConnectionStatus("\t\tFinding Match");
         PhotonNetwork.JoinRandomRoom();
     }
 
@@ -108,13 +108,13 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
         base.OnJoinRandomFailed(returnCode, message);
         m_OnRoomJoinFailed.Raise();
-        UpdateConnectionStatus("Setting Up Game");
+        UpdateConnectionStatus("\t Setting Up Game");
     }
 
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        UpdateConnectionStatus($"Match Found,Waiting For Others");
+        UpdateConnectionStatus($"\t Waiting For Others");
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)

@@ -10,7 +10,6 @@ public class RoundCompleteMenu : UIMenuBase
 {
     [Header("Components")] 
     [SerializeField] private TMP_Text m_RewardText;
-
     [SerializeField] private Button m_RestartButton;
 
     private void Start()
@@ -34,11 +33,10 @@ public class RoundCompleteMenu : UIMenuBase
     {
         SetMenuActiveState(false);
     }
-    
+
     private void OnPlayerRewardReceived(int reward)
     {
-        SetMenuActiveState(true);
-        m_RewardText.text = reward > 0 ? $"You Received {reward} Points" : "You Didn't Win any Hand";
+        m_RewardText.text = $"You Received {reward} Points";
     }
 
     private void OnRestartTap()

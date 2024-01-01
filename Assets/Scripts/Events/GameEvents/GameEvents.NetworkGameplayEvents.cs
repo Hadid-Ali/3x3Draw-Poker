@@ -10,6 +10,8 @@ public static partial class GameEvents
         public static GameEvent<NetworkDataObject> NetworkSubmitRequest = new();
         public static GameEvent<List<NetworkDataObject>> AllUserHandsReceived = new();
         public static GameEvent<CardData[]> UserHandReceivedEvent = new();
-        public static GameEvent<List<NetworkDataObject>, List<PlayerScoreObject>> OnPlayerScoresReceived = new();
+        public static GameEvent<List<NetworkDataObject>, List<PlayerScoreObject>> PlayerScoresReceived = new();
+        public static GameEvent<PlayerController> PlayerJoinedGame = new();
+        public static GameEvent<int> MatchWinnerAnnounced = new();
     }
 }

@@ -13,5 +13,7 @@ public static partial class GameEvents
 
         public static GameEvent NetworkJoinedEvent = new();
         public static GameEvent NetworkDisconnectedEvent = new();
+
+        public static GameEvent<string, float> NetworkTimerStartRequest = new();
     }
 }

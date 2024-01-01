@@ -35,6 +35,7 @@ public class PlayerLoginScreen : UIMenuBase
     {
         m_PlayerLoginEvent.Raise(m_InputField.text);
         ChangeMenuState(MenuName.ConnectionScreen);
+        GameData.RuntimeData.IS_LOGGED_IN = true;
     }
 
     private void SetButtonInteractionStatus(bool status)

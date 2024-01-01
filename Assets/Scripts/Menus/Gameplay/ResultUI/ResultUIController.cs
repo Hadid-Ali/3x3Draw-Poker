@@ -19,6 +19,7 @@ public class ResultUIController : MonoBehaviour
     private List<PlayerDecksObject> m_PlayerDecks = new();
 
     private WaitForSeconds m_WaitBetweenDecks;
+    private GameEvent m_OnResultViewClose = new();
 
     private void Start()
     {
@@ -27,15 +28,20 @@ public class ResultUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Register(OnPlayerScoresReceived);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Register(OnPlayerScoresReceived);
     }
 
     private void OnDisable()
     {
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.UnRegister(OnPlayerScoresReceived);
     }
 
-    void OnPlayerScoresReceived(List<NetworkDataObject> playerNetworkDataObjects,
+    public void Initialize(Action onMenuClose)
+    {
+        m_OnResultViewClose.Register(onMenuClose);
+    }
+    
+    private void OnPlayerScoresReceived(List<NetworkDataObject> playerNetworkDataObjects,
         List<PlayerScoreObject> playerScoreObjects)
     {
         m_UsersScoreList = playerScoreObjects;
@@ -80,6 +86,8 @@ public class ResultUIController : MonoBehaviour
 
         m_ResultUiView.Reset();
         m_ResultUiView.SetActiveState(false);
+        m_OnResultViewClose.Raise();
+        GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Score_View);
     }
 
     private void ShowDecksAtIndex(int index)

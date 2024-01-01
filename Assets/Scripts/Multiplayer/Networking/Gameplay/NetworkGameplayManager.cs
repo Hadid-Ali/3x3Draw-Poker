@@ -6,18 +6,23 @@ using System.Linq;
 using Photon.Pun;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
-public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager>
+public class NetworkGameplayManager : MonoBehaviour
 {
+    [Header("Component Refs")]
+    
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] private PhotonView m_NetworkGameplayManagerView;
-
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
-    [SerializeField] private List<NetworkDataObject> m_AllDecks = new();
+    
+    [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
+    
+    private List<NetworkDataObject> m_AllDecks = new();
+    public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
 
-    protected override void SingletonAwake()
+    private void Awake()
     {
-        base.SingletonAwake();
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
+        m_NetworkScoreHandler.Initialize(OnPlayerWin);
     }
 
     private void Start()
@@ -28,6 +33,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     private void OnEnable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Register(OnNetworkSubmitRequest);
+        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Register(OnGameplayJoined);
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
     }
@@ -35,10 +41,19 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
+        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.UnRegister(OnGameplayJoined);
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
     }
-    
+
+    private void OnPlayerWin(int networkViewID)
+    {
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(AnnounceWinner_RPC),RpcTarget.All,new object[]
+        {
+            networkViewID
+        });
+    }
+
     private void StartMatchInternal()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -132,6 +147,13 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     }
 
     [PunRPC]
+    private void AnnounceWinner_RPC(int winnerNetworkViewID)
+    {
+        GameEvents.NetworkGameplayEvents.MatchWinnerAnnounced.Raise(winnerNetworkViewID);
+        GameEvents.GameFlowEvents.MatchOver.Raise();
+    }
+    
+    [PunRPC]
     private void SpawnPlayer_RPC()
     {
         m_NetworkPlayerSpawner.SpawnPlayer();
@@ -146,11 +168,10 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
     [PunRPC]
     public void SyncUserScores_RPC(string data)
     {
-//        Debug.LogError($"Receive Data {data}");
-        
         SerializableList<PlayerScoreObject> playerScores =
             JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
-        GameEvents.NetworkGameplayEvents.OnPlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
+        
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
     }
 
     [PunRPC]
@@ -160,6 +181,7 @@ public class NetworkGameplayManager : SceneBasedSingleton<NetworkGameplayManager
         m_NetworkMatchManager.RestartMatch();
         Invoke(nameof(DelayedReIteratePlayers), 1f);
     }
+    
     
     private void ResetMatch()
     {

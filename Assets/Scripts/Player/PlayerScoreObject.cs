@@ -1,12 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 [System.Serializable]
 public class PlayerScoreObject
 {
     public int UserID;
     public int Score;
+    
     public List<int> WinningHandsIndexes;
 
     public PlayerScoreObject(int userID)

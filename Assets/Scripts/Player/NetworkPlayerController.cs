@@ -1,6 +1,8 @@
 using System;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(PhotonView))]
 public class NetworkPlayerController : PlayerController
@@ -9,11 +11,7 @@ public class NetworkPlayerController : PlayerController
 
     public override  bool IsLocalPlayer => m_PhotonView != null && m_PhotonView.IsMine;
     public override int ID => m_PhotonView.ViewID;
-
     public PhotonView NetworkView => m_PhotonView;
-
-    private int m_TotalScore = 0;
-    private int m_CurrentAchievedScore = 0;
 
     protected override void Start()
     {
@@ -23,7 +21,7 @@ public class NetworkPlayerController : PlayerController
 
     public void OnSpawn()
     {
-        NetworkGameplayManager.Instance.OnGameplayJoined(this);
+        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Raise(this);
         PhotonNetwork.RegisterPhotonView(m_PhotonView);
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnect);
 
@@ -31,7 +29,7 @@ public class NetworkPlayerController : PlayerController
             return;
 
         InitializeControls();
-        SetNameOverServer();
+        SetPlayerDataOverServer();
     }
 
     private void OnNetworkDisconnect()
@@ -39,11 +37,15 @@ public class NetworkPlayerController : PlayerController
       //  Destroy(gameObject);
     }
 
-    void SetNameOverServer()
+    private void SetPlayerDataOverServer()
     {
-        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetName_RPC), RpcTarget.All,
-            new object[] { PhotonNetwork.LocalPlayer.NickName });
+        Player player = PhotonNetwork.LocalPlayer;
+        Debug.LogError($"Player ID {player.ActorNumber}");
+
+        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
+            new object[] { player.NickName, player.ActorNumber,Random.Range(0,8) });
     }
+
 
     void InitializeControls()
     {
@@ -76,9 +78,6 @@ public class NetworkPlayerController : PlayerController
         if (!IsLocalPlayer)
             return;
         
-        m_TotalScore += reward;
-        m_CurrentAchievedScore = reward;
-        
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Raise(reward);
     }
     
@@ -98,8 +97,22 @@ public class NetworkPlayerController : PlayerController
     }
 
     [PunRPC]
-    public void SetName_RPC(string name)
+    public void SetPlayerData_RPC(string nameToSet,int localID,int avatarID)
     {
-        Name = name;
+        Name = nameToSet;
+        LocalID = localID;
+        CharacterAvatarID = avatarID;
+        
+        OnPlayerDataSet();
+    }
+
+    private void OnPlayerDataSet()
+    {
+        GameEvents.GameplayEvents.LocalPlayerJoined.Raise(new PlayerViewDataObject()
+        {
+            Name = Name,
+            LocalID = LocalID,
+            AvatarID = CharacterAvatarID
+        });        
     }
 }

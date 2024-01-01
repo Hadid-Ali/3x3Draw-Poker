@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 public static partial class GameEvents
 {
     public static class GameplayUIEvents
@@ -12,5 +14,8 @@ public static partial class GameEvents
         public static GameEvent DeckArrangementUpdated = new();
 
         public static GameEvent<string> ErrorOccured = new();
+        public static GameEvent EnableResultViewRequest = new();
+
+        public static GameEvent<List<KeyValuePair<int, int>>> DispatchScores = new();
     }
 }

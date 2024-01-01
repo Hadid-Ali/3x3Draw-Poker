@@ -9,5 +9,6 @@ public static partial class GameEvents
     {
         public static GameEvent RoundStart = new();
         public static GameEvent RestartRound = new();
+        public static GameEvent MatchOver = new();
     }
 }
