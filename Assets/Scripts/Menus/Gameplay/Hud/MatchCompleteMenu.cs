@@ -14,12 +14,7 @@ public class MatchCompleteMenu : UIMenuBase
     [SerializeField] private TextMeshProUGUI m_MatchCompleteTitleText;
     [SerializeField] private TextMeshProUGUI m_MatchCompleteText;
     
-    [SerializeField] private ButtonWidget m_GoToMenuButton;
-
-    private void Start()
-    {
-        m_GoToMenuButton.SubscribeAction(OnGoToMenuClick);
-    }
+    [SerializeField] private float m_WaitBeforeMenuTransition = 3.5f;
 
     private void OnEnable()
     {
@@ -36,13 +31,12 @@ public class MatchCompleteMenu : UIMenuBase
     protected override void OnContainerEnable()
     {
         base.OnContainerEnable();
-        Invoke(nameof(DisableInternal), 2.5f);
+        Invoke(nameof(DisableInternal), m_WaitBeforeMenuTransition);
     }
 
     private void DisableInternal()
     {
-        SetMenuActiveState(false);
-        GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Casino_View);
+        ChangeMenuState(MenuName.GameOverMenu);
     }
 
     private void OnMatchWinnerAnnounced(int networkID,bool isWinner)
@@ -65,8 +59,4 @@ public class MatchCompleteMenu : UIMenuBase
         widget.SetScore($"{name} : {scorePair.Value} pts");
     }
 
-    private void OnGoToMenuClick()
-    {
-        SceneManager.LoadScene("GameMenu");
-    }
 }

@@ -10,5 +10,6 @@ public enum MenuName
     RoundCompleteMenu,
     ErrorWindow,
     MatchCompleteMenu,
-    SettingsMenu
+    SettingsMenu,
+    GameOverMenu
 }

@@ -10,7 +10,7 @@ public static partial class GameData
         public const int DecksCount = 3;
         public const int DeckSize = 5;
 
-        public const int TotalScoreToWin = 10;
+        public const int TotalScoreToWin = 30;
         
         public const int OffsetCards = 2;
 

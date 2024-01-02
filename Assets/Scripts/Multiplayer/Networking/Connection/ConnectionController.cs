@@ -79,7 +79,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     public void OnRegionSelect(Region region)
     {
-        PhotonNetwork.Disconnect();
+        Disconnect();
         m_IsTestConnection = false;
         string regionCode = region.Code;
         PhotonNetwork.ConnectToRegion(regionCode);

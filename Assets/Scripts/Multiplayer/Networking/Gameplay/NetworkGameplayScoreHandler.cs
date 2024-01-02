@@ -11,20 +11,29 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     
     private Dictionary<int,int> m_PlayerScoreObjects = new();
     private GameEvent<int> m_OnPlayerWin = new();
+
+    private int m_RecievedScores = 0;
     
     private void OnEnable()
     {
         GameEvents.GameplayEvents.RoundCompleted.Register(OnRoundCompleted);
+        GameEvents.GameFlowEvents.RoundStart.Register(OnRoundStart);
     }
 
     private void OnDisable()
     {
         GameEvents.GameplayEvents.RoundCompleted.UnRegister(OnRoundCompleted);
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(OnRoundStart);
     }
 
     public void Initialize(Action<int> onPlayerWin)
     {
         m_OnPlayerWin.Register(onPlayerWin);
+    }
+
+    private void OnRoundStart()
+    {
+        m_RecievedScores = 0;
     }
 
     public int GetUserScore(int playerID) => m_PlayerScoreObjects[playerID];
@@ -49,15 +58,17 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         Debug.LogError($"Score {score} ID {localID}");
         GameEvents.GameplayEvents.PlayerScoreReceived.Raise(score, localID);
 
-        CheckForWinner();
+        m_RecievedScores++;
+        Debug.LogError($"Received Scores Count {m_RecievedScores}");
+
+        if (PhotonNetwork.IsMasterClient && m_RecievedScores >= GameData.SessionData.CurrentRoomPlayersCount)
+            CheckForWinner();
     }
 
     //TODO: Implement Tie Breaker
     private void CheckForWinner()
     {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
-        
+        Debug.LogError("Checking For Winner");
         var entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
         List<KeyValuePair<int, int>> keyValuePairs = entries.ToList();
 
