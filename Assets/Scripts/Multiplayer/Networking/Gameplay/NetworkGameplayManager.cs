@@ -56,6 +56,8 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void StartMatchInternal()
     {
+        m_NetworkPlayerSpawner.SpawnPlayer();
+        
         if (!PhotonNetwork.IsMasterClient)
             return;
         
@@ -141,9 +143,6 @@ public class NetworkGameplayManager : MonoBehaviour
             {
                 count
             });
-
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(SpawnPlayer_RPC),
-            RpcTarget.AllBuffered, null);
     }
 
     [PunRPC]
@@ -154,12 +153,6 @@ public class NetworkGameplayManager : MonoBehaviour
         
         GameEvents.GameFlowEvents.MatchOver.Raise();
         Debug.LogError($"Winner is {winnerNetworkViewID}");
-    }
-    
-    [PunRPC]
-    private void SpawnPlayer_RPC()
-    {
-        m_NetworkPlayerSpawner.SpawnPlayer();
     }
 
     [PunRPC]
