@@ -10,9 +10,14 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     private List<PlayerController> m_JoinedPlayers = new();
     private GameEvent<PlayerController> m_OnPlayerSpawned = new();
 
-    private void Start()
+    private void Awake()
     {
         Dependencies.PlayersContainer = this;
+    }
+
+    private void Start()
+    {
+        Invoke(nameof(SpawnPlayer), 1f);
     }
 
     private void OnEnable()
@@ -37,7 +42,7 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     public void SpawnPlayer()
     {
         PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
-            Quaternion.identity);
+            Quaternion.identity, 0);
     }
 
     public void RegisterPlayer(PlayerController playerController)

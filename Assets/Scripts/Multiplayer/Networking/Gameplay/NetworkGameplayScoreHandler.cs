@@ -10,7 +10,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     [SerializeField] private NetworkGameplayManager m_NetworkGameplayHandler;
     
     private Dictionary<int,int> m_PlayerScoreObjects = new();
-    private GameEvent<int> m_OnPlayerWin = new();
+    private GameEvent<int, int, int> m_OnPlayerWin = new();
 
     private int m_RecievedScores = 0;
     
@@ -26,7 +26,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameFlowEvents.RoundStart.UnRegister(OnRoundStart);
     }
 
-    public void Initialize(Action<int> onPlayerWin)
+    public void Initialize(Action<int, int, int> onPlayerWin)
     {
         m_OnPlayerWin.Register(onPlayerWin);
     }
@@ -69,15 +69,18 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     private void CheckForWinner()
     {
         Debug.LogError("Checking For Winner");
-        var entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
+        
+        IOrderedEnumerable<KeyValuePair<int, int>> scoresOrderedByDescending = m_PlayerScoreObjects.OrderByDescending(pair => pair.Value);
+        IEnumerable<KeyValuePair<int, int>> entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
+        
         List<KeyValuePair<int, int>> keyValuePairs = entries.ToList();
 
         if (!keyValuePairs.Any())
             return;
 
-        keyValuePairs = new(keyValuePairs.OrderByDescending(pair => pair.Value));
+        keyValuePairs = scoresOrderedByDescending.ToList();
+        
         int highestScore = keyValuePairs.FirstOrDefault().Value;
-
         List<KeyValuePair<int, int>> highestKVPs = keyValuePairs.FindAll(pair => pair.Value == highestScore);
 
         if (highestKVPs.Count > 1)
@@ -85,7 +88,9 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
             return;
         }
 
-        m_OnPlayerWin.Raise(highestKVPs.First().Key);
+        int thirdID = keyValuePairs.Count > 2 ? keyValuePairs[2].Key : GameData.MetaData.NullID;
+        m_OnPlayerWin.Raise(highestKVPs.First().Key, keyValuePairs[1].Key, thirdID);
+        
         DispatchSortedScores();
     }
 
