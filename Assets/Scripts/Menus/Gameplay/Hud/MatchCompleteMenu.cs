@@ -42,6 +42,7 @@ public class MatchCompleteMenu : UIMenuBase
     protected override void OnContainerEnable()
     {
         base.OnContainerEnable();
+        GameEvents.GameplayUIEvents.MatchCompleteMenuShown.Raise();
         Invoke(nameof(DisableInternal), m_WaitBeforeMenuTransition);
     }
 

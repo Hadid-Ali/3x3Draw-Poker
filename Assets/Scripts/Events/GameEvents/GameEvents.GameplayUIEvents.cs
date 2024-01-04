@@ -17,5 +17,6 @@ public static partial class GameEvents
         public static GameEvent EnableResultViewRequest = new();
 
         public static GameEvent<List<KeyValuePair<int, int>>> DispatchScores = new();
+        public static GameEvent MatchCompleteMenuShown = new();
     }
 }

@@ -9,20 +9,19 @@ public class ConnectionControllerView : MonoBehaviour
 {
     [SerializeField] private ConnectionController m_ConnectionController;
     
-    [SerializeField] private StringEvent m_PlayerLoginEvent;
     [SerializeField] private PhotonRegionEvent m_PlayerRegionSelectEvent;
     [SerializeField] private PhotonRoomCreationEvent m_RoomcreationEvent;
 
     private void OnEnable()
     {
-        m_PlayerLoginEvent.Register(OnLogin);
+        GameEvents.MenuEvents.LoginAtMenuEvent.Register(OnLogin);
         m_PlayerRegionSelectEvent.Register(OnRegionSelection);
         m_RoomcreationEvent.Register(OnCreateRoom);
     }
 
     private void OnDisable()
     {
-        m_PlayerLoginEvent.Unregister(OnLogin);
+        GameEvents.MenuEvents.LoginAtMenuEvent.UnRegister(OnLogin);
         m_PlayerRegionSelectEvent.Unregister(OnRegionSelection);
         m_RoomcreationEvent.Unregister(OnCreateRoom);
     }

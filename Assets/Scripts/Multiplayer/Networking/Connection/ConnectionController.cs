@@ -16,6 +16,33 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     private RegionHandler m_RegionHandler;
     
     private bool m_IsTestConnection = true;
+    private bool m_CanReconnect = false;
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        GameEvents.GameFlowEvents.RoundStart.Register(OnRoundStart);
+        GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
+    }
+
+    public override void OnDisable()
+    {
+        base.OnDisable();
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(OnRoundStart);
+        GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
+    }
+
+    private void OnRoundStart()
+    {
+        m_CanReconnect = true;
+    }
+
+    private void OnMatchOver()
+    {
+        m_CanReconnect = false;
+        m_IsTestConnection = true;
+        GameData.SessionData.CurrentRoomPlayersCount = 0;
+    }
     
     private void UpdateConnectionStatus(string status)
     {
@@ -36,6 +63,10 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
+
+        if (!m_CanReconnect)
+            return;
+        
         Debug.LogError($"{cause}");
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Raise();
         
@@ -44,13 +75,13 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     private void ConnectToServer()
     {
-        UpdateConnectionStatus("\t\tConnecting");
+        UpdateConnectionStatus("\t\tConnecting...");
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster()
     {
-   //     Debug.LogError("Connected to Master");
+        Debug.LogError("Connected to Master");
         if (m_IsTestConnection)
         {
             UpdateConnectionStatus("Finding Best Regions to Connect");
