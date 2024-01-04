@@ -50,7 +50,7 @@ public class DecksHandler : MonoBehaviour
             m_CurrentGameDeck.AddRange(m_CardsRegistry);
         }
         
-        Debug.LogError($"Loaded Decks{m_CurrentGameDeck.Count}");
+       // Debug.LogError($"Loaded Decks{m_CurrentGameDeck.Count}");
     }
 
     public CardData[] GetRandomHand(int cardsAmount)
@@ -62,7 +62,7 @@ public class DecksHandler : MonoBehaviour
             handsData.Add( GetRandomCard());
         }
 
-        Debug.LogError($"Counter After {m_CurrentGameDeck.Count}");
+//        Debug.LogError($"Counter After {m_CurrentGameDeck.Count}");
         return handsData.ToArray();
     }
 }

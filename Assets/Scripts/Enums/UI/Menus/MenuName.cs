@@ -9,5 +9,7 @@ public enum MenuName
     LoadingScreen,
     RoundCompleteMenu,
     ErrorWindow,
-    MatchCompleteMenu
+    MatchCompleteMenu,
+    SettingsMenu,
+    GameOverMenu
 }

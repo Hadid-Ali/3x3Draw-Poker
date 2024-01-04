@@ -46,11 +46,13 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
     }
 
-    private void OnPlayerWin(int networkViewID)
+    private void OnPlayerWin(int networkViewID,int runnerUpID,int secondRunnerUpID)
     {
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(AnnounceWinner_RPC),RpcTarget.All,new object[]
         {
-            networkViewID
+            networkViewID,
+            runnerUpID,
+            secondRunnerUpID
         });
     }
 
@@ -141,22 +143,25 @@ public class NetworkGameplayManager : MonoBehaviour
             {
                 count
             });
-
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(SpawnPlayer_RPC),
-            RpcTarget.AllBuffered, null);
     }
 
     [PunRPC]
-    private void AnnounceWinner_RPC(int winnerNetworkViewID)
+    private void AnnounceWinner_RPC(int winnerNetworkViewID, int runnerUpNetworkViewID, int secondRunnerUpNetworkViewID)
     {
-        GameEvents.NetworkGameplayEvents.MatchWinnerAnnounced.Raise(winnerNetworkViewID);
+        List<int> scoresList = new List<int>()
+        {
+            winnerNetworkViewID,
+            runnerUpNetworkViewID
+        };
+
+        if (secondRunnerUpNetworkViewID != GameData.MetaData.NullID)
+            scoresList.Add(secondRunnerUpNetworkViewID);
+
+        GameEvents.NetworkGameplayEvents.MatchWinnersAnnounced.Raise(scoresList,
+            Dependencies.PlayersContainer.GetLocalPlayerNetworkID() == winnerNetworkViewID);
+
         GameEvents.GameFlowEvents.MatchOver.Raise();
-    }
-    
-    [PunRPC]
-    private void SpawnPlayer_RPC()
-    {
-        m_NetworkPlayerSpawner.SpawnPlayer();
+        Debug.LogError($"Winner is {winnerNetworkViewID}");
     }
 
     [PunRPC]

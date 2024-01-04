@@ -6,23 +6,22 @@ using UnityEngine.UI;
 
 public class UIMenu : UIMenuBase
 {
-    [SerializeField] private Button m_PlayButton;
+    [SerializeField] private ButtonWidget m_PlayButton;
+    [SerializeField] private ButtonWidget m_SettingsButton;
 
     private void Start()
     {
-        m_PlayButton.onClick.AddListener(LoginBtnEvent);
+        m_PlayButton.SubscribeAction(LoginBtnEvent);
+        m_SettingsButton.SubscribeAction(OnSettingsButton);
     }
 
+    private void OnSettingsButton()
+    {
+        ChangeMenuState(MenuName.SettingsMenu);
+    }
+    
     public void LoginBtnEvent()
     {
-        if (GameData.RuntimeData.IS_LOGGED_IN)
-        {
-            ChangeMenuState(MenuName.ConnectionScreen);
-        }
-        else
-        {
-
-            ChangeMenuState(MenuName.LoginScreen);
-        }
+        ChangeMenuState(MenuName.LoginScreen);
     }
 }

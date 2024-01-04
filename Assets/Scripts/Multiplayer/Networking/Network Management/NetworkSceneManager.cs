@@ -25,7 +25,7 @@ public class NetworkSceneManager : MonoBehaviour
     
     private IEnumerator LoadScene(string sceneName,float wait)
     {
-        Debug.LogError("Load Scene");
+     //   Debug.LogError("Load Scene");
         yield return new WaitForSeconds(wait);
         SceneManager.LoadSceneAsync(sceneName);
     }
