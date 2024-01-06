@@ -24,11 +24,21 @@ public class PlayerScoreUIObject : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.NetworkGameplayEvents.MatchWinnersAnnounced.Register(OnWinnerAnnounced);
+        GameEvents.GameplayEvents.PlayerPositionInit.Register(OnPlayerPositionInit);
     }
 
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.MatchWinnersAnnounced.UnRegister(OnWinnerAnnounced);
+        GameEvents.GameplayEvents.PlayerPositionInit.UnRegister(OnPlayerPositionInit);
+    }
+
+    private void OnPlayerPositionInit(int index, Vector3 position)
+    {
+        if (m_PositionIndex != index)
+            return;
+
+        transform.position = Dependencies.GameplayRefs.GetWorldToScreenPoint(position);
     }
 
     private void OnWinnerAnnounced(List<int> winnerNetworkIDs, bool isWinner)

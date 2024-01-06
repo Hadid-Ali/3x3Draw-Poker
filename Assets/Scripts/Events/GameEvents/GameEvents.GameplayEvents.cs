@@ -21,5 +21,7 @@ public static partial class GameEvents
         
         public static GameEvent<PlayerViewDataObject> LocalPlayerJoined = new();
         public static GameEvent<int, int> PlayerScoreReceived = new();
+
+        public static GameEvent<int, Vector3> PlayerPositionInit = new();
     }
 }
