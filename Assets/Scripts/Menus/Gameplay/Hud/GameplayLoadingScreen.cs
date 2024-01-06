@@ -12,7 +12,7 @@ public class GameplayLoadingScreen : UIMenuBase
 
     private void OnDisable()
     {
-        GameEvents.GameFlowEvents.RoundStart.Register(DisableMenu);
+        GameEvents.GameFlowEvents.RoundStart.UnRegister(DisableMenu);
     }
 
     private void DisableMenu()

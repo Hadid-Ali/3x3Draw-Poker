@@ -18,12 +18,15 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     {
         GameEvents.GameplayEvents.RoundCompleted.Register(OnRoundCompleted);
         GameEvents.GameFlowEvents.RoundStart.Register(OnRoundStart);
+        GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
     }
 
     private void OnDisable()
     {
         GameEvents.GameplayEvents.RoundCompleted.UnRegister(OnRoundCompleted);
         GameEvents.GameFlowEvents.RoundStart.UnRegister(OnRoundStart);
+        GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
+
     }
 
     public void Initialize(Action<int, int, int> onPlayerWin)
@@ -31,6 +34,11 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         m_OnPlayerWin.Register(onPlayerWin);
     }
 
+    private void OnMatchOver()
+    {
+        GameData.RuntimeData.ResetTotalScore();
+    }
+    
     private void OnRoundStart()
     {
         m_RecievedScores = 0;

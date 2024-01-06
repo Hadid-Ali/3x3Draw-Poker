@@ -17,6 +17,11 @@ public static partial class GameData
             private set;
         }
 
+        public static void ResetTotalScore()
+        {
+            TOTAL_SCORE = 0;
+        }
+        
         public static void AddToTotalScore(int score)
         {
             TOTAL_SCORE += score;
