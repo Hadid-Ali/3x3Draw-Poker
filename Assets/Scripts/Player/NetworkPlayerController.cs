@@ -13,13 +13,19 @@ public class NetworkPlayerController : PlayerController
     public override int ID => m_PhotonView.ViewID;
     public PhotonView NetworkView => m_PhotonView;
 
+
     protected override void Start()
     {
         base.Start();
-        OnSpawn();
+        OnSpawn(IsBot);
     }
 
-    public void OnSpawn()
+    public void ManipulateData()
+    {
+        
+    }
+
+    public void OnSpawn(bool isBot)
     {
         GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Raise(this);
         PhotonNetwork.RegisterPhotonView(m_PhotonView);
@@ -27,9 +33,20 @@ public class NetworkPlayerController : PlayerController
 
         if (!IsLocalPlayer)
             return;
-
+        
         InitializeControls();
-        SetPlayerDataOverServer();
+        if (isBot)
+        {
+            Player player = PhotonNetwork.LocalPlayer;
+            Debug.LogError($"Player ID {player.ActorNumber + 1}");
+
+            NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
+                new object[] { player.NickName, player.ActorNumber + Random.Range(100,200),Random.Range(0,8) });
+        }
+        else
+        {
+            SetPlayerDataOverServer();    
+        }
     }
 
     private void OnNetworkDisconnect()
@@ -62,6 +79,7 @@ public class NetworkPlayerController : PlayerController
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Raise(
             new NetworkDataObject(GameCardsData.Instance.GetDecksData(), ID));
+
     }
 
     public override void AwardPlayerPoints(int reward)

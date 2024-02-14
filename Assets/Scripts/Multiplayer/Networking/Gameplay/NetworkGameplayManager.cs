@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
 public class NetworkGameplayManager : MonoBehaviour
@@ -18,9 +19,14 @@ public class NetworkGameplayManager : MonoBehaviour
     
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
+    
+    [field: SerializeField] public bool isBot { get; set; }
+    
 
-    private void Awake()
+    public virtual void Awake()
     {
+        isBot = false;
+        
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
     }
@@ -85,7 +91,7 @@ public class NetworkGameplayManager : MonoBehaviour
 
         Debug.LogError(m_AllDecks.Count);
 
-        if (!PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient && !isBot)
             return;
         
         if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
@@ -136,7 +142,7 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        int count = GameData.SessionData.CurrentRoomPlayersCount;
+        int count = GameData.SessionData.CurrentRoomPlayersCount + 1;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
             RpcTarget.AllBuffered, new object[]
