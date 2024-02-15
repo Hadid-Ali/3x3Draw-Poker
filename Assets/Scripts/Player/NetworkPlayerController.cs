@@ -33,10 +33,13 @@ public class NetworkPlayerController : PlayerController
         if (isBot)
         {
             Player player = PhotonNetwork.LocalPlayer;
-            Debug.LogError($"Player ID {player.ActorNumber + 1}");
 
+            int _botId = player.ActorNumber + Random.Range(3, 6);
+            
             NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
-                new object[] { player.NickName, player.ActorNumber + Random.Range(3,6),Random.Range(0,8) });
+                new object[] { "Bot", _botId,Random.Range(0,8) });
+
+            NetworkGameplayBotsManager.BotID = _botId;
         }
         else
         {

@@ -12,7 +12,7 @@ public class NetworkGameplayManager : MonoBehaviour
     [Header("Component Refs")]
     
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
-    [SerializeField] private PhotonView m_NetworkGameplayManagerView;
+    [SerializeField] protected PhotonView m_NetworkGameplayManagerView;
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
     [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
@@ -69,7 +69,7 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void StartMatchInternal()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient || isBot)
             return;
         
         StartMatch();
@@ -80,7 +80,7 @@ public class NetworkGameplayManager : MonoBehaviour
         m_NetworkMatchManager.OnPlayerSpawnedInMatch(playerController);
     }
     
-    private void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
+    protected virtual void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
     {
         string jsonData = NetworkDataObject.Serialize(networkDataObject);
 
@@ -89,7 +89,7 @@ public class NetworkGameplayManager : MonoBehaviour
     }
 
     [PunRPC]
-    private void OnNetworkSubmitRequest_RPC(string jsonData)
+    protected void OnNetworkSubmitRequest_RPC(string jsonData)
     {
         if(isBot) 
             return;
@@ -102,9 +102,11 @@ public class NetworkGameplayManager : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient)
             return;
         
+        print(GameData.SessionData.CurrentRoomPlayersCount);
         if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
         {
             OnNetworkDeckReceived();
+            print("Evaluation started");
         }
     }
     
@@ -150,13 +152,16 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        int count = GameData.SessionData.CurrentRoomPlayersCount + 1;
+        GameData.SessionData.CurrentRoomPlayersCount++;
+        int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
             RpcTarget.AllBuffered, new object[]
             {
                 count
             });
+
+        print($"Star match with players  : {count}");
     }
 
     [PunRPC]

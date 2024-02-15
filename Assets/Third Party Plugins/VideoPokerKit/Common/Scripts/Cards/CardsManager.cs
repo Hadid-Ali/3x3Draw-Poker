@@ -27,6 +27,9 @@ public class CardsManager : MonoBehaviour
 			workCards[i] = new CardData();
 	}
 
+
+
+
 	private void OnEnable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Register(OnCardsArrangementUpdated);

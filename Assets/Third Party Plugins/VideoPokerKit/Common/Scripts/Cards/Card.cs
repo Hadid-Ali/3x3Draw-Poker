@@ -28,6 +28,11 @@ public class Card : MonoBehaviour
 
 		m_CardDataHandler.Initialize(ClearAfterDeal, OnCardDataUpdatedByPlayer, SetCardDataView);
 	}
+
+	public void SetCardDataHolder(CardDataHolder card)
+	{
+		m_CardDataHandler = card;
+	}
 	
 	public void InitializeWithAction(Action onCardDataUpdated)
 	{
