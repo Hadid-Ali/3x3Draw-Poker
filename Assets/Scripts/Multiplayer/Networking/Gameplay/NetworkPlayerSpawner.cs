@@ -44,7 +44,7 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
        GameObject player = PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
             Quaternion.identity, 0);
 
-       player.GetComponent<PlayerController>().IsBot = true;
+       player.GetComponent<PlayerController>().IsBot = GetComponent<NetworkGameplayManager>().isBot;
     }
 
     public void RegisterPlayer(PlayerController playerController)

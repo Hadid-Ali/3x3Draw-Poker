@@ -20,11 +20,6 @@ public class NetworkPlayerController : PlayerController
         OnSpawn(IsBot);
     }
 
-    public void ManipulateData()
-    {
-        
-    }
-
     public void OnSpawn(bool isBot)
     {
         GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Raise(this);
@@ -41,7 +36,7 @@ public class NetworkPlayerController : PlayerController
             Debug.LogError($"Player ID {player.ActorNumber + 1}");
 
             NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
-                new object[] { player.NickName, player.ActorNumber + Random.Range(100,200),Random.Range(0,8) });
+                new object[] { player.NickName, player.ActorNumber + Random.Range(3,6),Random.Range(0,8) });
         }
         else
         {

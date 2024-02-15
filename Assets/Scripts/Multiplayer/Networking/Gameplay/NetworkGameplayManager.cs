@@ -16,6 +16,7 @@ public class NetworkGameplayManager : MonoBehaviour
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
     [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
+    [SerializeField] private GameObject Bot;
     
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
@@ -29,6 +30,10 @@ public class NetworkGameplayManager : MonoBehaviour
         
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
+        
+        if (PhotonNetwork.IsMasterClient)
+            if(Bot)
+                Bot.SetActive(true);
     }
 
     private void Start()
@@ -86,12 +91,15 @@ public class NetworkGameplayManager : MonoBehaviour
     [PunRPC]
     private void OnNetworkSubmitRequest_RPC(string jsonData)
     {
+        if(isBot) 
+            return;
+        
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         m_AllDecks.Add(dataObject);
 
         Debug.LogError(m_AllDecks.Count);
 
-        if (!PhotonNetwork.IsMasterClient && !isBot)
+        if (!PhotonNetwork.IsMasterClient)
             return;
         
         if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)

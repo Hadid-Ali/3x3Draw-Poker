@@ -30,7 +30,7 @@ public class NetworkMatchManager : MonoBehaviour
     {
         Invoke(nameof(StopFurtherDealing), 1f);
         
-        if (!PhotonNetwork.IsMasterClient || !m_CanDeal)
+        if (!PhotonNetwork.IsMasterClient || !m_CanDeal || GetComponent<NetworkGameplayManager>().isBot)
             return;
         
         if (playerController.IsLocalPlayer)

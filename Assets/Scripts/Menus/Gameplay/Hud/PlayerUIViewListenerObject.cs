@@ -28,6 +28,7 @@ public class PlayerUIViewListenerObject : PlayerViewListenerObject
     {
         PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj => obj.PositionIndex == viewDataObject.LocalID);
         
+        print(viewDataObject.Name);
         scoreObject.SetName(viewDataObject.Name);
         scoreObject.SetContainerStatus(true);
     }
