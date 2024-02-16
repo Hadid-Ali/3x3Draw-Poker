@@ -32,12 +32,10 @@ public class NetworkPlayerController : PlayerController
         InitializeControls();
         if (isBot)
         {
-            Player player = PhotonNetwork.LocalPlayer;
-
-            int _botId = player.ActorNumber + Random.Range(3, 6);
+            int _botId = GameData.SessionData.CurrentRoomPlayersCount;
             
             NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
-                new object[] { "Bot", _botId,Random.Range(0,8) });
+                new object[] { $"Bot {_botId}", _botId,Random.Range(0,8) });
 
             NetworkGameplayBotsManager.BotID = _botId;
         }
@@ -76,8 +74,9 @@ public class NetworkPlayerController : PlayerController
     private void OnSubmitDeck()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.Raise(
-            new NetworkDataObject(GameCardsData.Instance.GetDecksData(), ID));
-
+            IsBot
+                ? new NetworkDataObject(NetworkBotCardsHandler.GetCards(), ID) //For Bot
+                : new NetworkDataObject(GameCardsData.Instance.GetDecksData(), ID)); //For Players
     }
 
     public override void AwardPlayerPoints(int reward)
@@ -99,7 +98,7 @@ public class NetworkPlayerController : PlayerController
     
     public override void SubmitCardData(string data)
     {
-        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(ReceiveHandFromNetwork), RpcTarget.All,
+        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(ReceiveHandFromNetwork), RpcTarget.All, 
             new object[] { data });
     }
 

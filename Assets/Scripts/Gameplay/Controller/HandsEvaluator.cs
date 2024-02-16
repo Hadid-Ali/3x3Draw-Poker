@@ -132,18 +132,24 @@ public class HandsEvaluator : MonoBehaviour
                             .ToDictionary(x => x.photonID, x => x._HandType);
                         List<KeyValuePair<int, HandTypes>> userHandsList = sortedHands.ToList();
                         Winner = userHandsList[^1].Key;
+                        
+                        print("Case 0");
                         break;
                     case 1:
                         winners.Add(firstValue);
+                        print("Case 1");
                         break;
                     case 2:
                         winners.Add(secondValue);
+                        print("Case 2");
                         break;
                 }
             }
-
-            Hand finalWinner = winners[^1];
-            Winner = finalWinner.photonID;
+            
+                // print($"Winner Count is : {winners.Count}");
+                // print($"Winner is : {winners[^1]} : {winners[^1].photonID}");
+                Hand finalWinner = winners[^1];
+                Winner = finalWinner.photonID;
         }
         else
         {

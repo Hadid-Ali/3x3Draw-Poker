@@ -75,15 +75,15 @@ public class GameplayHud : MenusController
 
     private void SubmitCards()
     {
-        try
-        {
+        // try
+        // {
             GameEvents.GameplayUIEvents.SubmitDecks.Raise();
             SetGameplayInputStatus(false);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e.StackTrace);
-        }
+        // }
+        // catch (Exception e)
+        // {
+        //     Debug.LogError(e.StackTrace);
+        // }
     }
     
     private void AllowGameplayInputs()

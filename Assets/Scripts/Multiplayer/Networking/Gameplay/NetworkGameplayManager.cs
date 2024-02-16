@@ -91,9 +91,6 @@ public class NetworkGameplayManager : MonoBehaviour
     [PunRPC]
     protected void OnNetworkSubmitRequest_RPC(string jsonData)
     {
-        if(isBot) 
-            return;
-        
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         m_AllDecks.Add(dataObject);
 
@@ -105,6 +102,16 @@ public class NetworkGameplayManager : MonoBehaviour
         print(GameData.SessionData.CurrentRoomPlayersCount);
         if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
         {
+            for (int i = 0; i < m_AllDecks.Count; i++)
+            {
+                string card = "";
+                for (int j = 0; j < m_AllDecks[i].PlayerDecks.Count; j++)
+                {
+                    card += $"{m_AllDecks[i].PlayerDecks[j].value} {m_AllDecks[i].PlayerDecks[j].type}";
+                }
+                print($"Deck {card} : ID : {m_AllDecks[i].PhotonViewID}");
+            }
+            
             OnNetworkDeckReceived();
             print("Evaluation started");
         }
@@ -152,7 +159,9 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        GameData.SessionData.CurrentRoomPlayersCount++;
+        if(Bot)
+            GameData.SessionData.CurrentRoomPlayersCount++;
+        
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),

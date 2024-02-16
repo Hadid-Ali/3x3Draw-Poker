@@ -20,16 +20,9 @@ public class NetworkGameplayBotsManager : NetworkGameplayManager
         
     }
 
-    protected override void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
+    private void OnDestroy()
     {
-        NetworkDataObject _Object =  new NetworkDataObject(cardsHandler.GetCards(), BotID);
-        string jsonData = NetworkDataObject.Serialize(_Object);
-
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(OnNetworkSubmitRequest_RPC),
-            RpcTarget.All, new object[] { jsonData });
-        
-        print("Bot Evaluation working");
-        print($"Bot ID is : {BotID}");
         
     }
+    
 }
