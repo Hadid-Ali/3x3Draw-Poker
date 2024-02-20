@@ -112,8 +112,8 @@ public class NetworkGameplayManager : MonoBehaviour
                 }
                 print($"Deck {card} : ID : {m_AllDecks[i].PhotonViewID}");
             }
-            
-            OnNetworkDeckReceived();
+            if(!isBot)
+                OnNetworkDeckReceived();
             print("Evaluation started");
         }
     }
@@ -125,6 +125,8 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
+        if(isBot) return;
+        
         SyncUserScoresOverNetwork(new SerializableList<PlayerScoreObject>()
         {
             Contents = userScores.Values.ToList()
@@ -134,6 +136,7 @@ public class NetworkGameplayManager : MonoBehaviour
         {
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
             m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
+            print(m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).Name);
         }
         
     }
@@ -206,7 +209,8 @@ public class NetworkGameplayManager : MonoBehaviour
         SerializableList<PlayerScoreObject> playerScores =
             JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
         
-        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
+        if(!isBot)
+            GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
     }
 
     [PunRPC]

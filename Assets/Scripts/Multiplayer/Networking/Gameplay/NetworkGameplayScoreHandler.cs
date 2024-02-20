@@ -70,7 +70,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
         m_RecievedScores++;
         
-        if (PhotonNetwork.IsMasterClient && m_RecievedScores >= GameData.SessionData.CurrentRoomPlayersCount && !m_NetworkGameplayHandler.isBot)
+        if (PhotonNetwork.IsMasterClient && m_RecievedScores == GameData.SessionData.CurrentRoomPlayersCount && !m_NetworkGameplayHandler.isBot)
             CheckForWinner();
     }
 

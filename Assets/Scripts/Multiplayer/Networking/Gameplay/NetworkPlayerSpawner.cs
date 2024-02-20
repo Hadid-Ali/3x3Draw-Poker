@@ -91,18 +91,21 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
             GameData.RuntimeData.AddToBOTTotalScore(obje.Score);
         }
         else
+        {
             GameData.RuntimeData.AddToTotalScore(obje.Score);
+            GameEvents.GameplayEvents.RoundCompleted.Raise();
+        }
         
-        GameEvents.GameplayEvents.RoundCompleted.Raise();
     }
     
     private void OnPlayerSpawned(PlayerController playerController)
     {
-        if (m_PlayerController.ID == playerController.ID)
-        {
-            m_Manager.ID = playerController.ID;
-            print($"ID is {m_Manager.ID}");            
-        }
+        if(m_PlayerController)
+            if (m_PlayerController.ID == playerController.ID)
+            {
+                m_Manager.ID = playerController.ID;
+                print($"ID is {m_Manager.ID}");            
+            }
         
         m_OnPlayerSpawned.Raise(playerController);
     }

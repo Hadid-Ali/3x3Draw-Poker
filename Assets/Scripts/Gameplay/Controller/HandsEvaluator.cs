@@ -11,8 +11,12 @@ struct HighestHandOccurence
 
 public class HandsEvaluator : MonoBehaviour
 {
+    [SerializeField] private NetworkGameplayManager _manager;
     private void OnEnable()
     {
+        if (!_manager)
+            _manager = GetComponent<NetworkGameplayManager>();
+        
         GameEvents.NetworkGameplayEvents.AllUserHandsReceived.Register(OnAllUserHandsReceived);
     }
 
@@ -98,7 +102,8 @@ public class HandsEvaluator : MonoBehaviour
             CompareHand(hands, out int winner);
             userScores[winner].AddScore(GameData.MetaData.HandWinReward, i);
         }
-        GameEvents.GameplayEvents.UserHandsEvaluated.Raise(userScores);
+        if(!_manager.isBot)
+            GameEvents.GameplayEvents.UserHandsEvaluated.Raise(userScores);
     }
 
     private static void CompareHand(List<Hand> hands, out int Winner)
