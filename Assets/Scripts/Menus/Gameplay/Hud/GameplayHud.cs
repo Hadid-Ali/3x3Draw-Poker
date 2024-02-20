@@ -80,7 +80,7 @@ public class GameplayHud : MenusController
             GameEvents.GameplayUIEvents.SubmitDecks.Raise();
             SetGameplayInputStatus(false);
         // }
-        // catch (Exception e)
+        // catch (Exception e)00
         // {
         //     Debug.LogError(e.StackTrace);
         // }

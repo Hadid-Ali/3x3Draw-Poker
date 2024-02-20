@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -6,29 +5,32 @@ using Random = UnityEngine.Random;
 public class NetworkBotCardsHandler : MonoBehaviour
 {
     private static List<CardData> cards = new();
+    [SerializeField] public List<CardData> cardsSerialize = new();
+    [SerializeField] private NetworkGameplayManager _networkGameplayManager;
 
     private void Awake()
     {
-        InitializeDeckForBot();
-        //GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Register(DealCards);
-        //GameEvents.NetworkEvents.PlayerReceiveCardsData.Register(ReceiveHandData);
+        if (!_networkGameplayManager)
+            _networkGameplayManager = GetComponent<NetworkGameplayManager>();
+        
+        //InitializeDeckForBot();
+        GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Register(ReceiveHandData);
     }
-
-
-
     private void OnDestroy()
     {
-       // GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.UnRegister(DealCards);
-        //GameEvents.NetworkEvents.PlayerReceiveCardsData.UnRegister(ReceiveHandData);
+        GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Register(ReceiveHandData);
     }
 
-    private void DealCards(CardData[] obj)
+    private void ReceiveHandData(CardData[] obj, int ID)
     {
-        cards.Clear();
+        if(ID != _networkGameplayManager.ID)
+            return;
         
-        for (int i = 0; i < 15; i++)
-            cards.Add(obj[i]);
+        cards.AddRange(obj);
+        cardsSerialize.AddRange(cards);
+        print($"Cards Added in bot {cards.Count}");
     }
+
 
     public void InitializeDeckForBot()
     {

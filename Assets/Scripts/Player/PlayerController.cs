@@ -5,7 +5,8 @@ public class PlayerController : MonoBehaviour
 {
     public virtual bool IsBot { get; set; }
     public virtual bool IsLocalPlayer => true;
-    public virtual int ID => int.MinValue;
+    public virtual int ID { protected set; get; }
+    
 
     public int CharacterAvatarID
     {

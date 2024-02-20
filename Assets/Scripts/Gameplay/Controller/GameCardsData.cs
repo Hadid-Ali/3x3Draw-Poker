@@ -19,7 +19,6 @@ public class GameCardsData : SceneBasedSingleton<GameCardsData>
         }
         
         decks.ForEach(deck => data.AddRange(deck.CardsData));
-        print("Non-Bot data : " + data.Count);
         return data;
     }
 }

@@ -25,21 +25,25 @@ public class NetworkCardsDealer : MonoBehaviour
         GameEvents.NetworkEvents.PlayerReceiveCardsData.UnRegister(ReceiveHandData);
     }
 
-    private void ReceiveHandData(string data)
+    private void ReceiveHandData(string data, int ID)
     {
         NetworkHandObject handObject = NetworkHandObject.DeSerialize(data);
-        DealCardsToLocalPlayer(handObject.PlayerHand);
+        DealCardsToLocalPlayer(handObject.PlayerHand, ID);
+        
+        print($"User hands Recieved with ID {ID}");
     }
+
     
     [ContextMenu("DealCards")]
     public void DealCardsToLocalPlayer()
     {
-        DealCardsToLocalPlayer(m_DecksHandler.GetRandomHand(m_HandSize));
+        DealCardsToLocalPlayer(m_DecksHandler.GetRandomHand(m_HandSize), 0);
     }
 
-    public void DealCardsToLocalPlayer(CardData[] cardsData)
+
+    public void DealCardsToLocalPlayer(CardData[] cardsData, int ID)
     {
-        GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Raise(cardsData);
+        GameEvents.NetworkGameplayEvents.UserHandReceivedEvent.Raise(cardsData, ID);
     }
     
     public void DealCardsToNetworkPlayer(PlayerController playerController)

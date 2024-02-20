@@ -8,7 +8,7 @@ public static partial class GameEvents
         public static GameEvent LocalPlayerJoined = new();
         public static GameEvent<PlayerController> NetworkPlayerJoined = new();
         
-        public static GameEvent<string> PlayerReceiveCardsData = new();
+        public static GameEvent<string, int> PlayerReceiveCardsData = new();
         public static GameEvent PlayersJoined = new();
 
         public static GameEvent NetworkJoinedEvent = new();

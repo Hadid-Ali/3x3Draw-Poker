@@ -16,16 +16,27 @@ public static partial class GameData
             get;
             private set;
         }
+        public static int BOT_TOTAL_SCORE
+        {
+            get;
+            private set;
+        }
 
         public static void ResetTotalScore()
         {
             TOTAL_SCORE = 0;
+            BOT_TOTAL_SCORE = 0;
         }
         
         public static void AddToTotalScore(int score)
         {
             TOTAL_SCORE += score;
             Debug.LogError($"Total Score {TOTAL_SCORE.ToString()}");
+        }
+        public static void AddToBOTTotalScore(int score)
+        {
+            BOT_TOTAL_SCORE += score;
+            Debug.LogError($"BOT Total Score {BOT_TOTAL_SCORE.ToString()}");
         }
     }
 }

@@ -22,27 +22,19 @@ public class NetworkPlayerController : PlayerController
 
     public void OnSpawn(bool isBot)
     {
-        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Raise(this);
         PhotonNetwork.RegisterPhotonView(m_PhotonView);
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnect);
-
+        
+        //Assign ID before Event
+        ID = isBot? GameData.SessionData.CurrentRoomPlayersCount :  m_PhotonView.ViewID;
+        GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Raise(this);
+        
         if (!IsLocalPlayer)
             return;
         
         InitializeControls();
-        if (isBot)
-        {
-            int _botId = GameData.SessionData.CurrentRoomPlayersCount;
-            
-            NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
-                new object[] { $"Bot {_botId}", _botId,Random.Range(0,8) });
-
-            NetworkGameplayBotsManager.BotID = _botId;
-        }
-        else
-        {
-            SetPlayerDataOverServer();    
-        }
+        SetPlayerDataOverServer();    
+        
     }
 
     private void OnNetworkDisconnect()
@@ -55,8 +47,13 @@ public class NetworkPlayerController : PlayerController
         Player player = PhotonNetwork.LocalPlayer;
         Debug.LogError($"Player ID {player.ActorNumber}");
 
+        int _botId = GameData.SessionData.CurrentRoomPlayersCount;
+
+        int _id = IsBot ? _botId : player.ActorNumber;
+        string nickName = IsBot ? $"Bot {_botId}" : player.NickName;
+        
         NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
-            new object[] { player.NickName, player.ActorNumber,Random.Range(0,8) });
+            new object[] { nickName, _id ,Random.Range(0,8)});
     }
 
 
@@ -90,7 +87,7 @@ public class NetworkPlayerController : PlayerController
     {
         Debug.LogError("Award Points");
         
-        if (!IsLocalPlayer)
+        if (!IsLocalPlayer && IsBot)
             return;
         
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Raise(reward);
@@ -99,16 +96,16 @@ public class NetworkPlayerController : PlayerController
     public override void SubmitCardData(string data)
     {
         NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(ReceiveHandFromNetwork), RpcTarget.All, 
-            new object[] { data });
+            new object[] { data, ID });
     }
 
     [PunRPC]
-    public void ReceiveHandFromNetwork(string data)
+    public void ReceiveHandFromNetwork(string data, int _ID)
     {
         if (!m_PhotonView.IsMine)
             return;
 
-        GameEvents.NetworkEvents.PlayerReceiveCardsData.Raise(data);
+        GameEvents.NetworkEvents.PlayerReceiveCardsData.Raise(data, _ID);
     }
 
     [PunRPC]

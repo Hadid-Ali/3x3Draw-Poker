@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using Unity.VisualScripting;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
 public class NetworkGameplayManager : MonoBehaviour
@@ -16,12 +17,12 @@ public class NetworkGameplayManager : MonoBehaviour
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
     [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
-    [SerializeField] private GameObject Bot;
+    [SerializeField] private GameObject m_BotObject;
     
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
-    
     [field: SerializeField] public bool isBot { get; set; }
+    [field: SerializeField] public  int ID { get; set; }
     
 
     public virtual void Awake()
@@ -32,8 +33,8 @@ public class NetworkGameplayManager : MonoBehaviour
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
         
         if (PhotonNetwork.IsMasterClient)
-            if(Bot)
-                Bot.SetActive(true);
+            if(m_BotObject)
+                m_BotObject.SetActive(true);
     }
 
     private void Start()
@@ -89,7 +90,7 @@ public class NetworkGameplayManager : MonoBehaviour
     }
 
     [PunRPC]
-    protected void OnNetworkSubmitRequest_RPC(string jsonData)
+    protected  void OnNetworkSubmitRequest_RPC(string jsonData)
     {
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         m_AllDecks.Add(dataObject);
@@ -134,6 +135,7 @@ public class NetworkGameplayManager : MonoBehaviour
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
             m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
         }
+        
     }
 
     private void SyncUserScoresOverNetwork(SerializableList<PlayerScoreObject> playerScores)
@@ -159,7 +161,7 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        if(Bot)
+        if(m_BotObject)
             GameData.SessionData.CurrentRoomPlayersCount++;
         
         int count = GameData.SessionData.CurrentRoomPlayersCount;

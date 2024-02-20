@@ -48,12 +48,14 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
     public void SyncNetworkScoreObjectOverNetwork()
     {
-        Debug.LogError($"Score {GameData.RuntimeData.TOTAL_SCORE}");
-        
+        int _Totalscore = m_NetworkGameplayHandler.isBot ? GameData.RuntimeData.BOT_TOTAL_SCORE : GameData.RuntimeData.TOTAL_SCORE;
+        int _id = m_NetworkGameplayHandler.isBot
+            ? Dependencies.PlayersContainer.GetBotID()
+            : Dependencies.PlayersContainer.GetLocalPlayerNetworkID();
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayHandler.NetworkViewComponent,nameof(SyncNetworkPlayerScoreReceived_RPC),RpcTarget.All,new object[]
         {
-            Dependencies.PlayersContainer.GetLocalPlayerNetworkID(),
-            GameData.RuntimeData.TOTAL_SCORE
+            _id,
+            _Totalscore
         });
     }
 
@@ -67,9 +69,8 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameplayEvents.PlayerScoreReceived.Raise(score, localID);
 
         m_RecievedScores++;
-        Debug.LogError($"Received Scores Count {m_RecievedScores}");
-
-        if (PhotonNetwork.IsMasterClient && m_RecievedScores >= GameData.SessionData.CurrentRoomPlayersCount)
+        
+        if (PhotonNetwork.IsMasterClient && m_RecievedScores >= GameData.SessionData.CurrentRoomPlayersCount && !m_NetworkGameplayHandler.isBot)
             CheckForWinner();
     }
 
@@ -97,6 +98,9 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         }
 
         int thirdID = keyValuePairs.Count > 2 ? keyValuePairs[2].Key : GameData.MetaData.NullID;
+        print($"third : {thirdID}" );
+        print($"Second : {keyValuePairs[1].Key} " );
+        print($"First :  {highestKVPs.First().Key}" );
         m_OnPlayerWin.Raise(highestKVPs.First().Key, keyValuePairs[1].Key, thirdID);
         
         DispatchSortedScores();
