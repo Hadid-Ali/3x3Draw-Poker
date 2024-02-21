@@ -87,9 +87,10 @@ public class NetworkPlayerController : PlayerController
     {
         Debug.LogError("Award Points");
         
-        if (!IsLocalPlayer && IsBot)
+        if (!IsLocalPlayer || IsBot)
             return;
         
+        print($"{Name} : {reward} RPC");
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Raise(reward);
     }
     
