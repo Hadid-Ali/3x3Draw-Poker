@@ -36,7 +36,7 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 
     public int GetPlayerLocalID(int photonViewID) => m_JoinedPlayers.Find(player => player.ID == photonViewID).LocalID;
     
-    public int GetLocalPlayerNetworkID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
+    public int GetLocalPlayerNetworkID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer && !player.IsBot).ID;
 
     public int GetBotID()
     {

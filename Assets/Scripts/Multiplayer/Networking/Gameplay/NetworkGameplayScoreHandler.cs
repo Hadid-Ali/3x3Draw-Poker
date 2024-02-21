@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using UnityEditor.MPE;
 using UnityEngine;
 
 public class NetworkGameplayScoreHandler : MonoBehaviour
 {
-    [SerializeField] private NetworkGameplayManager m_NetworkGameplayHandler;
+    [SerializeField] protected NetworkGameplayManager m_NetworkGameplayHandler;
     
     private Dictionary<int,int> m_PlayerScoreObjects = new();
     private GameEvent<int, int, int> m_OnPlayerWin = new();
@@ -46,17 +47,25 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
     public int GetUserScore(int playerID) => m_PlayerScoreObjects[playerID];
 
-    public void SyncNetworkScoreObjectOverNetwork()
+    public virtual void SyncNetworkScoreObjectOverNetwork()
     {
-        int _Totalscore = m_NetworkGameplayHandler.isBot ? GameData.RuntimeData.BOT_TOTAL_SCORE : GameData.RuntimeData.TOTAL_SCORE;
+        int _Totalscore = m_NetworkGameplayHandler.isBot
+            ? GameData.RuntimeData.BOT_TOTAL_SCORE
+            : GameData.RuntimeData.TOTAL_SCORE;
         int _id = m_NetworkGameplayHandler.isBot
             ? Dependencies.PlayersContainer.GetBotID()
             : Dependencies.PlayersContainer.GetLocalPlayerNetworkID();
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayHandler.NetworkViewComponent,nameof(SyncNetworkPlayerScoreReceived_RPC),RpcTarget.All,new object[]
-        {
-            _id,
-            _Totalscore
-        });
+
+
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayHandler.NetworkViewComponent,
+            nameof(SyncNetworkPlayerScoreReceived_RPC), RpcTarget.All, new object[]
+            {
+                _id,
+                _Totalscore
+            });
+
+
+
     }
 
     [PunRPC]
@@ -70,7 +79,8 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
         m_RecievedScores++;
         
-        if (PhotonNetwork.IsMasterClient && m_RecievedScores == GameData.SessionData.CurrentRoomPlayersCount && !m_NetworkGameplayHandler.isBot)
+        print($"Is Master Client {PhotonNetwork.IsMasterClient} Score : {m_RecievedScores} IsBot : {m_NetworkGameplayHandler.isBot}  Id : {photonViewID}" );
+        if (PhotonNetwork.IsMasterClient && m_RecievedScores >= GameData.SessionData.CurrentRoomPlayersCount && !m_NetworkGameplayHandler.isBot)
             CheckForWinner();
     }
 
