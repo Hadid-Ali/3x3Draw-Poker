@@ -6,9 +6,6 @@ public class NetworkGameplayBotsManager : NetworkGameplayManager
 {
     [SerializeField] private NetworkBotCardsHandler cardsHandler;
 
-   // public override int ID { get; set; }
-    
-
     public override void Awake()
     {
         base.Awake();

@@ -63,8 +63,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
                 _id,
                 _Totalscore
             });
-
-
+        
 
     }
 

@@ -7,7 +7,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
     private int m_MaxPlayers = 0;
 
     private int CurrentPlayersCount => PhotonNetwork.PlayerList.Length;
-
+    
     public void SetMaxPlayersCount(int count)
     {
         m_MaxPlayers = count;
@@ -26,6 +26,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
         
         if (CurrentPlayersCount >= GameData.MetaData.MinimumRequiredPlayers)
         {
+            
             GameEvents.TimerEvents.ExecuteActionRequest.Raise(new TimerDataObject()
             {
                 Title = "Starting The Match",
@@ -34,6 +35,8 @@ public class NetworkMatchStartHandler : MonoBehaviour
                 IsNetworkGlobal = true
             });
             m_IsAutoStartRequestSent = true;
+            
+            print("Match started");
         }
     }
 
