@@ -123,12 +123,12 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
        m_MatchStartHandler.SetMaxPlayersCount(roomOptions.MaxPlayers);
         PhotonNetwork.JoinOrCreateRoom(Guid.NewGuid().ToString(), roomOptions, TypedLobby.Default);
-        StartCoroutine(Wait());
+        StartCoroutine(NotifyPlayerJoined_Routine());
     }
 
-    IEnumerator Wait()
+    IEnumerator NotifyPlayerJoined_Routine()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(GameData.MetaData.WaitBeforePlayerJoinNotify);
         m_MatchStartHandler.OnPlayerEnteredInRoom();
     }
 
