@@ -17,9 +17,9 @@ public static partial class GameData
         public const int MinimumNameLength = 3;
         public const int MaximumNameLength = 8;
 
-        public const int MaxPlayersLimit = 6;
-        public const int MinimumRequiredPlayers = 2;
-        public const int WaitBeforeAutomaticMatchStart = 10;
+        public const int MaxPlayersLimit = 3;
+        public const int MinimumRequiredPlayers = 1;
+        public const int WaitBeforeAutomaticMatchStart = 5;
 
         public const int NullID = -1000;
 

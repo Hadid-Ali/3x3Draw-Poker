@@ -7,5 +7,6 @@ public static partial class GameData
     public static class SessionData
     {
         public static int CurrentRoomPlayersCount = 0;
+        public static int CurrentBotCount = 0;
     }
 }

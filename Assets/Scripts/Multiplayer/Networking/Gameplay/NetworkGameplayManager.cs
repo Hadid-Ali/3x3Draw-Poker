@@ -12,30 +12,26 @@ public class NetworkGameplayManager : MonoBehaviour
 {
     [Header("Component Refs")]
     
+    [SerializeField] public int botCount;
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] protected PhotonView m_NetworkGameplayManagerView;
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
-    [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
-    [SerializeField] private GameObject m_BotObject;
+    [SerializeField] public NetworkGameplayScoreHandler m_NetworkScoreHandler;
     
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
-    [field: SerializeField] public bool isBot { get; set; }
-    [field: SerializeField] public  int ID { get; set; }
+
     
 
     public virtual void Awake()
     {
-        isBot = false;
-        
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
         
-        if (PhotonNetwork.IsMasterClient)
-            if(m_BotObject)
-                m_BotObject.SetActive(true);
+        
     }
+    
 
     private void Start()
     {
@@ -70,7 +66,7 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void StartMatchInternal()
     {
-        if (!PhotonNetwork.IsMasterClient || isBot)
+        if (!PhotonNetwork.IsMasterClient)
             return;
         
         StartMatch();
@@ -81,7 +77,7 @@ public class NetworkGameplayManager : MonoBehaviour
         m_NetworkMatchManager.OnPlayerSpawnedInMatch(playerController);
     }
     
-    protected virtual void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
+    public virtual void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
     {
         string jsonData = NetworkDataObject.Serialize(networkDataObject);
 
@@ -89,19 +85,23 @@ public class NetworkGameplayManager : MonoBehaviour
             RpcTarget.All, new object[] { jsonData });
     }
 
+    private HashSet<int> alreadyDoneDecks = new ();
     [PunRPC]
-    protected  void OnNetworkSubmitRequest_RPC(string jsonData)
+    public void OnNetworkSubmitRequest_RPC(string jsonData)
     {
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
-        m_AllDecks.Add(dataObject);
-
+        
+        if(!alreadyDoneDecks.Contains(dataObject.PhotonViewID))
+            m_AllDecks.Add(dataObject);
+        
+        alreadyDoneDecks.Add(dataObject.PhotonViewID);
         Debug.LogError(m_AllDecks.Count);
 
         if (!PhotonNetwork.IsMasterClient)
             return;
         
         print(GameData.SessionData.CurrentRoomPlayersCount);
-        if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
+        if (m_AllDecks.Count == GameData.SessionData.CurrentRoomPlayersCount)
         {
             for (int i = 0; i < m_AllDecks.Count; i++)
             {
@@ -110,11 +110,9 @@ public class NetworkGameplayManager : MonoBehaviour
                 {
                     card += $"{m_AllDecks[i].PlayerDecks[j].value} {m_AllDecks[i].PlayerDecks[j].type}";
                 }
-                print($"Deck {card} : ID : {m_AllDecks[i].PhotonViewID}");
             }
-            if(!isBot)
-                OnNetworkDeckReceived();
-            print("Evaluation started");
+           
+            OnNetworkDeckReceived();
         }
     }
     
@@ -125,7 +123,6 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
-        if(isBot) return;
         
         SyncUserScoresOverNetwork(new SerializableList<PlayerScoreObject>()
         {
@@ -136,7 +133,6 @@ public class NetworkGameplayManager : MonoBehaviour
         {
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
             m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
-            print(m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).Name);
         }
         
     }
@@ -164,9 +160,12 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        if(m_BotObject)
-            GameData.SessionData.CurrentRoomPlayersCount++;
+        if (GameData.SessionData.CurrentRoomPlayersCount == 1)
+            botCount = 2;
+        else if (GameData.SessionData.CurrentRoomPlayersCount == 2)
+            botCount = 1;
         
+        GameData.SessionData.CurrentRoomPlayersCount += botCount;
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
@@ -209,8 +208,7 @@ public class NetworkGameplayManager : MonoBehaviour
         SerializableList<PlayerScoreObject> playerScores =
             JsonUtility.FromJson<SerializableList<PlayerScoreObject>>(data);
         
-        if(!isBot)
-            GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
+        GameEvents.NetworkGameplayEvents.PlayerScoresReceived.Raise(m_AllDecks, playerScores.Contents);
     }
 
     [PunRPC]
@@ -225,6 +223,7 @@ public class NetworkGameplayManager : MonoBehaviour
     private void ResetMatch()
     {
         m_AllDecks.Clear();   
+        alreadyDoneDecks.Clear();
     }
 
     private void DelayedReIteratePlayers()

@@ -123,6 +123,13 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
        m_MatchStartHandler.SetMaxPlayersCount(roomOptions.MaxPlayers);
         PhotonNetwork.JoinOrCreateRoom(Guid.NewGuid().ToString(), roomOptions, TypedLobby.Default);
+        StartCoroutine(Wait());
+    }
+
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(1.5f);
+        m_MatchStartHandler.OnPlayerEnteredInRoom();
     }
 
     public virtual void OnCreateRoomFailed(short returnCode, string message)
@@ -161,7 +168,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         base.OnPlayerEnteredRoom(newPlayer);
-        
+        print("Player Entered photon");
         if (!PhotonNetwork.IsMasterClient)
             return;
 

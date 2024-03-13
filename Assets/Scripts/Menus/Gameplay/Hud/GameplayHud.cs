@@ -49,7 +49,7 @@ public class GameplayHud : MenusController
 
     public void ShowScoreOnUI()
     {
-        m_TotalScore.text = $"{GameData.RuntimeData.TOTAL_SCORE} pts";
+        m_TotalScore.text = $"{GameData.RuntimeData.TOTAL_PLAYER_SCORE} pts";
     }
 
     public void ShowResultMenu()

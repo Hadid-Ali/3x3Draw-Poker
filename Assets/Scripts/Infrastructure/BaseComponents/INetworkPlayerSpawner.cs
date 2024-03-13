@@ -9,6 +9,5 @@ public interface INetworkPlayerSpawner
     public PlayerController GetPlayerAgainstID(int ID);
     public string GetPlayerName(int ID);
     public int GetLocalPlayerNetworkID();
-    public int GetBotID();
     public int GetPlayerLocalID(int ID);
 }

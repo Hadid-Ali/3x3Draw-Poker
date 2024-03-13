@@ -17,6 +17,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
     {
         CheckForMinimumPlayersCount();
         CheckForMaximumPlayersCount();
+        print("Player Entered room");
     }
 
     private void CheckForMinimumPlayersCount()
@@ -26,6 +27,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
         
         if (CurrentPlayersCount >= GameData.MetaData.MinimumRequiredPlayers)
         {
+            print("Match could be started");
             
             GameEvents.TimerEvents.ExecuteActionRequest.Raise(new TimerDataObject()
             {

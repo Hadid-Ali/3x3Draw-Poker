@@ -18,7 +18,6 @@ public class PlayerScoreUIObject : MonoBehaviour
     [Header("Attributes")]
     
     [SerializeField] private int m_PositionIndex;
-
     public int PositionIndex => m_PositionIndex;
 
     private void OnEnable()

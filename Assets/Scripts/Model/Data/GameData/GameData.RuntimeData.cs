@@ -11,32 +11,22 @@ public static partial class GameData
         public static bool IS_LOGGED_IN = false;
         public static string USER_NAME = string.Empty;
         
-        public static int TOTAL_SCORE
-        {
-            get;
-            private set;
-        }
-        public static int BOT_TOTAL_SCORE
+        public static int TOTAL_PLAYER_SCORE
         {
             get;
             private set;
         }
 
-        public static void ResetTotalScore()
+
+        public static int CurrentBotCountForSpawning;
+        public static void ResetTotalPlayerScore()
         {
-            TOTAL_SCORE = 0;
-            BOT_TOTAL_SCORE = 0;
+            TOTAL_PLAYER_SCORE = 0;
         }
         
-        public static void AddToTotalScore(int score)
+        public static void AddToTotalPlayerScore(int score)
         {
-            TOTAL_SCORE += score;
-            Debug.LogError($"Total Score {TOTAL_SCORE.ToString()}");
-        }
-        public static void AddToBOTTotalScore(int score)
-        {
-            BOT_TOTAL_SCORE += score;
-            Debug.LogError($"BOT Total Score {BOT_TOTAL_SCORE.ToString()}");
+            TOTAL_PLAYER_SCORE += score;
         }
     }
 }

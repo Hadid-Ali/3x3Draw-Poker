@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.Serialization;
 
 public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 {
@@ -11,7 +12,8 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     private GameEvent<PlayerController> m_OnPlayerSpawned = new();
 
     [SerializeField] private NetworkGameplayManager m_Manager;
-    private PlayerController m_PlayerController;
+    private NetworkPlayerController m_PlayerController;
+    
 
     private void Awake()
     {
@@ -36,14 +38,7 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 
     public int GetPlayerLocalID(int photonViewID) => m_JoinedPlayers.Find(player => player.ID == photonViewID).LocalID;
     
-    public int GetLocalPlayerNetworkID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer && !player.IsBot).ID;
-
-    public int GetBotID()
-    {
-        int id = m_JoinedPlayers.Find(player => player.IsBot).ID;
-        print($"Bot Id : {id}");
-        return id;
-    } 
+    public int GetLocalPlayerNetworkID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
 
     public void Initialize(Action<PlayerController> onPlayerSpawned)
     {
@@ -51,13 +46,18 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     }
 
     public void SpawnPlayer()
-    {
-       GameObject player = PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
+    { 
+        PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
             Quaternion.identity, 0);
+        
+        if(m_Manager.botCount <= 0 || !PhotonNetwork.IsMasterClient)
+            return;
 
-       m_PlayerController = player.GetComponent<PlayerController>();
-       m_PlayerController.IsBot = m_Manager.isBot;
-       
+        for (int i = 0; i < m_Manager.botCount; i++)
+        {
+            PhotonNetwork.Instantiate($"Network/Player/Avatars/BotAvatar", Vector3.zero,
+                Quaternion.identity, 0);
+        }
     }
 
     public void RegisterPlayer(PlayerController playerController)
@@ -83,30 +83,15 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     
     private void OnPlayerScoresReceived(List<NetworkDataObject> networkDataObjects, List<PlayerScoreObject> playerScoreObjects)
     {
-        int ownID = m_Manager.isBot? Dependencies.PlayersContainer.GetBotID() : m_JoinedPlayers.Find(player => player.IsLocalPlayer && !player.IsBot).ID;
+        int ownID =  m_JoinedPlayers.Find(player => player.IsLocalPlayer && !player.IsBot).ID;
         PlayerScoreObject obje = playerScoreObjects.Find(player => player.UserID == ownID);
-
-        if (m_Manager.isBot)
-        {
-            GameData.RuntimeData.AddToBOTTotalScore(obje.Score);
-        }
-        else
-        {
-            GameData.RuntimeData.AddToTotalScore(obje.Score);
-            GameEvents.GameplayEvents.RoundCompleted.Raise();
-        }
         
+        GameData.RuntimeData.AddToTotalPlayerScore(obje.Score);
+        GameEvents.GameplayEvents.RoundCompleted.Raise();
     }
     
     private void OnPlayerSpawned(PlayerController playerController)
     {
-        if(m_PlayerController)
-            if (m_PlayerController.ID == playerController.ID)
-            {
-                m_Manager.ID = playerController.ID;
-                print($"ID is {m_Manager.ID}");            
-            }
-        
         m_OnPlayerSpawned.Raise(playerController);
     }
 }

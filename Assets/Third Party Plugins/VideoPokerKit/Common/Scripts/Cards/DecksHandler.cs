@@ -8,7 +8,7 @@ public class DecksHandler : MonoBehaviour
 {
     [Header("The deck"),SerializeField] private List<CardData> m_CardsRegistry;
     
-    private int m_CurrentNumberOfDecksToUse = 3;
+    private int m_CurrentNumberOfDecksToUse = 1;
     private List<CardData> m_CurrentGameDeck = new();
     
     private void OnEnable()
