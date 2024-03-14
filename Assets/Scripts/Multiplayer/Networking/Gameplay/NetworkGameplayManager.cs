@@ -156,6 +156,8 @@ public class NetworkGameplayManager : MonoBehaviour
     {
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.All,
             null);
+
+        GameData.RuntimeData.CurrentBotCountForSpawning = 0;
     }
 
     public void StartMatch()

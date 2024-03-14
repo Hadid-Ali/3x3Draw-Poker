@@ -101,6 +101,8 @@ public class NetworkPlayerController : PlayerController
         
         score += reward; 
         
+        print($"Award Rewarded {ID} : {LocalID} : {reward}");
+        
         GameEvents.GameplayEvents.OnPlayerScoreSubmit.Raise(ID,score);
         GameEvents.GameplayEvents.PlayerScoreReceived.Raise(score, LocalID);
         
@@ -108,7 +110,6 @@ public class NetworkPlayerController : PlayerController
             return;
         
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Raise(reward);
-        print($"Award Rewarded {ID} : {reward}");
     }
     
     public override void SubmitCardData(string data)
