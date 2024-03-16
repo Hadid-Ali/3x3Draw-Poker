@@ -21,7 +21,7 @@ public static partial class GameData
         public const int MinimumRequiredPlayers = 1;
         
         public const int WaitBeforeAutomaticMatchStart = 5;
-        public const int WaitBeforePlayerJoinNotify = 4;
+        public const int WaitBeforePlayerJoinNotify = 6;
         
         public const int NullID = -1000;
 

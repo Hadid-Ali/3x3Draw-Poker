@@ -8,6 +8,8 @@ public class NetworkPlayerBotController : NetworkPlayerController
 {
     [SerializeField] private NetworkBotManager _botManager;
 
+    private string[] m_BotNames = { "Lenart", "Mark", "Hudson" };
+    
     protected override void Start()
     {
         base.Start();
@@ -16,7 +18,7 @@ public class NetworkPlayerBotController : NetworkPlayerController
 
     protected override void SetPlayerDataOverServer()
     {
-        Name = $"Bot {m_PhotonView.ViewID}";
+        Name = m_BotNames[Random.Range(0, m_BotNames.Length)];
         
         int totalPlayers = GameData.SessionData.CurrentRoomPlayersCount;
         
