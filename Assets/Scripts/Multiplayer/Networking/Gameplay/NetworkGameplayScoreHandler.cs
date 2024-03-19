@@ -40,6 +40,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     private void OnMatchOver()
     {
         GameData.RuntimeData.ResetTotalPlayerScore();
+        GameData.RuntimeData.ResetBotSpawnCount();
     }
     
     private void OnRoundStart()
