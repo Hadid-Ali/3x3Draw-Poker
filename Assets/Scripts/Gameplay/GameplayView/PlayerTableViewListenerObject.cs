@@ -28,6 +28,7 @@ public class PlayerTableViewListenerObject : PlayerViewListenerObject
     {
         PlayerTablePosition position =
             m_TablePositions.Find(player => player.TablePositionIndex == viewDataObject.LocalID);
+        
         position.SetAvatarIndex(viewDataObject.AvatarID);
     }
 }

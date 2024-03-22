@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
@@ -7,7 +6,8 @@ using UnityEngine;
 
 public class NetworkGameplayScoreHandler : MonoBehaviour
 {
-    [SerializeField] private NetworkGameplayManager m_NetworkGameplayHandler;
+    [SerializeField] protected NetworkGameplayManager m_NetworkGameplayHandler;
+    [SerializeField] protected NetworkPlayerSpawner _spawner;
     
     private Dictionary<int,int> m_PlayerScoreObjects = new();
     private GameEvent<int, int, int> m_OnPlayerWin = new();
@@ -19,6 +19,8 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameplayEvents.RoundCompleted.Register(OnRoundCompleted);
         GameEvents.GameFlowEvents.RoundStart.Register(OnRoundStart);
         GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
+        
+        GameEvents.GameplayEvents.OnPlayerScoreSubmit.Register(SyncNetworkPlayerScoreReceived_RPC);
     }
 
     private void OnDisable()
@@ -27,6 +29,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameFlowEvents.RoundStart.UnRegister(OnRoundStart);
         GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
 
+        GameEvents.GameplayEvents.OnPlayerScoreSubmit.UnRegister(SyncNetworkPlayerScoreReceived_RPC);
     }
 
     public void Initialize(Action<int, int, int> onPlayerWin)
@@ -36,7 +39,8 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
     private void OnMatchOver()
     {
-        GameData.RuntimeData.ResetTotalScore();
+        GameData.RuntimeData.ResetTotalPlayerScore();
+        GameData.RuntimeData.ResetBotSpawnCount();
     }
     
     private void OnRoundStart()
@@ -46,37 +50,39 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
     public int GetUserScore(int playerID) => m_PlayerScoreObjects[playerID];
 
-    public void SyncNetworkScoreObjectOverNetwork()
-    {
-        Debug.LogError($"Score {GameData.RuntimeData.TOTAL_SCORE}");
-        
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayHandler.NetworkViewComponent,nameof(SyncNetworkPlayerScoreReceived_RPC),RpcTarget.All,new object[]
-        {
-            Dependencies.PlayersContainer.GetLocalPlayerNetworkID(),
-            GameData.RuntimeData.TOTAL_SCORE
-        });
-    }
+    // public virtual void SyncNetworkScoreObjectOverNetwork()
+    // {
+    //     int totalScore = GameData.RuntimeData.TOTAL_PLAYER_SCORE;
+    //     int id = Dependencies.PlayersContainer.GetLocalPlayerNetworkID();
+    //
+    //
+    //     NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayHandler.NetworkViewComponent,
+    //         nameof(SyncNetworkPlayerScoreReceived_RPC), RpcTarget.All, new object[]
+    //         {
+    //             id,
+    //             totalScore
+    //         });
+    //     
+    //
+    // }
 
-    [PunRPC]
+    // [PunRPC]
     public void SyncNetworkPlayerScoreReceived_RPC(int photonViewID, int score)
     {
-        int localID = Dependencies.PlayersContainer.GetPlayerLocalID(photonViewID);
         m_PlayerScoreObjects[photonViewID] = score;
-
-        Debug.LogError($"Score {score} ID {localID}");
-        GameEvents.GameplayEvents.PlayerScoreReceived.Raise(score, localID);
-
+        
         m_RecievedScores++;
-        Debug.LogError($"Received Scores Count {m_RecievedScores}");
-
-        if (PhotonNetwork.IsMasterClient && m_RecievedScores >= GameData.SessionData.CurrentRoomPlayersCount)
+        
+        if(!PhotonNetwork.IsMasterClient)
+            return;
+        
+        if (m_RecievedScores >= GameData.SessionData.CurrentRoomPlayersCount)
             CheckForWinner();
     }
 
     //TODO: Implement Tie Breaker
     private void CheckForWinner()
     {
-        Debug.LogError("Checking For Winner");
         
         IOrderedEnumerable<KeyValuePair<int, int>> scoresOrderedByDescending = m_PlayerScoreObjects.OrderByDescending(pair => pair.Value);
         IEnumerable<KeyValuePair<int, int>> entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
@@ -98,13 +104,13 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
 
         int thirdID = keyValuePairs.Count > 2 ? keyValuePairs[2].Key : GameData.MetaData.NullID;
         m_OnPlayerWin.Raise(highestKVPs.First().Key, keyValuePairs[1].Key, thirdID);
-        
+        print($"Winner Checking : {highestKVPs.First().Key}");
         DispatchSortedScores();
     }
 
     private void OnRoundCompleted()
     {
-        SyncNetworkScoreObjectOverNetwork();
+        //SyncNetworkScoreObjectOverNetwork();
     }
 
     private void DispatchSortedScores()

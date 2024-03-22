@@ -33,14 +33,14 @@ public class NetworkMatchManager : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient || !m_CanDeal)
             return;
         
-        if (playerController.IsLocalPlayer)
-        {
-            m_CardsDealer.DealCardsToLocalPlayer();
-        }
-        else
-        {
+        // if (playerController.IsLocalPlayer)
+        // {
+        //     m_CardsDealer.DealCardsToLocalPlayer(playerController.ID);
+        // }
+        // else
+        // {
             m_CardsDealer.DealCardsToNetworkPlayer(playerController);
-        }
+       // }
     }
 
     private void StopFurtherDealing()

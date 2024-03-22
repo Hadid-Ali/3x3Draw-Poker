@@ -36,7 +36,7 @@ public class RoundCompleteMenu : UIMenuBase
 
     private void OnPlayerRewardReceived(int reward)
     {
-        m_RewardText.text = $"You Received {reward} Points";
+        m_RewardText.text = $"You Received {reward} Points in this Round";
     }
 
     private void OnRestartTap()

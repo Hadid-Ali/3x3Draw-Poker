@@ -27,6 +27,9 @@ public class CardsManager : MonoBehaviour
 			workCards[i] = new CardData();
 	}
 
+
+
+
 	private void OnEnable()
 	{
 		GameEvents.GameplayUIEvents.CardsArrangementUpdated.Register(OnCardsArrangementUpdated);
@@ -78,7 +81,7 @@ public class CardsManager : MonoBehaviour
 	
 	//--------------------------------------------------------
 	
-	public void DealCards(CardData[] cardsData)
+	public void DealCards(CardData[] cardsData, int ID)
 	{
 		for (int i = 0; i < m_GameCards.Length; i++)
 		{

@@ -4,7 +4,10 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public virtual bool IsLocalPlayer => true;
-    public virtual int ID => int.MinValue;
+    public virtual int ID { protected set; get; }
+    public virtual bool IsBot { protected set; get; }
+    public int score;
+    
 
     public int CharacterAvatarID
     {

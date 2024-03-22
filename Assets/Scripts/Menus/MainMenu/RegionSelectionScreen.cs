@@ -21,7 +21,7 @@ public class RegionSelectionScreen : UIMenuBase
 
     private Region m_SelectedRegion;
     private List<Region> m_Regions = new();
-    
+
     private void Start()
     {
         m_RegionsListDropDown.onValueChanged.AddListener(OnDropDownSelectionEvent);
@@ -49,7 +49,7 @@ public class RegionSelectionScreen : UIMenuBase
         m_SelectedRegion = m_Regions[index];
         Debug.LogError($"Select Region {m_SelectedRegion}");
     }
-    
+
     public void OnRegionsDataReceived(RegionConfig regionConfig)
     {
         SetupList(regionConfig);
@@ -60,7 +60,7 @@ public class RegionSelectionScreen : UIMenuBase
     {
         m_RegionsListDropDown.ClearOptions();
         m_Regions = regionConfig.Availableregions;
-        
+
         List<TMP_Dropdown.OptionData> optionDataList = new List<TMP_Dropdown.OptionData>();
 
         for (int i = 0; i < m_Regions.Count; i++)
@@ -70,11 +70,11 @@ public class RegionSelectionScreen : UIMenuBase
                 text = GetRegionString(m_Regions[i])
             });
         }
+
         m_RegionsListDropDown.options = optionDataList;
         m_BestRegionText.text = GetRegionString(regionConfig.BestRegion);
-                OnDropDownSelectionEvent(0);
+        OnDropDownSelectionEvent(0);
     }
-    
 
     private string GetRegionString(Region region) =>
         $"{NetworkManager.Instance.RegionsRegistry.GetRegionName(region.Code.Trim()).Trim()}";
@@ -85,6 +85,7 @@ public class RegionSelectionScreen : UIMenuBase
         {
             OnDropDownSelectionEvent(0);
         }
+
         m_OnRegionSelectedEvent.Raise(m_SelectedRegion);
         ChangeMenuState(MenuName.ConnectionScreen);
     }

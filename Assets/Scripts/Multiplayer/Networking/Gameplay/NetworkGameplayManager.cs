@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
@@ -8,10 +6,9 @@ using Photon.Pun;
 [RequireComponent(typeof(NetworkPlayerSpawner))]
 public class NetworkGameplayManager : MonoBehaviour
 {
-    [Header("Component Refs")]
-    
+    public int BotCount { private set; get; }
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
-    [SerializeField] private PhotonView m_NetworkGameplayManagerView;
+    [SerializeField] protected PhotonView m_NetworkGameplayManagerView;
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
     [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
@@ -19,12 +16,12 @@ public class NetworkGameplayManager : MonoBehaviour
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
 
-    private void Awake()
+    public virtual void Awake()
     {
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
     }
-
+    
     private void Start()
     {
         StartMatchInternal();
@@ -69,7 +66,7 @@ public class NetworkGameplayManager : MonoBehaviour
         m_NetworkMatchManager.OnPlayerSpawnedInMatch(playerController);
     }
     
-    private void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
+    public virtual void OnNetworkSubmitRequest(NetworkDataObject networkDataObject)
     {
         string jsonData = NetworkDataObject.Serialize(networkDataObject);
 
@@ -77,18 +74,22 @@ public class NetworkGameplayManager : MonoBehaviour
             RpcTarget.All, new object[] { jsonData });
     }
 
+    private HashSet<int> m_AlreadyCheckedDecks = new ();
     [PunRPC]
-    private void OnNetworkSubmitRequest_RPC(string jsonData)
+    public void OnNetworkSubmitRequest_RPC(string jsonData)
     {
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
-        m_AllDecks.Add(dataObject);
-
+        
+        if(!m_AlreadyCheckedDecks.Contains(dataObject.PhotonViewID))
+            m_AllDecks.Add(dataObject);
+        
+        m_AlreadyCheckedDecks.Add(dataObject.PhotonViewID);
         Debug.LogError(m_AllDecks.Count);
 
         if (!PhotonNetwork.IsMasterClient)
             return;
         
-        if (m_AllDecks.Count >= GameData.SessionData.CurrentRoomPlayersCount)
+        if (m_AllDecks.Count == GameData.SessionData.CurrentRoomPlayersCount)
         {
             OnNetworkDeckReceived();
         }
@@ -101,6 +102,7 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
+        
         SyncUserScoresOverNetwork(new SerializableList<PlayerScoreObject>()
         {
             Contents = userScores.Values.ToList()
@@ -111,6 +113,7 @@ public class NetworkGameplayManager : MonoBehaviour
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
             m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
         }
+        
     }
 
     private void SyncUserScoresOverNetwork(SerializableList<PlayerScoreObject> playerScores)
@@ -132,10 +135,18 @@ public class NetworkGameplayManager : MonoBehaviour
     {
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(RestartGame_RPC), RpcTarget.All,
             null);
+
+        GameData.RuntimeData.CURRENT_BOTS_FOR_SPAWNING = 0;
     }
 
     public void StartMatch()
     {
+        if (GameData.SessionData.CurrentRoomPlayersCount == 1)
+            BotCount = 2;
+        else if (GameData.SessionData.CurrentRoomPlayersCount == 2)
+            BotCount = 1;
+        
+        GameData.SessionData.CurrentRoomPlayersCount += BotCount;
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
@@ -143,6 +154,8 @@ public class NetworkGameplayManager : MonoBehaviour
             {
                 count
             });
+
+        print($"Star match with players  : {count}");
     }
 
     [PunRPC]
@@ -191,6 +204,7 @@ public class NetworkGameplayManager : MonoBehaviour
     private void ResetMatch()
     {
         m_AllDecks.Clear();   
+        m_AlreadyCheckedDecks.Clear();
     }
 
     private void DelayedReIteratePlayers()

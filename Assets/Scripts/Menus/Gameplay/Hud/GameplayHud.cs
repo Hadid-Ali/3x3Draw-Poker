@@ -49,7 +49,7 @@ public class GameplayHud : MenusController
 
     public void ShowScoreOnUI()
     {
-        m_TotalScore.text = $"{GameData.RuntimeData.TOTAL_SCORE} pts";
+        m_TotalScore.text = $"{GameData.RuntimeData.TOTAL_PLAYER_SCORE} pts";
     }
 
     public void ShowResultMenu()
@@ -75,15 +75,15 @@ public class GameplayHud : MenusController
 
     private void SubmitCards()
     {
-        try
-        {
+        // try
+        // {
             GameEvents.GameplayUIEvents.SubmitDecks.Raise();
             SetGameplayInputStatus(false);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e.StackTrace);
-        }
+        // }
+        // catch (Exception e)00
+        // {
+        //     Debug.LogError(e.StackTrace);
+        // }
     }
     
     private void AllowGameplayInputs()

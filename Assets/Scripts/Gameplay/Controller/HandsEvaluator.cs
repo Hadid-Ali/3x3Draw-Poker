@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 struct HighestHandOccurence
 {
@@ -11,8 +12,12 @@ struct HighestHandOccurence
 
 public class HandsEvaluator : MonoBehaviour
 {
+    [FormerlySerializedAs("_manager")] [SerializeField] private NetworkGameplayManager m_NetwoNetworkGameplayManager;
     private void OnEnable()
     {
+        if (!m_NetwoNetworkGameplayManager)
+            m_NetwoNetworkGameplayManager = GetComponent<NetworkGameplayManager>();
+        
         GameEvents.NetworkGameplayEvents.AllUserHandsReceived.Register(OnAllUserHandsReceived);
     }
 
@@ -98,6 +103,7 @@ public class HandsEvaluator : MonoBehaviour
             CompareHand(hands, out int winner);
             userScores[winner].AddScore(GameData.MetaData.HandWinReward, i);
         }
+
         GameEvents.GameplayEvents.UserHandsEvaluated.Raise(userScores);
     }
 
@@ -117,14 +123,14 @@ public class HandsEvaluator : MonoBehaviour
         if (highestHandOccurence.handIDs.Count > 1)
         {
             List<Hand> winners = new List<Hand>();
+            
 
             for (int i = 0; i < highestHandOccurence.handIDs.Count - 1; i += 2)
             {
                 Hand firstValue = hands.Find(x => x.photonID == highestHandOccurence.handIDs[i]);
                 Hand secondValue = hands.Find(x => x.photonID == highestHandOccurence.handIDs[i + 1]);
-
                 int winner = TieBreakerComponent.DeepEvaluate(firstValue, secondValue);
-
+                
                 switch (winner)
                 {
                     case 0:
@@ -141,9 +147,22 @@ public class HandsEvaluator : MonoBehaviour
                         break;
                 }
             }
+            
+            Hand finalWinner = null;
+            
+            if(winners.Count > 0)
+            {
+                finalWinner = winners[^1];
+                Winner = finalWinner.photonID;
+            }
+            else
+            {
+                var sortedHands = hands.OrderBy(x => (int)x._HandType).ToDictionary(x => x.photonID, x => x._HandType);
+                List<KeyValuePair<int, HandTypes>> userHandsList = sortedHands.ToList();
 
-            Hand finalWinner = winners[^1];
-            Winner = finalWinner.photonID;
+                Winner = userHandsList[^1].Key;
+            }
+
         }
         else
         {
