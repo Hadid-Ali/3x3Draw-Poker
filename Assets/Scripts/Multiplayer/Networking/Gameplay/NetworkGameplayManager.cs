@@ -1,38 +1,27 @@
-using System;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
-using Unity.VisualScripting;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(NetworkPlayerSpawner))]
 public class NetworkGameplayManager : MonoBehaviour
 {
-    [Header("Component Refs")]
-    
-    [SerializeField] public int botCount;
+    public int BotCount { private set; get; }
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] protected PhotonView m_NetworkGameplayManagerView;
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
-    [SerializeField] public NetworkGameplayScoreHandler m_NetworkScoreHandler;
+    [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
     
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
-
-    
 
     public virtual void Awake()
     {
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
-        
-        
     }
     
-
     private void Start()
     {
         StartMatchInternal();
@@ -85,33 +74,23 @@ public class NetworkGameplayManager : MonoBehaviour
             RpcTarget.All, new object[] { jsonData });
     }
 
-    private HashSet<int> alreadyDoneDecks = new ();
+    private HashSet<int> m_AlreadyCheckedDecks = new ();
     [PunRPC]
     public void OnNetworkSubmitRequest_RPC(string jsonData)
     {
         NetworkDataObject dataObject = NetworkDataObject.DeSerialize(jsonData);
         
-        if(!alreadyDoneDecks.Contains(dataObject.PhotonViewID))
+        if(!m_AlreadyCheckedDecks.Contains(dataObject.PhotonViewID))
             m_AllDecks.Add(dataObject);
         
-        alreadyDoneDecks.Add(dataObject.PhotonViewID);
+        m_AlreadyCheckedDecks.Add(dataObject.PhotonViewID);
         Debug.LogError(m_AllDecks.Count);
 
         if (!PhotonNetwork.IsMasterClient)
             return;
         
-        print(GameData.SessionData.CurrentRoomPlayersCount);
         if (m_AllDecks.Count == GameData.SessionData.CurrentRoomPlayersCount)
         {
-            for (int i = 0; i < m_AllDecks.Count; i++)
-            {
-                string card = "";
-                for (int j = 0; j < m_AllDecks[i].PlayerDecks.Count; j++)
-                {
-                    card += $"{m_AllDecks[i].PlayerDecks[j].value} {m_AllDecks[i].PlayerDecks[j].type}";
-                }
-            }
-           
             OnNetworkDeckReceived();
         }
     }
@@ -163,11 +142,11 @@ public class NetworkGameplayManager : MonoBehaviour
     public void StartMatch()
     {
         if (GameData.SessionData.CurrentRoomPlayersCount == 1)
-            botCount = 2;
+            BotCount = 2;
         else if (GameData.SessionData.CurrentRoomPlayersCount == 2)
-            botCount = 1;
+            BotCount = 1;
         
-        GameData.SessionData.CurrentRoomPlayersCount += botCount;
+        GameData.SessionData.CurrentRoomPlayersCount += BotCount;
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
@@ -225,7 +204,7 @@ public class NetworkGameplayManager : MonoBehaviour
     private void ResetMatch()
     {
         m_AllDecks.Clear();   
-        alreadyDoneDecks.Clear();
+        m_AlreadyCheckedDecks.Clear();
     }
 
     private void DelayedReIteratePlayers()

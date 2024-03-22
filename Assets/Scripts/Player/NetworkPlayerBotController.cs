@@ -3,10 +3,11 @@ using Photon.Pun;
 using Photon.Realtime;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class NetworkPlayerBotController : NetworkPlayerController
 {
-    [SerializeField] private NetworkBotManager _botManager;
+    [FormerlySerializedAs("_botManager")] [SerializeField] private NetworkBotCardsController botCardsController;
 
     private string m_DefaultName = "Lenart"; 
     private string[] m_BotNames = { "Mark", "Hudson" };
@@ -39,12 +40,12 @@ public class NetworkPlayerBotController : NetworkPlayerController
             return;
 
         NetworkHandObject handObject = NetworkHandObject.DeSerialize(data);
-        _botManager.ReceiveHandData(handObject.PlayerHand, _ID);
+        botCardsController.ReceiveHandData(handObject.PlayerHand, _ID);
     }
     
     protected override void OnSubmitDeck()
     {
-        string jsonData = NetworkDataObject.Serialize(new NetworkDataObject(_botManager.GetCards(), ID));
+        string jsonData = NetworkDataObject.Serialize(new NetworkDataObject(botCardsController.GetCards(), ID));
         
         if(!PhotonNetwork.IsMasterClient)
             return;

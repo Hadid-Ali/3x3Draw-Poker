@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class NetworkBotManager : MonoBehaviour
+public class NetworkBotCardsController : MonoBehaviour
 {
     [SerializeField] public List<CardData> cards = new();
     [SerializeField] private NetworkPlayerBotController _botController;

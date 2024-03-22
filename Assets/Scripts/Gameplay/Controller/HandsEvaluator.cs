@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 struct HighestHandOccurence
 {
@@ -11,11 +12,11 @@ struct HighestHandOccurence
 
 public class HandsEvaluator : MonoBehaviour
 {
-    [SerializeField] private NetworkGameplayManager _manager;
+    [FormerlySerializedAs("_manager")] [SerializeField] private NetworkGameplayManager m_NetwoNetworkGameplayManager;
     private void OnEnable()
     {
-        if (!_manager)
-            _manager = GetComponent<NetworkGameplayManager>();
+        if (!m_NetwoNetworkGameplayManager)
+            m_NetwoNetworkGameplayManager = GetComponent<NetworkGameplayManager>();
         
         GameEvents.NetworkGameplayEvents.AllUserHandsReceived.Register(OnAllUserHandsReceived);
     }
@@ -129,8 +130,7 @@ public class HandsEvaluator : MonoBehaviour
                 Hand firstValue = hands.Find(x => x.photonID == highestHandOccurence.handIDs[i]);
                 Hand secondValue = hands.Find(x => x.photonID == highestHandOccurence.handIDs[i + 1]);
                 int winner = TieBreakerComponent.DeepEvaluate(firstValue, secondValue);
-
-
+                
                 switch (winner)
                 {
                     case 0:

@@ -50,10 +50,10 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
         PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
             Quaternion.identity, 0);
         
-        if(m_Manager.botCount <= 0 || !PhotonNetwork.IsMasterClient)
+        if(m_Manager.BotCount <= 0 || !PhotonNetwork.IsMasterClient)
             return;
 
-        for (int i = 0; i < m_Manager.botCount; i++)
+        for (int i = 0; i < m_Manager.BotCount; i++)
         {
             PhotonNetwork.Instantiate($"Network/Player/Avatars/BotAvatar", Vector3.zero,
                 Quaternion.identity, 0);
