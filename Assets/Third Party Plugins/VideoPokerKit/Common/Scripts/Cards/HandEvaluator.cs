@@ -14,22 +14,22 @@ public class HandEvaluator
 
 
 	static CardData [] workCards;
-	static int [] cardsValueCount = new int[ (int)CardValue.VALUES_NO ];
+	static int [] cardsValueCount = new int[ (int)Cardvalue.valueS_NO ];
 	static int [] cardsTypeCount = new int[ (int)CardType.TYPES_NO ];
 
 	// all combinations of sorted cards for STRAIGHT 
 	// (for this type of win, it is more simpler to do it like this instead of using an algorithm)
-	static CardValue [][] straightSets = new CardValue[][] {	
-		new CardValue[] {CardValue.VALUE_2, CardValue.VALUE_3, CardValue.VALUE_4, CardValue.VALUE_5, CardValue.VALUE_A},
-		new CardValue[] {CardValue.VALUE_2, CardValue.VALUE_3, CardValue.VALUE_4, CardValue.VALUE_5, CardValue.VALUE_6},
-		new CardValue[] {CardValue.VALUE_3, CardValue.VALUE_4, CardValue.VALUE_5, CardValue.VALUE_6, CardValue.VALUE_7},
-		new CardValue[] {CardValue.VALUE_4, CardValue.VALUE_5, CardValue.VALUE_6, CardValue.VALUE_7, CardValue.VALUE_8},
-		new CardValue[] {CardValue.VALUE_5, CardValue.VALUE_6, CardValue.VALUE_7, CardValue.VALUE_8, CardValue.VALUE_9},
-		new CardValue[] {CardValue.VALUE_6, CardValue.VALUE_7, CardValue.VALUE_8, CardValue.VALUE_9, CardValue.VALUE_10},
-		new CardValue[] {CardValue.VALUE_7, CardValue.VALUE_8, CardValue.VALUE_9, CardValue.VALUE_10, CardValue.VALUE_J},
-		new CardValue[] {CardValue.VALUE_8, CardValue.VALUE_9, CardValue.VALUE_10, CardValue.VALUE_J, CardValue.VALUE_Q},
-		new CardValue[] {CardValue.VALUE_9, CardValue.VALUE_10, CardValue.VALUE_J, CardValue.VALUE_Q, CardValue.VALUE_K},
-		new CardValue[] {CardValue.VALUE_10, CardValue.VALUE_J, CardValue.VALUE_Q, CardValue.VALUE_K, CardValue.VALUE_A}};
+	static Cardvalue [][] straightSets = new Cardvalue[][] {	
+		new Cardvalue[] {Cardvalue.value_2, Cardvalue.value_3, Cardvalue.value_4, Cardvalue.value_5, Cardvalue.value_A},
+		new Cardvalue[] {Cardvalue.value_2, Cardvalue.value_3, Cardvalue.value_5, Cardvalue.value_5, Cardvalue.value_6},
+		new Cardvalue[] {Cardvalue.value_3, Cardvalue.value_4, Cardvalue.value_5, Cardvalue.value_6, Cardvalue.value_7},
+		new Cardvalue[] {Cardvalue.value_4, Cardvalue.value_5, Cardvalue.value_6, Cardvalue.value_7, Cardvalue.value_8},
+		new Cardvalue[] {Cardvalue.value_5, Cardvalue.value_6, Cardvalue.value_7, Cardvalue.value_8, Cardvalue.value_9},
+		new Cardvalue[] {Cardvalue.value_6, Cardvalue.value_7, Cardvalue.value_8, Cardvalue.value_9, Cardvalue.value_10},
+		new Cardvalue[] {Cardvalue.value_7, Cardvalue.value_8, Cardvalue.value_9, Cardvalue.value_10,Cardvalue.value_J},
+		new Cardvalue[] {Cardvalue.value_8, Cardvalue.value_9, Cardvalue.value_10,Cardvalue.value_J, Cardvalue.value_Q},
+		new Cardvalue[] {Cardvalue.value_9, Cardvalue.value_10,Cardvalue.value_J, Cardvalue.value_Q, Cardvalue.value_K},
+		new Cardvalue[] {Cardvalue.value_10,Cardvalue.value_J, Cardvalue.value_Q, Cardvalue.value_K, Cardvalue.value_A}};
 	
 	//--------------------------------------------------------
 	// internal class used to compare 2 cards
@@ -107,7 +107,7 @@ public class HandEvaluator
 					handType = HandTypes.Pair;
 
 					// show win only if starting from JACKS
-					if (i >= (int)CardValue.VALUE_J)
+					if (i >= (int)Cardvalue.value_J)
 					{
 						Debug.Log("Jacks Or Better");
 						// if (autoHold)
@@ -183,7 +183,7 @@ public class HandEvaluator
 		
 		//Check Royal-Flush
 		{
-			CardValue[] RoyalFlushSequence = new CardValue[] { CardValue.VALUE_10, CardValue.VALUE_J, CardValue.VALUE_Q, CardValue.VALUE_K, CardValue.VALUE_A };
+			Cardvalue[] RoyalFlushSequence = new Cardvalue[] { Cardvalue.value_10, Cardvalue.value_J, Cardvalue.value_Q, Cardvalue.value_K, Cardvalue.value_A };
 			int sameValue = RoyalFlushSequence.Length;
 
 			for (int i = 0; i < RoyalFlushSequence.Length; i++)
