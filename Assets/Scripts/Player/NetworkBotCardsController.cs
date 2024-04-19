@@ -22,8 +22,8 @@ public class NetworkBotCardsController : MonoBehaviour
         cardsReceivedFromId = _ID;
         cards.Clear();
         cards.AddRange(obj);
-        
-        ShuffleToBestCards();
+
+        StartCoroutine(ShuffleToBestCards());
     }
     private Handd hand1 = new();
 
@@ -31,32 +31,40 @@ public class NetworkBotCardsController : MonoBehaviour
     private Handd Besthand2 = new();
     private Handd Besthand3 = new();
 
-    private void ShuffleToBestCards()
+    IEnumerator  ShuffleToBestCards()
     {
         for (int i = 0; i < shuffleLimit; i++)
             hand1.Add(cards[i]);
-
-        int remainingCards = cards.Count - shuffleLimit;
         
         Besthand1 = CombinationСalculator.GetBestHanddEfficiently(hand1);
+
+        yield return new WaitForSeconds(.3f);
 
         foreach (var t in Besthand1._Handd)
             hand1.Remove(t);
         
         Besthand2 = CombinationСalculator.GetBestHanddEfficiently(hand1);
 
+        yield return new WaitForSeconds(.3f);
+        
         foreach (var t in Besthand2._Handd)
             hand1.Remove(t);
         
         Besthand3 = CombinationСalculator.GetBestHanddEfficiently(hand1);
+        
+        yield return new WaitForSeconds(.3f);
             
         foreach (var t in Besthand3._Handd)
             hand1.Remove(t);
 
         List<CardData> shuffledCards = new();
         
+        yield return new WaitForSeconds(.3f);
+        
         shuffledCards.AddRange(Besthand1._Handd);
         shuffledCards.AddRange(Besthand2._Handd);
+        
+        yield return new WaitForSeconds(.1f);
         shuffledCards.AddRange(Besthand3._Handd);
         shuffledCards.AddRange(hand1._Handd);
 
