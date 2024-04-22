@@ -36,7 +36,9 @@ public class NetworkBotCardsController : MonoBehaviour
         for (int i = 0; i < shuffleLimit; i++)
             hand1.Add(cards[i]);
 
-        int remainingCards = cards.Count - shuffleLimit;
+        Besthand1.Clear();
+        Besthand2.Clear();
+        Besthand3.Clear();
         
         Besthand1 = CombinationСalculator.GetBestHanddEfficiently(hand1);
 
@@ -70,6 +72,7 @@ public class NetworkBotCardsController : MonoBehaviour
         shuffledCards.AddRange(Besthand3._Handd);
         shuffledCards.AddRange(hand1._Handd);
 
+        hand1.Clear();
         cards.Clear();
         cards = shuffledCards;
         
