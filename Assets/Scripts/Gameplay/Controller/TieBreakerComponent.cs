@@ -33,8 +33,8 @@ public class TieBreakerComponent : MonoBehaviour
             case HandTypes.Flush:
             case HandTypes.HighCard:
                 // Compare the highest cards in the pairs or three-of-a-kind
-                CardValue highestCard1 = GetHighestCardValue(hand1);
-                CardValue highestCard2 = GetHighestCardValue(hand2);
+                Cardvalue highestCard1 = GetHighestCardValue(hand1);
+                Cardvalue highestCard2 = GetHighestCardValue(hand2);
 
                 if (highestCard1 > highestCard2)
                 {
@@ -68,8 +68,8 @@ public class TieBreakerComponent : MonoBehaviour
             case HandTypes.FourOfAKind:
             case HandTypes.TwoPair:
                 // If both hands have the same rank (e.g., both are pairs), compare pair values first
-                CardValue pairValue1 = GetPairValue(hand1);
-                CardValue pairValue2 = GetPairValue(hand2);
+                Cardvalue pairValue1 = GetPairValue(hand1);
+                Cardvalue pairValue2 = GetPairValue(hand2);
 
                 if (pairValue1 > pairValue2)
                 {
@@ -82,8 +82,8 @@ public class TieBreakerComponent : MonoBehaviour
                 }
 
                 // If the pair values are the same, compare the non-pair values
-                List<CardValue> nonPairValues1 = GetNonPairValues(hand1);
-                List<CardValue> nonPairValues2 = GetNonPairValues(hand2);
+                List<Cardvalue> nonPairValues1 = GetNonPairValues(hand1);
+                List<Cardvalue> nonPairValues2 = GetNonPairValues(hand2);
 
                 for (int i = 0; i < nonPairValues1.Count; i++)
                 {
@@ -115,8 +115,8 @@ public class TieBreakerComponent : MonoBehaviour
                 }
 
                 // If both hands have the same rank, compare the three of a kind values first
-                CardValue threeOfAKindValue1 = GetPairOrThreeValue(hand1);
-                CardValue threeOfAKindValue2 = GetPairOrThreeValue(hand2);
+                Cardvalue threeOfAKindValue1 = GetPairOrThreeValue(hand1);
+                Cardvalue threeOfAKindValue2 = GetPairOrThreeValue(hand2);
                 Debug.LogError($"Card Value A {threeOfAKindValue1} vs Card Value B {threeOfAKindValue2}");
                 if (threeOfAKindValue1 > threeOfAKindValue2)
                 {
@@ -129,8 +129,8 @@ public class TieBreakerComponent : MonoBehaviour
                 }
 
                 // If the three of a kind values are the same, compare the non-three-of-a-kind values
-                List<CardValue> nonThreeValues1 = GetNonPairValues(hand1);
-                List<CardValue> nonThreeValues2 = GetNonPairValues(hand2);
+                List<Cardvalue> nonThreeValues1 = GetNonPairValues(hand1);
+                List<Cardvalue> nonThreeValues2 = GetNonPairValues(hand2);
 
                 for (int i = 0; i < nonThreeValues1.Count; i++)
                 {
@@ -150,8 +150,8 @@ public class TieBreakerComponent : MonoBehaviour
             case HandTypes.Straight:
             case HandTypes.StraightFlush:
                 // For straights, compare the highest card in the straight
-                CardValue highestCardStraight1 = GetHighestCardValue(hand1);
-                CardValue highestCardStraight2 = GetHighestCardValue(hand2);
+                Cardvalue highestCardStraight1 = GetHighestCardValue(hand1);
+                Cardvalue highestCardStraight2 = GetHighestCardValue(hand2);
 
                 if (highestCardStraight1 > highestCardStraight2)
                 {
@@ -212,8 +212,8 @@ public class TieBreakerComponent : MonoBehaviour
             case HandTypes.Flush:
             case HandTypes.HighCard:
                 // Compare the highest cards in the pairs or three-of-a-kind
-                CardValue highestCard1 = GetHighestCardValue(hand1);
-                CardValue highestCard2 = GetHighestCardValue(hand2);
+                Cardvalue highestCard1 = GetHighestCardValue(hand1);
+                Cardvalue highestCard2 = GetHighestCardValue(hand2);
 
                 if (highestCard1 > highestCard2)
                 {
@@ -247,8 +247,8 @@ public class TieBreakerComponent : MonoBehaviour
             case HandTypes.FourOfAKind:
             case HandTypes.TwoPair:
                 // If both hands have the same rank (e.g., both are pairs), compare pair values first
-                CardValue pairValue1 = GetPairValue(hand1);
-                CardValue pairValue2 = GetPairValue(hand2);
+                Cardvalue pairValue1 = GetPairValue(hand1);
+                Cardvalue pairValue2 = GetPairValue(hand2);
 
                 if (pairValue1 > pairValue2)
                 {
@@ -261,8 +261,8 @@ public class TieBreakerComponent : MonoBehaviour
                 }
 
                 // If the pair values are the same, compare the non-pair values
-                List<CardValue> nonPairValues1 = GetNonPairValues(hand1);
-                List<CardValue> nonPairValues2 = GetNonPairValues(hand2);
+                List<Cardvalue> nonPairValues1 = GetNonPairValues(hand1);
+                List<Cardvalue> nonPairValues2 = GetNonPairValues(hand2);
 
                 for (int i = 0; i < nonPairValues1.Count; i++)
                 {
@@ -292,8 +292,8 @@ public class TieBreakerComponent : MonoBehaviour
                 }
 
                 // If both hands have the same rank, compare the three of a kind values first
-                CardValue threeOfAKindValue1 = GetPairOrThreeValue(hand1);
-                CardValue threeOfAKindValue2 = GetPairOrThreeValue(hand2);
+                Cardvalue threeOfAKindValue1 = GetPairOrThreeValue(hand1);
+                Cardvalue threeOfAKindValue2 = GetPairOrThreeValue(hand2);
 
                 if (threeOfAKindValue1 > threeOfAKindValue2)
                 {
@@ -306,8 +306,8 @@ public class TieBreakerComponent : MonoBehaviour
                 }
 
                 // If the three of a kind values are the same, compare the non-three-of-a-kind values
-                List<CardValue> nonThreeValues1 = GetNonPairValues(hand1);
-                List<CardValue> nonThreeValues2 = GetNonPairValues(hand2);
+                List<Cardvalue> nonThreeValues1 = GetNonPairValues(hand1);
+                List<Cardvalue> nonThreeValues2 = GetNonPairValues(hand2);
 
                 for (int i = 0; i < nonThreeValues1.Count; i++)
                 {
@@ -327,8 +327,8 @@ public class TieBreakerComponent : MonoBehaviour
             case HandTypes.Straight:
             case HandTypes.StraightFlush:
                 // For straights, compare the highest card in the straight
-                CardValue highestCardStraight1 = GetHighestCardValue(hand1);
-                CardValue highestCardStraight2 = GetHighestCardValue(hand2);
+                Cardvalue highestCardStraight1 = GetHighestCardValue(hand1);
+                Cardvalue highestCardStraight2 = GetHighestCardValue(hand2);
 
                 if (highestCardStraight1 > highestCardStraight2)
                 {
@@ -362,9 +362,9 @@ public class TieBreakerComponent : MonoBehaviour
         }
     }
 
-    static CardValue GetPairOrThreeValue(Hand hand)
+    static Cardvalue GetPairOrThreeValue(Hand hand)
     {
-        Dictionary<CardValue, int> valueCounts = new Dictionary<CardValue, int>();
+        Dictionary<Cardvalue, int> valueCounts = new Dictionary<Cardvalue, int>();
         foreach (var card in hand.CardData)
         {
             if (!valueCounts.ContainsKey(card.value))
@@ -379,9 +379,9 @@ public class TieBreakerComponent : MonoBehaviour
         return keyValuePairs.First().Key;
     }
 
-    static CardValue GetPairValue(Hand hand)
+    static Cardvalue GetPairValue(Hand hand)
     {
-        Dictionary<CardValue, int> valueCounts = new Dictionary<CardValue, int>();
+        Dictionary<Cardvalue, int> valueCounts = new Dictionary<Cardvalue, int>();
         foreach (var card in hand.CardData)
         {
             if (!valueCounts.ContainsKey(card.value))
@@ -400,13 +400,13 @@ public class TieBreakerComponent : MonoBehaviour
             }
         }
 
-        return CardValue.VALUE_2; // Default value if no pair is found
+        return Cardvalue.value_2; // Default value if no pair is found
     }
 
-    static List<CardValue> GetNonPairValues(Hand hand)
+    static List<Cardvalue> GetNonPairValues(Hand hand)
     {
-        List<CardValue> nonPairValues = new List<CardValue>();
-        Dictionary<CardValue, int> valueCounts = new Dictionary<CardValue, int>();
+        List<Cardvalue> nonPairValues = new List<Cardvalue>();
+        Dictionary<Cardvalue, int> valueCounts = new Dictionary<Cardvalue, int>();
 
         foreach (var card in hand.CardData)
         {
@@ -432,9 +432,9 @@ public class TieBreakerComponent : MonoBehaviour
         return nonPairValues;
     }
 
-    static CardValue GetThreeOfAKindValue(Hand hand)
+    static Cardvalue GetThreeOfAKindValue(Hand hand)
     {
-        Dictionary<CardValue, int> valueCounts = new Dictionary<CardValue, int>();
+        Dictionary<Cardvalue, int> valueCounts = new Dictionary<Cardvalue, int>();
         foreach (var card in hand.CardData)
         {
             if (!valueCounts.ContainsKey(card.value))
@@ -453,13 +453,13 @@ public class TieBreakerComponent : MonoBehaviour
             }
         }
 
-        return CardValue.VALUE_2; // Default value if no three of a kind is found
+        return Cardvalue.value_2; // Default value if no three of a kind is found
     }
 
-    static CardValue GetHighestCardValue(Hand hand)
+    static Cardvalue GetHighestCardValue(Hand hand)
     {
         // Helper function to get the highest card value in a hand
-        CardValue highestValue = CardValue.VALUE_2; // Start with the lowest value
+        Cardvalue highestValue = Cardvalue.value_2; // Start with the lowest value
 
         foreach (var card in hand.CardData)
         {
