@@ -75,6 +75,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     private void ConnectToServer()
     {
+        Debug.LogError("Connect to Server");
         UpdateConnectionStatus("\t\tConnecting");
         PhotonNetwork.ConnectUsingSettings();
     }
