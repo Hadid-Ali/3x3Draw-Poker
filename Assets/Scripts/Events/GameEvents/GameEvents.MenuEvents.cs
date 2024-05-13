@@ -13,6 +13,8 @@ public static partial class GameEvents
         public static GameEvent EmailLoginSuccessEvent = new();
         public static GameEvent RegisterSuccessEvent = new();
         public static GameEvent FacebookLoginSuccessEvent = new();
+        public static GameEvent FacebookLoginFailEvent = new();
+        public static GameEvent ShowfakeConnectingScreen = new();
         public static GameEvent<string,string> EmailLoginAtMenuEvent = new();
         public static GameEvent<string,string> GamecenterLoginAtMenuEvent = new();
         public static GameEvent<string,string,string> RegisterAtMenuEvent = new();

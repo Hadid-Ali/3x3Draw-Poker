@@ -1,10 +1,9 @@
+using PlayFab;
+using PlayFab.ClientModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using PlayFab;
-using PlayFab.ClientModels;
 using LoginResult = PlayFab.ClientModels.LoginResult;
 public class PlayfabEmailLogin : MonoBehaviour
 {
@@ -18,6 +17,8 @@ public class PlayfabEmailLogin : MonoBehaviour
             Password = user_Password,
             RequireBothUsernameAndEmail = false
         };
+        GameEvents.MenuEvents.ShowfakeConnectingScreen.Raise();
+
         PlayFabClientAPI.RegisterPlayFabUser(ResgisterUserRequest, result =>
         {
             OnRegisterSuccess(result);
@@ -29,17 +30,19 @@ public class PlayfabEmailLogin : MonoBehaviour
     {
         var emailrecoveryreq = new SendAccountRecoveryEmailRequest
         {
-            Email = user_Email ,
+
+            Email = user_Email,
             TitleId = "EC5BB"
         };
+
         PlayFabClientAPI.SendAccountRecoveryEmail(emailrecoveryreq, result =>
         {
             Debug.LogError("Recover Email Sent");
 
-            
+
         }, OnloginFailed);
 
-        
+
     }
 
 
@@ -52,9 +55,12 @@ public class PlayfabEmailLogin : MonoBehaviour
         //PlayFabClientAPI.LinkGameCenterAccount(LinkGameCenter,OnLinkSucess,OnloginFailed);
         var EmailLoginRequst = new LoginWithEmailAddressRequest
         {
+          
             Email = User_email,
             Password = User_pass
         };
+        GameEvents.MenuEvents.ShowfakeConnectingScreen.Raise();
+
         PlayFabClientAPI.LoginWithEmailAddress(EmailLoginRequst, result =>
         {
             OnLoginSucess(result);
@@ -80,7 +86,7 @@ public class PlayfabEmailLogin : MonoBehaviour
     }
     private void OnLoginSucess(LoginResult result)
     {
-        
+
         GameEvents.MenuEvents.LoginAtMenuEvent.Raise(result.PlayFabId);
         GameEvents.MenuEvents.EmailLoginSuccessEvent.Raise();
 

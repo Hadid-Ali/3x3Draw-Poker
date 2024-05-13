@@ -1,32 +1,25 @@
+using Facebook.Unity;
+using PlayFab;
+using PlayFab.ClientModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using UnityEngine;
-using Facebook.Unity;
-using PlayFab;
-using PlayFab.ClientModels;
 using LoginResult = PlayFab.ClientModels.LoginResult;
 public class FacebookLogin : MonoBehaviour
 {
     private string _message;
 
-    private void Start()
-    {
 
-        // This call is required before any other calls to the Facebook API. We pass in the callback to be invoked once initialization is finished
-     
-        
-    }
 
     public void LoginWithFacebbok()
     {
         SetMessage("Initializing Facebook..."); // logs the given message and displays it on the screen using OnGUI method
-                                                 FB.Init(OnFacebookInitialized); 
-
+        FB.Init(OnFacebookInitialized);
         //var linkFBReq = new LinkFacebookAccountRequest
         //{
-            
+
         //};
         //PlayFabClientAPI.LinkFacebookAccount(linkFBReq, OnLinkFBSuccess, OnlinkFBFail);
 
@@ -61,9 +54,9 @@ public class FacebookLogin : MonoBehaviour
              * We proceed with making a call to PlayFab API. We pass in current Facebook AccessToken and let it create
              * and account using CreateAccount flag set to true. We also pass the callback for Success and Failure results
              */
-            PlayFabClientAPI.LoginWithFacebook(new LoginWithFacebookRequest { CreateAccount = true, AccessToken = AccessToken.CurrentAccessToken.TokenString},
+            PlayFabClientAPI.LoginWithFacebook(new LoginWithFacebookRequest { CreateAccount = true, AccessToken = AccessToken.CurrentAccessToken.TokenString },
                 OnPlayfabFacebookAuthComplete, OnPlayfabFacebookAuthFailed);
-           
+
         }
         else
         {

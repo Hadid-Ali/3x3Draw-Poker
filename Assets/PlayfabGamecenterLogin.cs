@@ -19,6 +19,8 @@ public class PlayfabGamecenterLogin : MonoBehaviour
           PlayerId=User_email,
           CreateAccount=true
         };
+        GameEvents.MenuEvents.ShowfakeConnectingScreen.Raise();
+
         PlayFabClientAPI.LoginWithGameCenter(GameceterLoginRequst, OnLoginSucess, OnloginFailed);
         Debug.LogError("Gamecenter login");
     }
