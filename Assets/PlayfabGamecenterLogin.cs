@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
+using UnityEngine.SocialPlatforms.GameCenter;
+
 using PlayFab.ClientModels;
 using LoginResult = PlayFab.ClientModels.LoginResult;
+using static Online.GameCenterSignature;
+using Online;
 public class PlayfabGamecenterLogin : MonoBehaviour
 {
-    
     private void OnGamecenterLogin(string User_email,string User_pass)
     {
         //var LinkGameCenter = new LinkGameCenterAccountRequest
@@ -23,6 +26,8 @@ public class PlayfabGamecenterLogin : MonoBehaviour
 
         PlayFabClientAPI.LoginWithGameCenter(GameceterLoginRequst, OnLoginSucess, OnloginFailed);
         Debug.LogError("Gamecenter login");
+       
+
     }
 
     //private void OnLinkSucess(LinkGameCenterAccountResult result)

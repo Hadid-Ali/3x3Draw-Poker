@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+using System;
 public static partial class GameEvents
 {
     public static class MenuEvents
@@ -14,6 +16,8 @@ public static partial class GameEvents
         public static GameEvent RegisterSuccessEvent = new();
         public static GameEvent FacebookLoginSuccessEvent = new();
         public static GameEvent FacebookLoginFailEvent = new();
+        public static GameEvent<Dictionary<string, string> , Action> UpdateUserData = new();
+        public static GameEvent<string> GetUserData = new();
         public static GameEvent ShowfakeConnectingScreen = new();
         public static GameEvent<string,string> EmailLoginAtMenuEvent = new();
         public static GameEvent<string,string> GamecenterLoginAtMenuEvent = new();
