@@ -23,7 +23,7 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 
     private void Start()
     {
-        Invoke(nameof(SpawnPlayer), 1f);
+        Invoke(nameof(SpawnPlayer), 2f);
     }
 
     private void OnEnable()
@@ -50,13 +50,16 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
         PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
             Quaternion.identity, 0);
         
+        print($"Bot count befoer spawn {m_Manager.BotCount}");
         if(m_Manager.BotCount <= 0 || !PhotonNetwork.IsMasterClient)
             return;
 
+        print("Bot Spawn before loop is working");
         for (int i = 0; i < m_Manager.BotCount; i++)
         {
             PhotonNetwork.Instantiate($"Network/Player/Avatars/BotAvatar", Vector3.zero,
                 Quaternion.identity, 0);
+            print("Bot Spawn is working");
         }
     }
 

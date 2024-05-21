@@ -147,6 +147,7 @@ public class NetworkGameplayManager : MonoBehaviour
             BotCount = 1;
         
         GameData.SessionData.CurrentRoomPlayersCount += BotCount;
+        print($"Players Count is : { GameData.SessionData.CurrentRoomPlayersCount}");
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),

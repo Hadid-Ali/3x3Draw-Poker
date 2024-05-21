@@ -6,27 +6,20 @@ using UnityEngine.SceneManagement;
 
 public class NetworkSceneManager : MonoBehaviour
 {
-    [SerializeField] private PhotonView m_PhotonView;
-
-    public void LoadGameplayScene(float wait)
+    public void LoadGameplayScene(string sceneName,float wait)
     {
-        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(LoadGameplaySceneRPC), RpcTarget.All,
-            new object[] { wait });
-    }
-    
-    [PunRPC]
-    private void LoadGameplaySceneRPC(float wait)
-    {
-        GameEvents.MenuEvents.NetworkStatusUpdated.Raise("\t\tLoading Game");
-        StartCoroutine(LoadScene("PokerGame", wait));
+        NetworkManager.Instance.SetStatus("Loading Game...");
+        StartCoroutine(LoadScene(sceneName, wait));
     }
 
-    //TODO: Implement Scene Flow Loader
-    
+    public void LoadMenuScene(float wait)
+    {
+        
+    }
+
     private IEnumerator LoadScene(string sceneName,float wait)
     {
-     //   Debug.LogError("Load Scene");
         yield return new WaitForSeconds(wait);
-        SceneManager.LoadSceneAsync(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 }

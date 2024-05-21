@@ -65,7 +65,6 @@ public class NetworkMatchStartHandler : MonoBehaviour
 
     public void StartMatchInternal()
     {
-        GameData.SessionData.CurrentRoomPlayersCount = CurrentPlayersCount;
         GameEvents.NetworkEvents.PlayersJoined.Raise();
         PhotonNetwork.CurrentRoom.IsOpen = false;
         m_IsAutoStartRequestSent = false;
