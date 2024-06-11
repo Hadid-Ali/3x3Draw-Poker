@@ -39,12 +39,13 @@ public class FacebookLogin : MonoBehaviour
         if (FB.IsLoggedIn)
             FB.LogOut();
 
-        FB.LogInWithReadPermissions(null, OnFacebookLoggedIn);
+        FB.LogInWithReadPermissions(new List<string>() { "public_profile", "email" }, OnFacebookLoggedIn);
         // We invoke basic login procedure and pass in the callback to process the result
     }
 
     private void OnFacebookLoggedIn(ILoginResult result)
     {
+
         // If result has no errors, it means we have authenticated in Facebook successfully
         if (result == null || string.IsNullOrEmpty(result.Error))
         {
@@ -66,10 +67,26 @@ public class FacebookLogin : MonoBehaviour
     }
 
     // When processing both results, we just set the message, explaining what's going on.
-    private void OnPlayfabFacebookAuthComplete(LoginResult result)
+    private void OnPlayfabFacebookAuthComplete(LoginResult Loginresult)
     {
-        SetMessage("PlayFab Facebook Auth Complete. Session ticket: " + result.PlayFabId);
-        GameEvents.MenuEvents.LoginAtMenuEvent.Raise(result.PlayFabId);
+        Debug.LogError(AccessToken.CurrentAccessToken.UserId);
+        SetMessage("PlayFab Facebook Auth Complete. Session ticket: " + Loginresult.PlayFabId);
+
+
+        FB.API("/me?fields=name", HttpMethod.GET, delegate (IGraphResult result)
+        {
+            // Add error handling here
+            if (result.ResultDictionary != null)
+            {
+                GameEvents.MenuEvents.LoginAtMenuEvent.Raise(result.ResultDictionary["name"].ToString());
+
+            }
+            else
+            {
+                GameEvents.MenuEvents.LoginAtMenuEvent.Raise(Loginresult.PlayFabId);
+
+            }
+        });
         GameEvents.MenuEvents.FacebookLoginSuccessEvent.Raise();
 
     }
