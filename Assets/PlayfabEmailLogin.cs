@@ -55,7 +55,7 @@ public class PlayfabEmailLogin : MonoBehaviour
         //PlayFabClientAPI.LinkGameCenterAccount(LinkGameCenter,OnLinkSucess,OnloginFailed);
         var EmailLoginRequst = new LoginWithEmailAddressRequest
         {
-          
+
             Email = User_email,
             Password = User_pass
         };
