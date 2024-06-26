@@ -26,6 +26,8 @@ public class PlayerUIViewListenerObject : PlayerViewListenerObject
     
     protected override void OnLocalPlayerJoined(PlayerViewDataObject viewDataObject)
     {
+        print($"Local player joined with id :  {viewDataObject.LocalID}");
+        
         PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj => obj.PositionIndex == viewDataObject.LocalID);
         scoreObject.SetContainerStatus(true);
         scoreObject.SetName(viewDataObject.Name);

@@ -1,5 +1,6 @@
 public enum HandTypes
 {
+    FiveOfAKind = 10,
     RoyalFlush = 9,
     StraightFlush = 8,
     FourOfAKind = 7,

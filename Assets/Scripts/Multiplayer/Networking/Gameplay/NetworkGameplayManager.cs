@@ -141,13 +141,15 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        if (GameData.SessionData.CurrentRoomPlayersCount == 1)
-            BotCount = 2;
-        else if (GameData.SessionData.CurrentRoomPlayersCount == 2)
-            BotCount = 1;
+        // if (GameData.SessionData.CurrentRoomPlayersCount == 1)
+        //     BotCount = 2;
+        // else if (GameData.SessionData.CurrentRoomPlayersCount == 2)
+        //     BotCount = 1;
+        //
+        BotCount = 4;
         
         GameData.SessionData.CurrentRoomPlayersCount += BotCount;
-        print($"Players Count is : { GameData.SessionData.CurrentRoomPlayersCount}");
+        GameData.RuntimeData.CURRENT_BOTS_FOR_SPAWNING = BotCount;
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
@@ -156,7 +158,6 @@ public class NetworkGameplayManager : MonoBehaviour
                 count
             });
 
-        print($"Star match with players  : {count}");
     }
 
     [PunRPC]
@@ -175,7 +176,6 @@ public class NetworkGameplayManager : MonoBehaviour
             Dependencies.PlayersContainer.GetLocalPlayerNetworkID() == winnerNetworkViewID);
 
         GameEvents.GameFlowEvents.MatchOver.Raise();
-        Debug.LogError($"Winner is {winnerNetworkViewID}");
     }
 
     [PunRPC]

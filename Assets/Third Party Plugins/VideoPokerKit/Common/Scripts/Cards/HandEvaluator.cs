@@ -58,6 +58,7 @@ public class HandEvaluator
 		bool bOnePair = false;
 		bool bTwoPair = false;
 		bool bThree = false;
+		bool bFive = false;
 		bool bStraight = false;
 		bool bFlush = false;
 		bool bFullHouse = false;
@@ -137,6 +138,14 @@ public class HandEvaluator
 				Debug.Log("Four of a kind");
 				handType = HandTypes.FourOfAKind;
 			}
+			//Check five of a kind
+			if (cardsValueCount[i] == 5)
+			{
+				bFive = true;
+				Debug.Log("Five of a kind");
+				handType = HandTypes.FiveOfAKind;
+				return;
+			}
 		}
 
 		// check flush
@@ -202,7 +211,5 @@ public class HandEvaluator
 				handType = HandTypes.RoyalFlush;
 			}
 		}
-
-		Debug.Log($"Hand Type {handType}");
 	}
 }
