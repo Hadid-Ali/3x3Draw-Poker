@@ -6,7 +6,7 @@ using Photon.Pun;
 [RequireComponent(typeof(NetworkPlayerSpawner))]
 public class NetworkGameplayManager : MonoBehaviour
 {
-    public int BotCount { private set; get; }
+    public int BotCount {private set; get;}
     [SerializeField] private NetworkPlayerSpawner m_NetworkPlayerSpawner;
     [SerializeField] protected PhotonView m_NetworkGameplayManagerView;
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
@@ -75,6 +75,7 @@ public class NetworkGameplayManager : MonoBehaviour
     }
 
     private HashSet<int> m_AlreadyCheckedDecks = new ();
+    
     [PunRPC]
     public void OnNetworkSubmitRequest_RPC(string jsonData)
     {
@@ -141,12 +142,10 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        if (GameData.SessionData.CurrentRoomPlayersCount == 1)
-            BotCount = 2;
-        else if (GameData.SessionData.CurrentRoomPlayersCount == 2)
-            BotCount = 1;
+        BotCount = GameData.MetaData.MaxPlayersLimit - GameData.SessionData.CurrentRoomPlayersCount;
         
         GameData.SessionData.CurrentRoomPlayersCount += BotCount;
+        GameData.RuntimeData.CURRENT_BOTS_FOR_SPAWNING = BotCount;
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
@@ -155,7 +154,6 @@ public class NetworkGameplayManager : MonoBehaviour
                 count
             });
 
-        print($"Star match with players  : {count}");
     }
 
     [PunRPC]
@@ -174,7 +172,6 @@ public class NetworkGameplayManager : MonoBehaviour
             Dependencies.PlayersContainer.GetLocalPlayerNetworkID() == winnerNetworkViewID);
 
         GameEvents.GameFlowEvents.MatchOver.Raise();
-        Debug.LogError($"Winner is {winnerNetworkViewID}");
     }
 
     [PunRPC]

@@ -11,7 +11,7 @@ public static partial class GameData
         public static bool IS_LOGGED_IN = false;
         public static string USER_NAME = string.Empty;
         
-        public static int CURRENT_BOTS_FOR_SPAWNING;
+        public static int CURRENT_BOTS_FOR_SPAWNING = 0;
         public static int TOTAL_BOTS_SPAWNED = 0;
 
         public static int TOTAL_PLAYER_SCORE

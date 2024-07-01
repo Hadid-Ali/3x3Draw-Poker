@@ -14,4 +14,17 @@ public static partial class GameEvents
         public static GameEvent<PlayerController> PlayerJoinedGame = new();
         public static GameEvent<List<int>,bool> MatchWinnersAnnounced = new();
     }
+    
+    public static class NetworkPlayerEvents
+    {
+        public static readonly GameEvent<int, bool> OnPlayerTurn = new();
+        public static readonly GameEvent<int, int> OnPlayerCreditsChanged = new();
+        public static readonly GameEvent<int, string> OnPlayerActionPop = new();
+        
+        public static readonly GameEvent<List<CardData>> ExposePocketCardsLocally = new();
+
+        public static GameEvent<int, int> OnSetPlayerRaiseLimits = new();
+        public static GameEvent OnPlayerDisconnected = new();
+
+    }
 }

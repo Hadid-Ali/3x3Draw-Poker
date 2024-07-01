@@ -13,6 +13,6 @@ public class MenuNetworkFlowHandler : NetworkFlowHandler
 
     protected override void OnPlayersJoined()
     {
-        NetworkManager.Instance.LoadGameplay();
+       // NetworkManager.Instance.LoadGameplay();
     }
 }

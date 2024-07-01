@@ -9,8 +9,7 @@ public class NetworkBotCardsController : MonoBehaviour
     [SerializeField] public List<CardData> cards = new();
     [SerializeField] private NetworkPlayerBotController _botController;
     [SerializeField] private PhotonView view;
-
-    [SerializeField] private int cardsReceivedFromId;
+    
     [SerializeField] private int shuffleLimit;
 
 
@@ -19,10 +18,9 @@ public class NetworkBotCardsController : MonoBehaviour
         if(_ID != _botController.ID)
             return;
 
-        cardsReceivedFromId = _ID;
         cards.Clear();
         cards.AddRange(obj);
-
+        
         StartCoroutine(ShuffleToBestCards());
     }
     private Handd hand1 = new();

@@ -40,6 +40,9 @@ public static class CombinationСalculator
             Handd.Clear();
             return Handd;
         }
+
+        if (IsFiveOfAKind(Handd))
+            return GetFiveOfAKind(Handd);
         if (IsStraightFlush(Handd))
             return GetStraightFlush(Handd);
         if (IsFourOfAKind(Handd))
@@ -187,6 +190,37 @@ public static class CombinationСalculator
             straightflush.Clear();
         return straightflush;
     }
+    private static bool IsFiveOfAKind(Handd Handd)
+    {
+        Handd.SortByRank();
+        for (var i = 0; i <= Handd.Count() - 5; i++)
+        {
+            if (Handd.GetCard(i) == Handd.GetCard(i + 1) && Handd.GetCard(i) == Handd.GetCard(i + 2) && Handd.GetCard(i) == Handd.GetCard(i + 3))
+                return true;
+        }
+        return false;
+    }
+    private static Handd GetFiveOfAKind(Handd Handd)
+    {
+        Handd fiveofakind = new();
+        fiveofakind.AddCombinationId(8);
+        Handd.SortByRank();
+        for (var i = 0; i <= Handd.Count() - 5; i++)
+        {
+            if (Handd.GetCard(i) != Handd.GetCard(i + 1) || Handd.GetCard(i) != Handd.GetCard(i + 2) || Handd.GetCard(i) != Handd.GetCard(i + 3))
+            {
+                continue;
+            }
+
+            fiveofakind.Add(Handd.GetCard(i));
+            fiveofakind.Add(Handd.GetCard(i + 1));
+            fiveofakind.Add(Handd.GetCard(i + 2));
+            fiveofakind.Add(Handd.GetCard(i + 3));
+            fiveofakind.AddCombinationId(Handd.GetCard(i).GetRank());
+            break;
+        }
+        return GetKickers(Handd,fiveofakind);
+    }
     
     //easy algorithm to understand, just loop through the array and check for a certain amount of pairs
     //same for 3 of a kind, full house, 2 pair and 1 pair
@@ -200,6 +234,7 @@ public static class CombinationСalculator
         }
         return false;
     }
+
     
     //same as above except return the cards themselves
     private static Handd GetFourOfAKind(Handd Handd)

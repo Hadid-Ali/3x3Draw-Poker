@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -52,20 +50,20 @@ public class DecksHandler : MonoBehaviour
         {
             m_CurrentGameDeck.AddRange(m_CardsRegistry);
         }
-        
-        Debug.LogError($"Loaded Decks{m_CurrentGameDeck.Count}");
     }
 
     public CardData[] GetRandomHand(int cardsAmount)
     {
+        if(m_CurrentGameDeck.Count < cardsAmount)
+            SetupCurrentGameDeck();
+        
         List<CardData> handsData = new();
 
         for (int i = 0; i < cardsAmount; i++)
         {
             handsData.Add( GetRandomCard());
         }
-
-        Debug.LogError($"Counter After {m_CurrentGameDeck.Count}");
+        
         return handsData.ToArray();
     }
 }

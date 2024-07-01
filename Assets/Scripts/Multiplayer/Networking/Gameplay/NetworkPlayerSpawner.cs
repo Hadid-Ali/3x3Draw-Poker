@@ -23,7 +23,7 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 
     private void Start()
     {
-        Invoke(nameof(SpawnPlayer), 1f);
+        Invoke(nameof(SpawnPlayer), 2f);
     }
 
     private void OnEnable()
@@ -49,7 +49,7 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     { 
         PhotonNetwork.Instantiate($"Network/Player/Avatars/PlayerAvatar", Vector3.zero,
             Quaternion.identity, 0);
-        
+        ;
         if(m_Manager.BotCount <= 0 || !PhotonNetwork.IsMasterClient)
             return;
 
