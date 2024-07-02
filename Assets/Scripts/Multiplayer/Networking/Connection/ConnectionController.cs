@@ -23,6 +23,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         
         private bool m_IsTestConnection = true;
         private bool m_IsJoiningRoom = false;
+        private bool m_IsPhotonOffline = PhotonNetwork.OfflineMode;
     
         private void Start()
         {
@@ -95,6 +96,10 @@ public class ConnectionController : MonoBehaviourPunCallbacks
                 UpdateConnectionStatus("Connected to Server, Finding Best Regions to Connect");
                 Invoke(nameof(OnRegionsPingCompleted), 1f);
             }
+            // else if(m_IsPhotonOffline)
+            // {
+            //     PhotonNetwork.CreateRoom("Offline");
+            // }
             else
             {
                 PhotonNetwork.JoinLobby(customLobby);
@@ -188,6 +193,13 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         public override void OnJoinedRoom()
         {
             base.OnJoinedRoom();
+            // if (m_IsPhotonOffline)
+            // {
+            //     NetworkManager.Instance.LoadGameplay("PokerGame");
+            //     return;
+            // }
+            
+            
             UpdateConnectionStatus($"Match Found,Waiting For Others");
     
             GameEvents.MenuEvents.MenuTransitionEvent.Raise(MenuName.InsideRoom);
@@ -264,7 +276,25 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     
             if (PhotonNetwork.IsMasterClient)
                 PhotonNetwork.CurrentRoom.IsOpen = false;
+
+            // if (m_IsPhotonOffline)
+            // {
+            //     StartCoroutine(DisconnectAndStartOffline());
+            //     return;
+            // }
             
             NetworkManager.Instance.LoadGameplay("PokerGame");
         }
+
+        // IEnumerator DisconnectAndStartOffline()
+        // {
+        //     PhotonNetwork.Disconnect();
+        //     while (PhotonNetwork.IsConnected)
+        //     {
+        //         yield return null;
+        //     }
+        //     PhotonNetwork.OfflineMode = true;
+        //     
+        // }
+        
 }
