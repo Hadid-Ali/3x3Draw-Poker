@@ -25,7 +25,6 @@ public class NetworkGameplayManager : MonoBehaviour
     
     private void Start()
     {
-        PhotonNetwork.OfflineMode = true;
         StartMatchInternal();
     }
 

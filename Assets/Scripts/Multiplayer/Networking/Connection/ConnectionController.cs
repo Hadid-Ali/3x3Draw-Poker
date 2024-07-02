@@ -23,7 +23,6 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         
         private bool m_IsTestConnection = true;
         private bool m_IsJoiningRoom = false;
-        private bool m_IsPhotonOffline = PhotonNetwork.OfflineMode;
     
         private void Start()
         {
@@ -35,6 +34,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
             base.OnEnable();
             GameEvents.MenuEvents.MatchStartRequested.Register(StartMatchTimer);
             GameEvents.MenuEvents.RoomJoinRequested.Register(OnRoomJoinRequested);
+            GameEvents.NetworkEvents.StartOfflineMatch.Register(OnStartOfflineMatch);
         }
     
         public override void OnDisable()
@@ -42,6 +42,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
             base.OnDisable();
             GameEvents.MenuEvents.MatchStartRequested.UnRegister(StartMatchTimer);
             GameEvents.MenuEvents.RoomJoinRequested.UnRegister(OnRoomJoinRequested);
+            GameEvents.NetworkEvents.StartOfflineMatch.UnRegister(OnStartOfflineMatch); 
         }
     
         private void OnCheckForRoomJoining()
@@ -91,15 +92,16 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     
         public override void OnConnectedToMaster()
         {
-            if (m_IsTestConnection)
+            if (PhotonNetwork.OfflineMode)
+            {
+                print("Creating Offline Room");
+                PhotonNetwork.CreateRoom("Offline");
+            }
+            else if(m_IsTestConnection)
             {
                 UpdateConnectionStatus("Connected to Server, Finding Best Regions to Connect");
                 Invoke(nameof(OnRegionsPingCompleted), 1f);
             }
-            // else if(m_IsPhotonOffline)
-            // {
-            //     PhotonNetwork.CreateRoom("Offline");
-            // }
             else
             {
                 PhotonNetwork.JoinLobby(customLobby);
@@ -193,12 +195,12 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         public override void OnJoinedRoom()
         {
             base.OnJoinedRoom();
-            // if (m_IsPhotonOffline)
-            // {
-            //     NetworkManager.Instance.LoadGameplay("PokerGame");
-            //     return;
-            // }
             
+            if (PhotonNetwork.OfflineMode)
+            {
+                NetworkManager.Instance.LoadGameplay("PokerGame");
+                return;
+            }
             
             UpdateConnectionStatus($"Match Found,Waiting For Others");
     
@@ -277,24 +279,31 @@ public class ConnectionController : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
                 PhotonNetwork.CurrentRoom.IsOpen = false;
 
-            // if (m_IsPhotonOffline)
-            // {
-            //     StartCoroutine(DisconnectAndStartOffline());
-            //     return;
-            // }
-            
             NetworkManager.Instance.LoadGameplay("PokerGame");
         }
 
-        // IEnumerator DisconnectAndStartOffline()
-        // {
-        //     PhotonNetwork.Disconnect();
-        //     while (PhotonNetwork.IsConnected)
-        //     {
-        //         yield return null;
-        //     }
-        //     PhotonNetwork.OfflineMode = true;
-        //     
-        // }
+        private void OnStartOfflineMatch()
+        {
+            StartCoroutine(ValidateDisconnection());
+        }
+
+        IEnumerator ValidateDisconnection()
+        {
+            if(PhotonNetwork.IsConnected)
+                PhotonNetwork.Disconnect();
+            
+            while (PhotonNetwork.IsConnected)
+            {
+                yield return null;
+            }
+            
+            PhotonNetwork.OfflineMode = true;
+            GameData.SessionData.CurrentRoomPlayersCount = 1;
+            PhotonNetwork.LocalPlayer.NickName = "Player1";
+            GameEvents.MenuEvents.MenuTransitionEvent.Raise(MenuName.ConnectionScreen);
+            UpdateConnectionStatus($"Starting Offline match");
+        }
+
+
         
 }
