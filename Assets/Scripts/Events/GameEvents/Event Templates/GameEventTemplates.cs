@@ -38,6 +38,10 @@ public class GameEvent<T>
     {
         Event -= method;
     }
+    public void UnRegisterAll()
+    {
+        Event = null;
+    }
 
     public void Raise(T param)
     {

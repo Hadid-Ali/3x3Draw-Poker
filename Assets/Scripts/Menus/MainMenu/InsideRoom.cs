@@ -8,36 +8,23 @@ using UnityEngine.UI;
 public class InsideRoom : UIMenuBase
 {
    [SerializeField] private TextMeshProUGUI players;
-  // [SerializeField] private TextMeshProUGUI statusText;
-   [SerializeField] private Button button;
+   [SerializeField] private TextMeshProUGUI MatchRemainingTimer;
     
    private void OnEnable()
    {
-      button.onClick.AddListener(()=> { GameEvents.MenuEvents.MatchStartRequested.Raise();});
+      GameEvents.NetworkEvents.MatchStartTimer.Register(OnMatchTimerUpdated);
       GameEvents.MenuEvents.PlayersListUpdated.Register(UpdatePlayerList);
-        
-      GameEvents.NetworkEvents.PlayerJoinedRoom.Register((bool b)=> button.gameObject.SetActive(b));
-     // GameEvents.NetworkEvents.NetworkStatus.Register(UpdateLobbyStatus);
-   }
-
-   private void UpdateLobbyStatus(string obj)
-   {
-    //  statusText.SetText(obj);
    }
 
    private void OnDisable()
    {
       GameEvents.MenuEvents.PlayersListUpdated.UnRegister(UpdatePlayerList);
-      GameEvents.NetworkEvents.PlayerJoinedRoom.UnRegister((bool b)=> button.gameObject.SetActive(b));
-      //GameEvents.NetworkEvents.NetworkStatus.UnRegister(UpdateLobbyStatus);
+      GameEvents.NetworkEvents.MatchStartTimer.UnRegister(OnMatchTimerUpdated);
    }
 
-   private void OnValidate()
+   private void OnMatchTimerUpdated(string obj)
    {
-      if(!PhotonNetwork.IsMasterClient)
-         return;
-        
-      button.interactable = PhotonNetwork.PlayerList.Length > 1;
+      MatchRemainingTimer.SetText($"Match Starting in {obj}");  
    }
     
    private void UpdatePlayerList(List<string> Players)
@@ -54,11 +41,8 @@ public class InsideRoom : UIMenuBase
       string PlayerPlural = Players.Count > 1 ? "Players Have" : "Player Has";
       
       this.players.text = $"{Players.Count} {PlayerPlural} Joined. {players}";
-
-      button.interactable = Players.Count > 1;
+      
       GameData.SessionData.CurrentRoomPlayersCount = Players.Count;
-        
-//      statusText.gameObject.SetActive(!PhotonNetwork.IsMasterClient);
    }
    
 }
