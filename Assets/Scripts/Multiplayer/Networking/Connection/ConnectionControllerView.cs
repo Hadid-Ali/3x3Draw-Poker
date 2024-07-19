@@ -37,19 +37,6 @@ public class ConnectionControllerView : MonoBehaviour
         m_OnCharacterSelected.Register(onCharacterSelect);
     }
 
-    public void SetTimerStatus(string timer)
-    {
-        // if (!m_MatchStartTimerComponent.gameObject.activeSelf)
-        //     m_MatchStartTimerComponent.gameObject.SetActive(true);
-        //
-        // m_MatchStartTimerComponent.text = timer;
-    }
-
-    public void HideTimer()
-    {
-      //  m_MatchStartTimerComponent.gameObject.SetActive(false);
-    }
-
     private void OnLogin(string userName)
     {
         m_OnLogin.Raise(userName);

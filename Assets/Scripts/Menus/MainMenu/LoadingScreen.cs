@@ -1,4 +1,5 @@
 using Assets.Scripts._UXUI;
+using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class LoadingScreen : UIMenuBase
     private void OnEnable()
     {
         GameEvents.NetworkEvents.NetworkStatus.Register(UpdateLobbyStatus);
-        GameEvents.MenuEvents.TimeBasedActionRequested.Register(OnTimeBasedActionRequested);
+        //GameEvents.MenuEvents.TimeBasedActionRequested.Register(OnTimeBasedActionRequested);
         
         GameEvents.NetworkEvents.RoomJoinFailed.Register(OnRoomJoinFailed);
         GameEvents.NetworkEvents.LobbyJoined.Register(OnCreateRoom);
@@ -24,7 +25,7 @@ public class LoadingScreen : UIMenuBase
     private void OnDisable()
     {
         GameEvents.NetworkEvents.NetworkStatus.UnRegister(UpdateLobbyStatus);
-        GameEvents.MenuEvents.TimeBasedActionRequested.UnRegister(OnTimeBasedActionRequested);
+        //GameEvents.MenuEvents.TimeBasedActionRequested.UnRegister(OnTimeBasedActionRequested);
         
         GameEvents.NetworkEvents.RoomJoinFailed.UnRegister(OnRoomJoinFailed);
         GameEvents.NetworkEvents.LobbyJoined.UnRegister(OnCreateRoom);

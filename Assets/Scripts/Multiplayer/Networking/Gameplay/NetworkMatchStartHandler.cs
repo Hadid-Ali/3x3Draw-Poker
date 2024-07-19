@@ -1,23 +1,34 @@
+using System;
 using UnityEngine;
 using Photon.Pun;
 
 public class NetworkMatchStartHandler : MonoBehaviour
 {
+    [SerializeField] private PhotonView _view;
+    
     private bool m_IsAutoStartRequestSent = false;
-    private int m_MaxPlayers = 0;
+
+    private string _matchStartTitle = "Starting The Match";
 
     private int CurrentPlayersCount => PhotonNetwork.PlayerList.Length;
-    
-    public void SetMaxPlayersCount(int count)
+
+    private void Awake()
     {
-        m_MaxPlayers = count;
+        GameEvents.NetworkEvents.PlayerJoinedRoom.Register(OnPlayerEnteredInRoom);
     }
-    
-    public void OnPlayerEnteredInRoom()
+
+    private void OnDestroy()
     {
+        GameEvents.NetworkEvents.PlayerJoinedRoom.Register(OnPlayerEnteredInRoom);
+    }
+
+    public void OnPlayerEnteredInRoom(bool b)
+    {
+       // if(!PhotonNetwork.IsMasterClient)
+         //   return;
+        
         CheckForMinimumPlayersCount();
         CheckForMaximumPlayersCount();
-        print("Player Entered room");
     }
 
     private void CheckForMinimumPlayersCount()
@@ -26,25 +37,22 @@ public class NetworkMatchStartHandler : MonoBehaviour
             return;
         
         if (CurrentPlayersCount >= GameData.MetaData.MinimumRequiredPlayers)
-        {
-            print("Match could be started");
-            
+        { 
             GameEvents.TimerEvents.ExecuteActionRequest.Raise(new TimerDataObject()
             {
-                Title = "Starting The Match",
+                Title = _matchStartTitle,
                 TimeDuration = GameData.MetaData.WaitBeforeAutomaticMatchStart,
                 ActionToExecute =  StartMatchInternal,
+                TickTimeEvent = TimerTick,
                 IsNetworkGlobal = true
             });
             m_IsAutoStartRequestSent = true;
-            
-            print("Match started");
         }
     }
 
     private void CheckForMaximumPlayersCount()
     {
-        if (CurrentPlayersCount >= m_MaxPlayers)
+        if (CurrentPlayersCount >= GameData.MetaData.MaximumPlayers)
         {
             TerminateAutoMatchStartRequest();
             StartMatchInternal();
@@ -63,10 +71,31 @@ public class NetworkMatchStartHandler : MonoBehaviour
         m_IsAutoStartRequestSent = false;
     }
 
+    public void TimerTick(string time)
+    {
+        _view.RPC(nameof(GlobalTimerTick), RpcTarget.All, time);
+    }
+
+    [PunRPC]
+    public void GlobalTimerTick(string time)
+    {
+        print($"time : {time}");
+        GameEvents.NetworkEvents.MatchStartTimer.Raise(time);
+    }
+    
     public void StartMatchInternal()
     {
-        GameEvents.NetworkEvents.PlayersJoined.Raise();
-        PhotonNetwork.CurrentRoom.IsOpen = false;
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+        
         m_IsAutoStartRequestSent = false;
+        
+        _view.RPC(nameof(LoadScene), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void LoadScene()
+    {
+        NetworkManager.Instance.LoadGameplay("PokerGame");
     }
 }

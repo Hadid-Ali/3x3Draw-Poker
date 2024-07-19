@@ -12,6 +12,7 @@ public class NetworkGameplayManager : MonoBehaviour
     [SerializeField] private NetworkMatchManager m_NetworkMatchManager;
     
     [SerializeField] private NetworkGameplayScoreHandler m_NetworkScoreHandler;
+    [SerializeField] private NetworkMatchStartRules m_MatchStartRules;
     
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
@@ -142,7 +143,7 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public void StartMatch()
     {
-        BotCount = GameData.MetaData.MaxPlayersLimit - GameData.SessionData.CurrentRoomPlayersCount;
+        BotCount = m_MatchStartRules.GetBotCount(GameData.SessionData.CurrentRoomPlayersCount);
         
         GameData.SessionData.CurrentRoomPlayersCount += BotCount;
         GameData.RuntimeData.CURRENT_BOTS_FOR_SPAWNING = BotCount;
