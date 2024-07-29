@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using UnityEngine;
 
 public static partial class GameEvents
@@ -25,5 +22,13 @@ public static partial class GameEvents
         public static GameEvent<int, Vector3> PlayerPositionInit = new();
 
         public static GameEvent<int, int> OnPlayerScoreSubmit = new();
+    }
+
+    public static class StoreEvents
+    {
+        public static GameEvent<StorePageName> OnStoreButtonClicked = new();
+        public static GameEvent<StorePageSO> OnDisplayStorePage = new();
+        public static GameEvent<List<StorePageName>> OnStoreInitialize = new();
+        
     }
 }
