@@ -212,7 +212,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         UpdateConnectionStatus($"Match Found,Waiting For Others");
 
         GameEvents.MenuEvents.MenuTransitionEvent.Raise(MenuName.InsideRoom);
-        GameEvents.NetworkEvents.PlayerJoinedRoom.Raise(PhotonNetwork.IsMasterClient);
+        GameEvents.NetworkEvents.PlayerJoinedRoom.Raise();
 
         UpdatePlayersList();
 

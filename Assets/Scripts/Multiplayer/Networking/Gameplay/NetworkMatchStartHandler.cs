@@ -22,10 +22,10 @@ public class NetworkMatchStartHandler : MonoBehaviour
         GameEvents.NetworkEvents.PlayerJoinedRoom.Register(OnPlayerEnteredInRoom);
     }
 
-    public void OnPlayerEnteredInRoom(bool b)
+    public void OnPlayerEnteredInRoom()
     {
-       // if(!PhotonNetwork.IsMasterClient)
-         //   return;
+     //   if(!PhotonNetwork.IsMasterClient)
+       //     return;
         
         CheckForMinimumPlayersCount();
         CheckForMaximumPlayersCount();

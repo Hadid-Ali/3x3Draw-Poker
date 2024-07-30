@@ -29,12 +29,9 @@ public class NetworkCardsDealer : MonoBehaviour
     {
         NetworkHandObject handObject = NetworkHandObject.DeSerialize(data);
         DealCardsToLocalPlayer(handObject.PlayerHand, ID);
-        
-        print($"User hands Recieved with ID {ID}");
     }
 
     
-    [ContextMenu("DealCards")]
     public void DealCardsToLocalPlayer(int id)
     {
         DealCardsToLocalPlayer(m_DecksHandler.GetRandomHand(m_HandSize), id);

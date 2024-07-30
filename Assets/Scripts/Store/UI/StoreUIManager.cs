@@ -5,66 +5,106 @@ using UnityEngine;
 public class StoreUIManager : MonoBehaviour
 {
     [SerializeField] private StoreButton storeButtonPrefab;
-    [SerializeField] private StoreItemUI<ItemProperty> itemPrefab;
+    [SerializeField] private StoreItemUI itemPrefab;
 
     [SerializeField] private Transform storePagesContainer;  
     [SerializeField] private Transform itemsContainer;
 
     [SerializeField] private List<StoreButton> pooledStoreButtons = new(); 
-    [SerializeField] private List<StoreItemUI<ItemProperty>> pooledStoreItemUI = new(); 
+    [SerializeField] private List<StoreItemUI> pooledStoreItemUI = new();
+
+    private StoreButton _currentSelectedStoreButton;
+    private StoreItemUI _currentSelectedItemButton;
     
-    public List<StorePageSO> storePages = new();
-    
-    private void Start()
+    private void Awake()
     {
          GameEvents.StoreEvents.OnDisplayStorePage.Register(OnDisplayStorePage);
          GameEvents.StoreEvents.OnStoreInitialize.Register(OnInitializeStore);
-            
+         
+         GameEvents.StoreEvents.OnStoreItemSelected.Register(OnStoreItemSelected);
     }
     private void OnDestroy()
     {
         GameEvents.StoreEvents.OnDisplayStorePage.UnRegister(OnDisplayStorePage);
         GameEvents.StoreEvents.OnStoreInitialize.UnRegister(OnInitializeStore);
+        GameEvents.StoreEvents.OnStoreItemSelected.UnRegister(OnStoreItemSelected);
     }
+
+    private void OnStoreItemSelected(ItemName obj)
+    {
+        StoreItemUI itemToSelect = pooledStoreItemUI.Find(item => item.itemName == obj);
+
+        if (itemToSelect == null) return;
+        
+        if(_currentSelectedItemButton != null)
+            _currentSelectedItemButton.OnItemUnSelected();
+            
+        _currentSelectedItemButton = itemToSelect;
+        _currentSelectedItemButton.OnItemSelected();
+    }
+
+
 
     private void OnInitializeStore(List<StorePageName> obj)
     {
         if (pooledStoreButtons.Count >= obj.Count)
         {
-                return;
+            SetUpStoreButtons(obj);
         }
-
-        int objectsToSpawn = pooledStoreButtons.Count - obj.Count;
-        
-        for (int i = 0; i < objectsToSpawn; i++)
+        else
         {
-            StoreButton button = pooledStoreButtons[i];
-            
-            if(button == null) Instantiate(storeButtonPrefab, storePagesContainer);
-            
-            button.storeName = obj[i];
-            button.SetTitle(obj[i].ToString());
-            pooledStoreButtons.Add(button);
+            int numToAdd = obj.Count - pooledStoreButtons.Count;
+            for (int i = 0; i < numToAdd; i++)
+            {
+                StoreButton button =   Instantiate(storeButtonPrefab, storePagesContainer);
+                pooledStoreButtons.Add(button);
+            }
+            SetUpStoreButtons(obj);
         }
-
     }
-    
-
+    private void SetUpStoreButtons(List<StorePageName> obj)
+    {
+        for (int i = 0; i < pooledStoreButtons.Count; i++)
+        {
+            if (i >= obj.Count)
+            {
+                pooledStoreButtons[i].gameObject.SetActive(false);
+                continue;
+            }
+            pooledStoreButtons[i].gameObject.SetActive(true);
+            pooledStoreButtons[i].storeName = obj[i];
+            pooledStoreButtons[i].SetTitle(obj[i].ToString());
+            print("Button Set");
+        }
+    }
+    private void SetupStorePAge(StorePageSO obj)
+    {
+        for (int i = 0; i < pooledStoreItemUI.Count; i++)
+        {
+            if (i >= obj.items.Count)
+            {
+                pooledStoreItemUI[i].gameObject.SetActive(false);
+                continue;
+            }
+            pooledStoreItemUI[i].gameObject.SetActive(true);
+            pooledStoreItemUI[i].InitializeItem(obj.items[i].property); 
+        }
+    }
     private void OnDisplayStorePage(StorePageSO obj)
     {
         if (pooledStoreItemUI.Count >= obj.items.Count)
         {
-            return;
+            SetupStorePAge(obj);
         }
-        
-        for (int i = 0; i < obj.items.Count; i++)
+        else
         {
-            StoreItemUI<ItemProperty> item = pooledStoreItemUI[i];
-            
-            if(item == null) Instantiate(itemPrefab, itemsContainer);
-            
-            item.InitializeItem(obj.items[i].property);
-            pooledStoreItemUI.Add(item);
+            int numToAdd = obj.items.Count - pooledStoreItemUI.Count;
+            for (int i = 0; i < numToAdd; i++)
+            {
+                StoreItemUI item =  Instantiate(itemPrefab, itemsContainer);
+                pooledStoreItemUI.Add(item);
+            }
+            SetupStorePAge(obj);
         }
     }
 

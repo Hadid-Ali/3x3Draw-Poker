@@ -1,6 +1,7 @@
-using UnityEngine;
+using System;
 
-public class StorePage : MonoBehaviour
+[Serializable]
+public class StorePage 
 {
     
 }

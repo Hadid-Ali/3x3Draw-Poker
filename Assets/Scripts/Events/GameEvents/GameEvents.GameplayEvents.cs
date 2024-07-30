@@ -29,6 +29,7 @@ public static partial class GameEvents
         public static GameEvent<StorePageName> OnStoreButtonClicked = new();
         public static GameEvent<StorePageSO> OnDisplayStorePage = new();
         public static GameEvent<List<StorePageName>> OnStoreInitialize = new();
-        
+        public static GameEvent<ItemName> OnStoreItemSelected = new();
+
     }
 }

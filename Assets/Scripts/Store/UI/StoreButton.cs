@@ -1,5 +1,3 @@
-using System;
-using System.Security.Cryptography.X509Certificates;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +7,11 @@ public class StoreButton : MonoBehaviour
     public StorePageName storeName;
     
     [SerializeField] private Button button;
+    [SerializeField] private Image image;
     [SerializeField] private TextMeshProUGUI title;
+
+    [SerializeField] private Color selectedColor;
+    [SerializeField] private Color unSelectedColor;
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -18,22 +20,25 @@ public class StoreButton : MonoBehaviour
         SetTitle(val);
     }
 #endif
-    
-
-
-    private void Start()
+    private void Awake()
     {
         button.onClick.AddListener(LaunchEvent);
+        GameEvents.StoreEvents.OnStoreButtonClicked.Register(OnStoreButtonClicked);
     }
-
-    private void OnDestroy()
+        private void OnDestroy()
     {
         button.onClick.RemoveListener(LaunchEvent);
+        GameEvents.StoreEvents.OnStoreButtonClicked.UnRegister(OnStoreButtonClicked);
     }
 
-    private void LaunchEvent() => GameEvents.StoreEvents.OnStoreButtonClicked.Raise(storeName); 
-
-
+    private void OnStoreButtonClicked(StorePageName obj)
+    {
+        image.color = obj == storeName ? selectedColor : unSelectedColor;
+    }
+    private void LaunchEvent()
+    {
+        GameEvents.StoreEvents.OnStoreButtonClicked.Raise(storeName);  
+    }  
     public void SetTitle(string val) => title.SetText(val);
     
     

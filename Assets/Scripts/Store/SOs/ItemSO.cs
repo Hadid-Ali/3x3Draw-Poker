@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemSO", menuName = "ScriptableObject/Store/ItemSo")]
 public class ItemSO : ScriptableObject
 {
-    public Character itemName;
+    public ItemName itemName;
     public ItemProperty property;
 
     #region Utility
@@ -14,7 +14,7 @@ public class ItemSO : ScriptableObject
     {
         string val = itemName.ToString();
         SetFileName(val);
-        property.name = val;
+        property.name = itemName;
     }
 
     private void SetFileName(string val)

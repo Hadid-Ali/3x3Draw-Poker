@@ -9,7 +9,7 @@ public class CardDataHolder : MonoBehaviour
     private CardData m_TempData;
     
     private GameEvent m_OnCardClear = new();
-    private GameEvent m_OnCardDataSet = new();
+    private GameEvent m_OnCardDataSet = new();  
     private GameEvent<CardData> m_SetCardDataInternal = new();
     
     
@@ -26,7 +26,7 @@ public class CardDataHolder : MonoBehaviour
     {
         SetCardDataInternal(cardData);
 
-        m_TempData = cardData;
+        m_TempData = cardData;  
 
         if (!isPersistent)
             return;

@@ -1,15 +1,15 @@
 
 
-public enum Character
+public enum ItemName
 {
-    Elephant,
-    Coyote,
-    Bear,
-    Fox,
-    Rabbit,
-    Giraffe,
-    Lion,
-    Pterodactyl,
+    Elephant = 0,
+    Coyote = 1,
+    Bear = 2,
+    Fox = 3,
+    Rabbit = 4,
+    Giraffe= 5,
+    Lion = 6,
+    Pterodactyl = 7,
     Cat,
     Clocks,
     DefaltCardA,
