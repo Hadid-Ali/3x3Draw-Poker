@@ -21,6 +21,7 @@ public class PlayerLoginScreen : UIMenuBase
         
         OnFieldValueChange(string.Empty);
         m_InputField.characterLimit = GameData.MetaData.MaximumNameLength;
+        
     }
 
     protected override void OnContainerEnable()

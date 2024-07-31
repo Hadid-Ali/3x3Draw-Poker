@@ -89,6 +89,16 @@ public class StoreUIManager : MonoBehaviour
             pooledStoreItemUI[i].gameObject.SetActive(true);
             pooledStoreItemUI[i].InitializeItem(obj.items[i].property); 
         }
+
+        switch (obj.pageName)
+        {
+            case StorePageName.Characters:
+                OnStoreItemSelected(GameData.RuntimeData.SELECTED_CHARACTER);
+                break;
+            case StorePageName.CardBacks:
+                OnStoreItemSelected(GameData.RuntimeData.SELECTED_CARD_BACK);
+                break;
+        }
     }
     private void OnDisplayStorePage(StorePageSO obj)
     {

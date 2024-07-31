@@ -4,7 +4,8 @@ using UnityEngine;
 public class StoreManager : MonoBehaviour
 {
     private StorePageName _currentSelectedStore;
-    [SerializeField] private ItemName _currentSelectedItem;
+    [SerializeField] private ItemName _currentSelectedCharacter;
+    [SerializeField] private ItemName _currentSelectedCardBack;
     
     [SerializeField] private List<StorePageName> storeNames = new();
     [SerializeField] private List<StorePageSO> storePages = new();
@@ -24,7 +25,6 @@ public class StoreManager : MonoBehaviour
     {
         GameEvents.StoreEvents.OnStoreButtonClicked.Register(OnStoreButtonClicked);
         GameEvents.StoreEvents.OnStoreItemSelected.Register(OnItemSelected);
-        InitializeStore();
     }
     private void OnDestroy()
     {
@@ -34,21 +34,23 @@ public class StoreManager : MonoBehaviour
 
     private void OnItemSelected(ItemName obj)
     {
-        _currentSelectedItem = obj;
-
         if ((int)obj > 7)
-            GameData.RuntimeData.SELECTED_CARD_BACK = obj;
+        {
+            _currentSelectedCardBack = obj;
+            GameData.RuntimeData.SELECTED_CARD_BACK = _currentSelectedCardBack;
+        }
         else
-            GameData.RuntimeData.SELECTED_CHARACTER = obj;
+        {
+            _currentSelectedCharacter = obj;
+            GameData.RuntimeData.SELECTED_CHARACTER = _currentSelectedCharacter;
+        }
     }
 
-    private void InitializeStore()
+    public void InitializeStore()
     {
         GameEvents.StoreEvents.OnStoreInitialize.Raise(storeNames);
         OnStoreButtonClicked(storeNames[0]);
         GameEvents.StoreEvents.OnStoreButtonClicked.Raise(storeNames[0]); 
-        
-        print("Launch Phone");
     }
 
 

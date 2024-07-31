@@ -13,5 +13,6 @@ public enum MenuName
     SettingsMenu,
     GameOverMenu,
     RoomSelection,
-    InsideRoom
+    InsideRoom,
+    StoreSelection
 }
