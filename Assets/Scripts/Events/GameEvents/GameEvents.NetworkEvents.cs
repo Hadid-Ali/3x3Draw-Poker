@@ -32,5 +32,7 @@ public static partial class GameEvents
         
         public static GameEvent GameRoomCreated = new();
         public static GameEvent StartOfflineMatch = new();
+
+        public static GameEvent OnMasterGameplayLoaded = new();
     }
 }

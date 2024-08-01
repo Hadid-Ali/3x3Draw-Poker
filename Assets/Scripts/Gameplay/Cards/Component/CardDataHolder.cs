@@ -11,9 +11,9 @@ public class CardDataHolder : MonoBehaviour
     private GameEvent m_OnCardClear = new();
     private GameEvent m_OnCardDataSet = new();  
     private GameEvent<CardData> m_SetCardDataInternal = new();
-    
-    
-    public CardData CardData { get; private set; }
+
+
+    public CardData CardData;
 
     public void Initialize(Action onCardClear, Action onCardDataSetPersistent,Action<CardData> onSetCardData)
     {

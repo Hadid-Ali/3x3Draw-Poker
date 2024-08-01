@@ -13,16 +13,19 @@ public class ItemSO : ScriptableObject
     private void SetItemNameAsFileName()
     {
         string val = itemName.ToString();
-        SetFileName(val);
+        //SetFileName(val);
         property.name = itemName;
     }
 
-    private void SetFileName(string val)
-    {
-        string assetPath =  AssetDatabase.GetAssetPath(this.GetInstanceID());
-        AssetDatabase.RenameAsset(assetPath, val);
-        AssetDatabase.SaveAssets();
-    }
+#if UNITY_EDITOR
+    // private void SetFileName(string val)
+    // {
+    //     string assetPath =  AssetDatabase.GetAssetPath(this.GetInstanceID());
+    //     AssetDatabase.RenameAsset(assetPath, val);
+    //     AssetDatabase.SaveAssets();
+    // }
+#endif
+    
     #endregion
 
     

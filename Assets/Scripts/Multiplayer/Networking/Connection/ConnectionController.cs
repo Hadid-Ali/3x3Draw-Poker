@@ -212,7 +212,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         UpdateConnectionStatus($"Match Found,Waiting For Others");
 
         GameEvents.MenuEvents.MenuTransitionEvent.Raise(MenuName.InsideRoom);
-        GameEvents.NetworkEvents.PlayerJoinedRoom.Raise();
+        
 
         UpdatePlayersList();
 
@@ -241,6 +241,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         base.OnPlayerEnteredRoom(newPlayer);
+        GameEvents.NetworkEvents.PlayerJoinedRoom.Raise();
         UpdatePlayersList();
     }
 

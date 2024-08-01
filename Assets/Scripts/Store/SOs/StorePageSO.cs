@@ -13,14 +13,17 @@ public class StorePageSO : ScriptableObject
     [ContextMenu("Set ItemName as FileName")]
     private void SetItemNameAsFileName()
     {
-        SetFileName(pageName.ToString());
+       // SetFileName(pageName.ToString());
     }
 
-    private void SetFileName(string val)
-    {
-        string assetPath =  AssetDatabase.GetAssetPath(this.GetInstanceID());
-        AssetDatabase.RenameAsset(assetPath, val);
-        AssetDatabase.SaveAssets();
-    }
+#if UNITY_EDITOR
+    // private void SetFileName(string val)
+    // {
+    //     string assetPath =  AssetDatabase.GetAssetPath(this.GetInstanceID());
+    //     AssetDatabase.RenameAsset(assetPath, val);
+    //     AssetDatabase.SaveAssets();
+    // }
+#endif
+    
     #endregion
 }

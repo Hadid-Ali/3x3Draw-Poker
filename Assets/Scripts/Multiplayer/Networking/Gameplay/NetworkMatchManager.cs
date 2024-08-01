@@ -29,19 +29,14 @@ public class NetworkMatchManager : MonoBehaviour
     
     public void OnPlayerSpawnedInMatch(PlayerController playerController)
     {
-        Invoke(nameof(StopFurtherDealing), 1f);
+        //Invoke(nameof(StopFurtherDealing), 1f);
         
-        if (!PhotonNetwork.IsMasterClient || !m_CanDeal)
+        if (!PhotonNetwork.IsMasterClient )//|| !m_CanDeal)
             return;
 
-        StartCoroutine(Wait(playerController));
-    }
-
-    IEnumerator Wait(PlayerController playerController)
-    {
-        yield return new WaitForSeconds(2f);
         m_CardsDealer.DealCardsToNetworkPlayer(playerController);
     }
+
 
     private void StopFurtherDealing()
     {
