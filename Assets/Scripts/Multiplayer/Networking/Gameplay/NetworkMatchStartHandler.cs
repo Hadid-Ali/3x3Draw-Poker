@@ -82,7 +82,6 @@ public class NetworkMatchStartHandler : MonoBehaviour
     [PunRPC]
     public void GlobalTimerTick(string time)
     {
-        print($"time : {time}");
         GameEvents.NetworkEvents.MatchStartTimer.Raise(time);
     }
     

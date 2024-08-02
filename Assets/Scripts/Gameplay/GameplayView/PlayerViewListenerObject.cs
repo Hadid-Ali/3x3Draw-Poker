@@ -5,12 +5,12 @@ using UnityEngine;
 
 public abstract class PlayerViewListenerObject : MonoBehaviour
 {
-   protected virtual void OnEnable()
+   protected virtual void Awake()
    {
       GameEvents.GameplayEvents.LocalPlayerJoined.Register(OnLocalPlayerJoined);
    }
 
-   protected virtual void OnDisable()
+   protected virtual void OnDestroy()
    {
       GameEvents.GameplayEvents.LocalPlayerJoined.UnRegister(OnLocalPlayerJoined);
    }

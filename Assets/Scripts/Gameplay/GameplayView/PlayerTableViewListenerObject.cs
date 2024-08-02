@@ -7,15 +7,15 @@ public class PlayerTableViewListenerObject : PlayerViewListenerObject
     [SerializeField] private List<PlayerTablePosition> m_TablePositions = new();
     [SerializeField] private GameObject m_CardsHeaderObject;
 
-    protected override void OnEnable()
+    protected override void Awake()
     {
-        base.OnEnable();
+        base.Awake();
         GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
     }
 
-    protected override void OnDisable()
+    protected override void OnDestroy()
     {
-        base.OnDisable();
+        base.OnDestroy();
         GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
     }
 

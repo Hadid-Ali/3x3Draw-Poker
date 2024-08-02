@@ -6,21 +6,22 @@ public class PlayerUIViewListenerObject : PlayerViewListenerObject
 {
     [SerializeField] private List<PlayerScoreUIObject> m_ScoreObjects = new();
 
-    protected override void OnEnable()
+    protected override void Awake()
     {
-        base.OnEnable();
+        base.Awake();
         GameEvents.GameplayEvents.PlayerScoreReceived.Register(OnPlayerScoreReceived);
     }
 
-    protected override void OnDisable()
+    protected override void OnDestroy()
     {
-        base.OnDisable();
+        base.OnDestroy();
         GameEvents.GameplayEvents.PlayerScoreReceived.UnRegister(OnPlayerScoreReceived);
     }
 
     private void OnPlayerScoreReceived(int score, int playerId)
     {
         PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj => obj.PositionIndex == playerId);
+        scoreObject.SetContainerStatus(true);
         scoreObject.SetScore(score);
     }
     
