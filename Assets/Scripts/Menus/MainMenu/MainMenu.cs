@@ -5,19 +5,22 @@ public class MainMenu : UIMenuBase
     [SerializeField] private ButtonWidget m_PlayButton;
     [SerializeField] private ButtonWidget m_PlayOfflineButton;
     [SerializeField] private ButtonWidget m_SettingsButton;
+    [SerializeField] private ButtonWidget m_StoreButton;
     
     
-    [SerializeField] private GameObject selectionscreen;
-
     private void Start()
     {
         m_PlayButton.SubscribeAction(LoginBtnEvent);
         m_SettingsButton.SubscribeAction(OnSettingsButton);
         m_PlayOfflineButton.SubscribeAction(StartOffline);
-        
-        selectionscreen.SetActive(true);
+        m_StoreButton.SubscribeAction(OnStoreButtonTap);
     }
 
+    private void OnStoreButtonTap()
+    {
+        ChangeMenuState(MenuName.StoreSelection);
+    }
+    
     private void StartOffline()
     {
         GameEvents.NetworkEvents.StartOfflineMatch.Raise();

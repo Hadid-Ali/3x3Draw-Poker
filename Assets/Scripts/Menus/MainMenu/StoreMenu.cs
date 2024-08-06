@@ -1,18 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class StoreMenu : MonoBehaviour
+public class StoreMenu : UIMenuBase
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+  [SerializeField] private Button m_BackButton;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  private void Start()
+  {
+    m_BackButton.onClick.AddListener(OnBackButton);
+  }
+
+  private void OnBackButton()
+  {
+    ChangeMenuState(MenuName.MainMenu);
+  }
 }
