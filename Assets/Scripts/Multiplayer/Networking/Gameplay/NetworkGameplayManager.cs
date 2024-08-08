@@ -19,6 +19,9 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public virtual void Awake()
     {
+        if(PhotonNetwork.IsMasterClient)
+            GameEvents.NetworkEvents.OnMasterGameplayLoaded.Raise();
+        
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
     }

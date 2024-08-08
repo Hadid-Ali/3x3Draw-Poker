@@ -15,9 +15,11 @@ public class Card : MonoBehaviour
 	private GameEvent m_CardDataUpdated = new();
 	
 	public CardData CardData => m_CardDataHandler.CardData;
-	
-	protected virtual void Start () 
+
+
+	protected virtual void Start ()
 	{
+		m_CardFaceImage.sprite = CardsRegistery.Instance.GetCardSprite(GameData.RuntimeData.SELECTED_CARD_BACK);
 		Initialize();
 	}
 

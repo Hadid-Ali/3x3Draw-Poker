@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
@@ -28,20 +29,14 @@ public class NetworkMatchManager : MonoBehaviour
     
     public void OnPlayerSpawnedInMatch(PlayerController playerController)
     {
-        Invoke(nameof(StopFurtherDealing), 1f);
+        //Invoke(nameof(StopFurtherDealing), 1f);
         
-        if (!PhotonNetwork.IsMasterClient || !m_CanDeal)
+        if (!PhotonNetwork.IsMasterClient )//|| !m_CanDeal)
             return;
-        
-        // if (playerController.IsLocalPlayer)
-        // {
-        //     m_CardsDealer.DealCardsToLocalPlayer(playerController.ID);
-        // }
-        // else
-        // {
-            m_CardsDealer.DealCardsToNetworkPlayer(playerController);
-       // }
+
+        m_CardsDealer.DealCardsToNetworkPlayer(playerController);
     }
+
 
     private void StopFurtherDealing()
     {

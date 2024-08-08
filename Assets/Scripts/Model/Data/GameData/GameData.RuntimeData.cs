@@ -14,6 +14,9 @@ public static partial class GameData
         public static int CURRENT_BOTS_FOR_SPAWNING = 0;
         public static int TOTAL_BOTS_SPAWNED = 0;
 
+        public static ItemName SELECTED_CARD_BACK = ItemName.DefaltCardA;
+        public static ItemName SELECTED_CHARACTER = ItemName.Bear;
+
         public static int TOTAL_PLAYER_SCORE
         {
             get;

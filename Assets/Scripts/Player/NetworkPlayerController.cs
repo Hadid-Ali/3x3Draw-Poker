@@ -58,8 +58,8 @@ public class NetworkPlayerController : PlayerController
         
         Debug.LogError($"Player Data Set {actorNum} : {nickName}");
         
-        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
-            new object[] {nickName, actorNum ,Random.Range(0,8)});
+        NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.AllBuffered,
+            new object[] {nickName, actorNum ,(int) GameData.RuntimeData.SELECTED_CHARACTER});
 
     }
 

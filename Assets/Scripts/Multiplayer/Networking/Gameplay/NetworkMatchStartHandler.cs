@@ -15,20 +15,23 @@ public class NetworkMatchStartHandler : MonoBehaviour
     private void Awake()
     {
         GameEvents.NetworkEvents.PlayerJoinedRoom.Register(OnPlayerEnteredInRoom);
+        GameEvents.NetworkEvents.OnMasterGameplayLoaded.Register(OnMasterGameplayLoaded);
     }
 
     private void OnDestroy()
     {
         GameEvents.NetworkEvents.PlayerJoinedRoom.Register(OnPlayerEnteredInRoom);
+        GameEvents.NetworkEvents.OnMasterGameplayLoaded.UnRegister(OnMasterGameplayLoaded);
     }
 
-    public void OnPlayerEnteredInRoom(bool b)
+    public void OnPlayerEnteredInRoom()
     {
-       // if(!PhotonNetwork.IsMasterClient)
-         //   return;
-        
-        CheckForMinimumPlayersCount();
-        CheckForMaximumPlayersCount();
+        print($" IS master : {PhotonNetwork.IsMasterClient}");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            CheckForMinimumPlayersCount();
+            CheckForMaximumPlayersCount();
+        }
     }
 
     private void CheckForMinimumPlayersCount()
@@ -79,18 +82,23 @@ public class NetworkMatchStartHandler : MonoBehaviour
     [PunRPC]
     public void GlobalTimerTick(string time)
     {
-        print($"time : {time}");
         GameEvents.NetworkEvents.MatchStartTimer.Raise(time);
     }
     
     public void StartMatchInternal()
     {
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-        
         m_IsAutoStartRequestSent = false;
         
-        _view.RPC(nameof(LoadScene), RpcTarget.All);
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        NetworkManager.Instance.LoadGameplay("PokerGame");
+    }
+
+    private void OnMasterGameplayLoaded()
+    {
+        _view.RPC(nameof(LoadScene), RpcTarget.Others);
     }
 
     [PunRPC]

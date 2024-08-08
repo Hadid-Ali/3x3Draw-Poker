@@ -10,6 +10,7 @@ public class RegionSelectionScreen : UIMenuBase
 {
     [SerializeField] private TMP_Dropdown m_RegionsListDropDown;
     [SerializeField] private TextMeshProUGUI m_BestRegionText;
+    [SerializeField] private GameObject StoreScreen;
     
 
     [SerializeField] private Button m_ConnectButton;
@@ -33,6 +34,7 @@ public class RegionSelectionScreen : UIMenuBase
     private void OnEnable()
     {
         GameEvents.NetworkEvents.ConnectionTransition.Register(OnRegionsDataReceived);
+        //StoreScreen.SetActive(true);
     }
     private void OnDisable()
     {
