@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(ButtonWidget))]
 public class ButtonWidget : MonoBehaviour
 {
    [SerializeField] private Button m_Button;

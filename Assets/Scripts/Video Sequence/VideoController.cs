@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Video;
 
 public class VideoController : MonoBehaviour
@@ -28,6 +26,7 @@ public class VideoController : MonoBehaviour
 
     void OnEnable()
     {
+        videoPlayer.Play(); 
         StartCoroutine(this.CheckVideoUpdate());
     }
     
