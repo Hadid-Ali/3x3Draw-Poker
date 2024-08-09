@@ -13,6 +13,23 @@ public class NetworkBotCardsController : MonoBehaviour
     [SerializeField] private int shuffleLimit;
 
 
+    private int _botDifficulty;
+    
+    public void SetBotDifficulty()
+    {
+        int botsDiffInt = PlayerPrefs.GetInt(GameData.MetaData.BotDifficulty, 
+            (int) GameData.MetaData.DefaultBotDifficulty);
+
+        BotsDifficulty bot = (BotsDifficulty) botsDiffInt;
+        
+        shuffleLimit = bot  switch
+        {
+            BotsDifficulty.Easy => 0,
+            BotsDifficulty.Medium => 7,
+            BotsDifficulty.Hard => 15,
+            _ => shuffleLimit
+        };
+    }
     public void ReceiveHandData(CardData[] obj, int _ID)
     {
         if(_ID != _botController.ID)

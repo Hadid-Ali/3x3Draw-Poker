@@ -25,7 +25,6 @@ public class NetworkPlayerBotController : NetworkPlayerController
         int totalPlayers = GameData.SessionData.CurrentRoomPlayersCount;
         int actorNum = (totalPlayers - (GameData.RuntimeData.CURRENT_BOTS_FOR_SPAWNING--)) + 1;  
         
-        Debug.Log($"Player Data Set {actorNum} : {Name}");
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
             new object[] { Name, actorNum ,Random.Range(0,8)});

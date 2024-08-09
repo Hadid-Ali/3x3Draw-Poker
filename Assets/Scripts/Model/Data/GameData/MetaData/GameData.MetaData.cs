@@ -31,6 +31,9 @@ public static partial class GameData
         public const string AppWebsiteLink = "https://triplehandpoker.com/";
         public const string MuteString = "MuteString";
         
+        public const string BotDifficulty = "BotsDifficulty";
+        public const BotsDifficulty DefaultBotDifficulty = BotsDifficulty.Hard;
+        
         
 
     }
