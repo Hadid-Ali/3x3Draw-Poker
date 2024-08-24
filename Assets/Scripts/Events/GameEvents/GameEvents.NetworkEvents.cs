@@ -16,8 +16,6 @@ public static partial class GameEvents
 
         public static GameEvent<string, float> NetworkTimerStartRequest = new();
         
-        
-        public static GameEvent<string> PlayerLogin = new ();
         public static GameEvent<Region> PlayerRegionSelect = new ();
         public static GameEvent<RoomOptions> PlayerRoomCreation = new ();
         
@@ -31,7 +29,6 @@ public static partial class GameEvents
         public static GameEvent<string> MatchStartTimer = new();
         
         public static GameEvent GameRoomCreated = new();
-        public static GameEvent StartOfflineMatch = new();
 
         public static GameEvent OnMasterGameplayLoaded = new();
     }

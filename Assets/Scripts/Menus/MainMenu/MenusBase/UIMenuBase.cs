@@ -11,6 +11,8 @@ public abstract class UIMenuBase : MonoBehaviour
 
     public MenuName MenuName => m_MenuName;
 
+    public void SetAsCurrentState() => ChangeMenuState(m_MenuName);
+    
     public void SetMenuActiveState(bool isActive)
     {
         m_MenuContainer.SetActive(isActive);

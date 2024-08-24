@@ -9,6 +9,9 @@ public class InsideRoom : UIMenuBase
 {
    [SerializeField] private TextMeshProUGUI players;
    [SerializeField] private TextMeshProUGUI MatchRemainingTimer;
+
+   [SerializeField] private NameLabelComponent _prefabToSpawn;
+   [SerializeField] private Transform _nameLabelsContainer;
     
    private void OnEnable()
    {
@@ -26,22 +29,35 @@ public class InsideRoom : UIMenuBase
    {
       MatchRemainingTimer.SetText($"Match Starting in {obj}");  
    }
+
+   private void DeleteAll()
+   {
+      Transform[] children = _nameLabelsContainer.GetComponentsInChildren<Transform>();
+
+      for (int i = 1; i < children.Length; i++)
+      {
+         Debug.LogError(children[i].gameObject);
+         Destroy(children[i].gameObject);
+      }
+   }
+
+   private void CreatePlayersList(List<string> playersList)
+   {
+      DeleteAll();
+      for (int i = 0; i < playersList.Count; i++)
+      {
+         NameLabelComponent component = Instantiate(_prefabToSpawn, _nameLabelsContainer);
+         component.SetName(playersList[i]);
+      }
+   }
     
    private void UpdatePlayerList(List<string> Players)
    {
       print($"Function working");
-      string players = String.Empty;
-
-      for (int i = 0; i < Players.Count; i++)
-      {
-         int index = i + 1;
-         players += $"\n {index}. {Players[i]}";
-      }
+      CreatePlayersList(Players);
 
       string PlayerPlural = Players.Count > 1 ? "Players Have" : "Player Has";
-      
-      this.players.text = $"{Players.Count} {PlayerPlural} Joined. {players}";
-      
+      this.players.text = $"{Players.Count} {PlayerPlural} Joined";
       GameData.SessionData.CurrentRoomPlayersCount = Players.Count;
    }
    

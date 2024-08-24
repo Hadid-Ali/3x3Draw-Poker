@@ -2,26 +2,19 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class StoreItemUI : MonoBehaviour
+public abstract class StoreItemUI : ButtonWidgetWithStatus
 {
-    [SerializeField] private Image itemBgImage;
-    [SerializeField] private Color selectedColor;
-    [SerializeField] private Color unselectedColor;
     [SerializeField] private CanvasGroup group;
-
-    [SerializeField] private float selectedOpacity;
-    [SerializeField] private float unselectedOpacity;
 
     public ItemName itemName;
     public virtual void OnItemSelected()
     {
-        itemBgImage.color = selectedColor;
-        group.alpha = selectedOpacity;
+      SetFocusedAndPressed(true);
     }
+    
     public virtual void OnItemUnSelected()
     {
-        itemBgImage.color = unselectedColor;
-        group.alpha = unselectedOpacity;
+        SetFocusedAndPressed(false);
     }
     
     public abstract void InitializeItem(ItemProperty parameter1);

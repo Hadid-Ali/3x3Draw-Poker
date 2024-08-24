@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using DanielLochner.Assets.SimpleScrollSnap;
 using UnityEngine;
 
 public class StoreUIManager : MonoBehaviour
 {
     [SerializeField] private StoreButton storeButtonPrefab;
     [SerializeField] private StoreItemUI itemPrefab;
+
+    [SerializeField] private SimpleScrollSnap _scrollSnap;
 
     [SerializeField] private Transform storePagesContainer;  
     [SerializeField] private Transform itemsContainer;
@@ -59,11 +63,13 @@ public class StoreUIManager : MonoBehaviour
                 StoreButton button =   Instantiate(storeButtonPrefab, storePagesContainer);
                 pooledStoreButtons.Add(button);
             }
+            
             SetUpStoreButtons(obj);
         }
     }
     private void SetUpStoreButtons(List<StorePageName> obj)
     {
+        
         for (int i = 0; i < pooledStoreButtons.Count; i++)
         {
             if (i >= obj.Count)
@@ -74,7 +80,6 @@ public class StoreUIManager : MonoBehaviour
             pooledStoreButtons[i].gameObject.SetActive(true);
             pooledStoreButtons[i].storeName = obj[i];
             pooledStoreButtons[i].SetTitle(obj[i].ToString());
-            print("Button Set");
         }
     }
     private void SetupStorePAge(StorePageSO obj)
@@ -102,6 +107,7 @@ public class StoreUIManager : MonoBehaviour
     }
     private void OnDisplayStorePage(StorePageSO obj)
     {
+        List<GameObject> objects = new();
         if (pooledStoreItemUI.Count >= obj.items.Count)
         {
             SetupStorePAge(obj);
@@ -113,7 +119,12 @@ public class StoreUIManager : MonoBehaviour
             {
                 StoreItemUI item =  Instantiate(itemPrefab, itemsContainer);
                 pooledStoreItemUI.Add(item);
+                objects.Add(pooledStoreItemUI[i].gameObject);
             }
+
+            if (objects.Any())
+                _scrollSnap.AddItems(objects);
+            
             SetupStorePAge(obj);
         }
     }

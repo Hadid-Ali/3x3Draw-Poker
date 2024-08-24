@@ -24,8 +24,7 @@ public class SettingsMenu : UIMenuBase
     [SerializeField] private Sprite soundOn;
     [SerializeField] private Sprite soundOff;
 
-    [SerializeField] private Image[] difficultyButtonsOuters;
-    [SerializeField] private ButtonWidget[] difficultyButtons;
+    [SerializeField] private ButtonWidgetWithStatus[] difficultyButtons;
     
 
     private void Start()
@@ -70,11 +69,10 @@ public class SettingsMenu : UIMenuBase
         int botsDiffInt = PlayerPrefs.GetInt(GameData.MetaData.BotDifficulty, 
             (int) GameData.MetaData.DefaultBotDifficulty);
 
-        foreach (var v in difficultyButtonsOuters)
-            v.enabled = false;
-
-        difficultyButtonsOuters[botsDiffInt].enabled = true;
-
+        for (int i = 0; i < difficultyButtons.Length; i++)
+        {
+            difficultyButtons[i].SetFocusedAndPressed(i == botsDiffInt);
+        }
     }
 
     private void SetMute()

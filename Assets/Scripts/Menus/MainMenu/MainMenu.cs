@@ -23,7 +23,7 @@ public class MainMenu : UIMenuBase
     
     private void StartOffline()
     {
-        GameEvents.NetworkEvents.StartOfflineMatch.Raise();
+        TransitToConnectionScreen(MatchMode.OFFLINE);
     }
 
     private void OnSettingsButton()
@@ -33,6 +33,12 @@ public class MainMenu : UIMenuBase
     
     public void LoginBtnEvent()
     {
-        ChangeMenuState(MenuName.LoginScreen);
+        TransitToConnectionScreen(MatchMode.ONLINE);
+    }
+
+    private void TransitToConnectionScreen(MatchMode matchMode)
+    {
+        GameEvents.MenuEvents.MatchStartRequested.Raise(matchMode,GameData.PersistentData.UserName);
+        ChangeMenuState(MenuName.ConnectionScreen);
     }
 }
