@@ -20,7 +20,7 @@ public static partial class GameData
             }
         }
         
-        private static int SelectedCharacter
+        public static int SelectedCharacter
         {
             get => PlayerPrefs.GetInt(_selectedCharacter, 0);
             set
@@ -30,7 +30,7 @@ public static partial class GameData
             }
         }
         
-        private static int SelectedCard
+        public static int SelectedCard
         {
             get => PlayerPrefs.GetInt(_selectedCardBack, 0);
             set

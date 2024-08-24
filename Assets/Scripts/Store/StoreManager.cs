@@ -36,11 +36,13 @@ public class StoreManager : MonoBehaviour
     {
         if ((int)obj > 7)
         {
+            GameData.PersistentData.SelectedCard = (int)obj;
             _currentSelectedCardBack = obj;
             GameData.RuntimeData.SELECTED_CARD_BACK = _currentSelectedCardBack;
         }
         else
         {
+            GameData.PersistentData.SelectedCharacter = (int)obj;
             _currentSelectedCharacter = obj;
             GameData.RuntimeData.SELECTED_CHARACTER = _currentSelectedCharacter;
         }

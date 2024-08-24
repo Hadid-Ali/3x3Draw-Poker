@@ -47,8 +47,6 @@ public class StoreUIManager : MonoBehaviour
         _currentSelectedItemButton.OnItemSelected();
     }
 
-
-
     private void OnInitializeStore(List<StorePageName> obj)
     {
         if (pooledStoreButtons.Count >= obj.Count)
