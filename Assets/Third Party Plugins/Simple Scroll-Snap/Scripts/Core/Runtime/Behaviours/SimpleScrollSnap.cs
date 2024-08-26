@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Codice.CM.WorkspaceServer;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -211,6 +212,7 @@ namespace DanielLochner.Assets.SimpleScrollSnap
         {
             get => Content.childCount;
         }
+
         private bool ValidConfig
         {
             get
@@ -281,13 +283,22 @@ namespace DanielLochner.Assets.SimpleScrollSnap
                 Destroy(children[i].gameObject);
             }
         }
-        
-        public void AddItems(List<GameObject> items)
+
+        public void RemoveItems(List<GameObject> items)
         {
-            for (int i = 0; i < items.Count; i++)
-            {
-                items[i].transform.SetParent(Content.transform);
-            }
+            foreach (var t in items)
+                t.transform.SetParent(null);
+            
+            Setup();
+        }
+        public void AddItems(List<GameObject> items, Vector2 imageSize)
+        {
+            foreach (var t in items)
+                t.transform.SetParent(Content.transform);
+            
+            size = imageSize;
+            
+            
             Setup();
         }
         
@@ -657,7 +668,7 @@ namespace DanielLochner.Assets.SimpleScrollSnap
         }
         public void Add(GameObject panel, int index)
         {
-            if (NumberOfPanels != 0 && (index < 0 || index > NumberOfPanels))
+            if (NumberOfPanels != 0 && (index < 0 || index > NumberOfPanels) || !panel.activeInHierarchy)
             {
                 Debug.LogError("<b>[SimpleScrollSnap]</b> Index must be an integer from 0 to " + NumberOfPanels + ".", gameObject);
                 return;

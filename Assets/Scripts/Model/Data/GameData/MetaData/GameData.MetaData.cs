@@ -33,8 +33,8 @@ public static partial class GameData
         
         public const string BotDifficulty = "BotsDifficulty";
         public const BotsDifficulty DefaultBotDifficulty = BotsDifficulty.Hard;
-        
-        
 
+        public static Vector2 deafaultCardImageSize = new Vector2(200, 350);
+        public static Vector2 deafaultCharacterImageSize = new Vector2(350, 400);
     }
 }

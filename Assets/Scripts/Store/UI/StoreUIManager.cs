@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DanielLochner.Assets.SimpleScrollSnap;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StoreUIManager : MonoBehaviour
@@ -11,14 +11,15 @@ public class StoreUIManager : MonoBehaviour
 
     [SerializeField] private SimpleScrollSnap _scrollSnap;
 
-    [SerializeField] private Transform storePagesContainer;  
-    [SerializeField] private Transform itemsContainer;
+    [SerializeField] private Transform storePagesContainer; 
 
     [SerializeField] private List<StoreButton> pooledStoreButtons = new(); 
     [SerializeField] private List<StoreItemUI> pooledStoreItemUI = new();
 
     private StoreButton _currentSelectedStoreButton;
     private StoreItemUI _currentSelectedItemButton;
+    
+
     
     private void Awake()
     {
@@ -80,20 +81,25 @@ public class StoreUIManager : MonoBehaviour
             pooledStoreButtons[i].SetTitle(obj[i].ToString());
         }
     }
-    private void SetupStorePAge(StorePageSO obj)
+
+    private void SetupStorePAge(StorePageSO objectSO)
     {
+        var defaultImageSize = objectSO.pageName == StorePageName.Characters ? 
+            GameData.MetaData.deafaultCharacterImageSize
+            : GameData.MetaData.deafaultCardImageSize;
+        
         for (int i = 0; i < pooledStoreItemUI.Count; i++)
         {
-            if (i >= obj.items.Count)
+            if (i >= objectSO.items.Count)
             {
                 pooledStoreItemUI[i].gameObject.SetActive(false);
                 continue;
             }
             pooledStoreItemUI[i].gameObject.SetActive(true);
-            pooledStoreItemUI[i].InitializeItem(obj.items[i].property); 
+            pooledStoreItemUI[i].InitializeItem(objectSO.items[i].property); 
         }
 
-        switch (obj.pageName)
+        switch (objectSO.pageName)
         {
             case StorePageName.Characters:
                 OnStoreItemSelected(GameData.RuntimeData.SELECTED_CHARACTER);
@@ -102,10 +108,25 @@ public class StoreUIManager : MonoBehaviour
                 OnStoreItemSelected(GameData.RuntimeData.SELECTED_CARD_BACK);
                 break;
         }
+
+        List<GameObject> active = new();
+        List<GameObject> Inactive = new();
+
+        foreach (StoreItemUI item in pooledStoreItemUI)
+        {
+            if(item.gameObject.activeInHierarchy)
+                active.Add(item.gameObject);
+            else
+                Inactive.Add(item.gameObject);
+        }
+
+
+        _scrollSnap.RemoveItems(Inactive);
+        _scrollSnap.AddItems(active, defaultImageSize);
+        
     }
     private void OnDisplayStorePage(StorePageSO obj)
     {
-        List<GameObject> objects = new();
         if (pooledStoreItemUI.Count >= obj.items.Count)
         {
             SetupStorePAge(obj);
@@ -115,13 +136,9 @@ public class StoreUIManager : MonoBehaviour
             int numToAdd = obj.items.Count - pooledStoreItemUI.Count;
             for (int i = 0; i < numToAdd; i++)
             {
-                StoreItemUI item =  Instantiate(itemPrefab, itemsContainer);
+                StoreItemUI item =  Instantiate(itemPrefab);
                 pooledStoreItemUI.Add(item);
-                objects.Add(pooledStoreItemUI[i].gameObject);
             }
-
-            if (objects.Any())
-                _scrollSnap.AddItems(objects);
             
             SetupStorePAge(obj);
         }
