@@ -120,7 +120,6 @@ public class StoreUIManager : MonoBehaviour
                 Inactive.Add(item.gameObject);
         }
 
-
         _scrollSnap.RemoveItems(Inactive);
         _scrollSnap.AddItems(active, defaultImageSize);
         

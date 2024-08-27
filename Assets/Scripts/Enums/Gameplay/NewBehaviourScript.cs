@@ -1,6 +1,6 @@
 public enum BotsDifficulty
 {
-    Easy ,
+    Easy,
     Medium,
     Hard
 }
