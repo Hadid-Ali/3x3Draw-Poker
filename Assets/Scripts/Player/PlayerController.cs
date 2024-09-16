@@ -27,6 +27,12 @@ public class PlayerController : MonoBehaviour
         get;
     }
 
+    public ItemName SelectedCard
+    {
+        protected set;
+        get;
+    }
+
     protected virtual void Start()
     {
         

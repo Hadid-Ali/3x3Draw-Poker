@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ResultHandDataObject
 {
+    public Sprite CardBack;
     public Sprite[] Cards;
     public bool IsWinner;
     public int Score;
