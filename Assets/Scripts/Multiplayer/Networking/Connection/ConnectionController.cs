@@ -30,7 +30,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        m_ControllerView.Initialize(StartConnectionWithName, OnRegionSelect, CreateRoom, OnCheckForRoomJoining);
+        m_ControllerView.Initialize(StartGame, OnRegionSelect, CreateRoom, OnCheckForRoomJoining);
     }
 
     public override void OnEnable()
@@ -38,7 +38,6 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         base.OnEnable();
         //GameEvents.MenuEvents.MatchStartRequested.Register(StartMatchTimer);
         GameEvents.MenuEvents.RoomJoinRequested.Register(OnRoomJoinRequested);
-        GameEvents.NetworkEvents.StartOfflineMatch.Register(OnStartOfflineMatch);
     }
 
     public override void OnDisable()
@@ -46,7 +45,6 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         base.OnDisable();
         //GameEvents.MenuEvents.MatchStartRequested.UnRegister(StartMatchTimer);
         GameEvents.MenuEvents.RoomJoinRequested.UnRegister(OnRoomJoinRequested);
-        GameEvents.NetworkEvents.StartOfflineMatch.UnRegister(OnStartOfflineMatch);
     }
 
     private void OnCheckForRoomJoining()
@@ -73,10 +71,19 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         PhotonNetwork.Disconnect();
     }
 
-    public void StartConnectionWithName(string name)
+    public void StartGame(MatchMode matchMode,string userName)
     {
-        PhotonNetwork.LocalPlayer.NickName = name;
-        ConnectToServer();
+        PhotonNetwork.LocalPlayer.NickName = userName;
+        switch (matchMode)
+        {
+            case MatchMode.ONLINE:
+                ConnectToServer();
+                break;
+            
+            case MatchMode.OFFLINE:
+                StartOfflineMatch();
+                break;
+        }
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -282,7 +289,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         NetworkManager.Instance.LoadGameplay("PokerGame");
     }
 
-    private void OnStartOfflineMatch()
+    private void StartOfflineMatch()
     {
         StartCoroutine(ValidateDisconnection());
     }
@@ -299,11 +306,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
         PhotonNetwork.OfflineMode = true;
         GameData.SessionData.CurrentRoomPlayersCount = 1;
-        PhotonNetwork.LocalPlayer.NickName = "Player1";
         GameEvents.MenuEvents.MenuTransitionEvent.Raise(MenuName.ConnectionScreen);
         UpdateConnectionStatus($"Starting Offline match");
     }
-
-
-
 }

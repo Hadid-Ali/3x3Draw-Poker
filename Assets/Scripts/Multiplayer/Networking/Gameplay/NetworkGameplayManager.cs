@@ -16,6 +16,8 @@ public class NetworkGameplayManager : MonoBehaviour
     
     private List<NetworkDataObject> m_AllDecks = new();
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
+    
+    private string _roundRestart = "RoundContinue";
 
     public virtual void Awake()
     {
@@ -37,15 +39,52 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.NetworkGameplayEvents.PlayerJoinedGame.Register(OnGameplayJoined);
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
+        GameEvents.GameplayEvents.RoundMenuEnabled.Register(OnRoundCompleted);
     }
-
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
         GameEvents.NetworkGameplayEvents.PlayerJoinedGame.UnRegister(OnGameplayJoined);
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
+        GameEvents.GameplayEvents.RoundMenuEnabled.UnRegister(OnRoundCompleted);
     }
+
+    private void OnRoundCompleted()
+    {
+        if(!PhotonNetwork.IsMasterClient)
+            return;
+            
+        GameEvents.TimerEvents.ExecuteActionRequest.Raise(new TimerDataObject()
+        {
+            Title = _roundRestart,
+            TimeDuration = GameData.MetaData.WaitBeforeAutomaticRoundStart,
+            ActionToExecute =  RoundRestart,
+            TickTimeEvent = TimerTick,
+            IsNetworkGlobal = true
+        });
+    }
+    public void TimerTick(string time)
+    {
+        NetworkViewComponent.RPC(nameof(GlobalTimerTick), RpcTarget.All, time);
+    }
+
+    private void RoundRestart()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameEvents.GameFlowEvents.RestartRound.Raise();
+        }
+    }
+
+    [PunRPC]
+    public void GlobalTimerTick(string time)
+    {
+        GameEvents.NetworkEvents.RoundRestartTimer.Raise(time);
+    }
+    
+
+
 
     private void OnPlayerWin(int networkViewID,int runnerUpID,int secondRunnerUpID)
     {

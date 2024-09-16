@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,31 @@ public class NetworkBotCardsController : MonoBehaviour
     [SerializeField] private NetworkPlayerBotController _botController;
     [SerializeField] private PhotonView view;
     
-    [SerializeField] private int shuffleLimit;
+    private int shuffleLimit = 15;
 
 
+    private BotsDifficulty _botDifficulty;
+
+    private void Awake()
+    {
+        SetBotDifficulty();
+    }
+
+    public void SetBotDifficulty()
+    {
+        int botsDiffInt = PlayerPrefs.GetInt(GameData.MetaData.BotDifficulty, 
+            (int) GameData.MetaData.DefaultBotDifficulty);
+
+        _botDifficulty = (BotsDifficulty) botsDiffInt;
+        
+        // shuffleLimit = _botDifficulty  switch
+        // {
+        //     BotsDifficulty.Easy => 0,
+        //     BotsDifficulty.Medium => 7,
+        //     BotsDifficulty.Hard => 15,
+        //     _ => shuffleLimit
+        // };
+    }
     public void ReceiveHandData(CardData[] obj, int _ID)
     {
         if(_ID != _botController.ID)
@@ -20,8 +43,20 @@ public class NetworkBotCardsController : MonoBehaviour
 
         cards.Clear();
         cards.AddRange(obj);
-        
-        StartCoroutine(ShuffleToBestCards());
+
+        switch (_botDifficulty)
+        {
+            case BotsDifficulty.Easy:
+                break;
+            case BotsDifficulty.Medium:
+                StartCoroutine(ShuffleToBestCards(BotsDifficulty.Medium));
+                break;
+            case BotsDifficulty.Hard:
+                StartCoroutine(ShuffleToBestCards(BotsDifficulty.Hard));
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
     private Handd hand1 = new();
 
@@ -29,7 +64,7 @@ public class NetworkBotCardsController : MonoBehaviour
     private Handd Besthand2 = new();
     private Handd Besthand3 = new();
 
-    IEnumerator  ShuffleToBestCards()
+    IEnumerator  ShuffleToBestCards(BotsDifficulty botDifficulty)
     {
         for (int i = 0; i < shuffleLimit; i++)
             hand1.Add(cards[i]);
@@ -63,16 +98,29 @@ public class NetworkBotCardsController : MonoBehaviour
         
         yield return new WaitForSeconds(.3f);
         
+        
         shuffledCards.AddRange(Besthand1._Handd);
-        shuffledCards.AddRange(Besthand2._Handd);
         
         yield return new WaitForSeconds(.1f);
-        shuffledCards.AddRange(Besthand3._Handd);
-        shuffledCards.AddRange(hand1._Handd);
+        if (_botDifficulty == BotsDifficulty.Hard)
+        {
+            shuffledCards.AddRange(Besthand2._Handd);
+            shuffledCards.AddRange(Besthand3._Handd);
+            shuffledCards.AddRange(hand1._Handd);
+            
+            hand1.Clear();
+            cards.Clear();
+            cards = shuffledCards;
+        }
+        else
+        {
+            for (int i = 0; i < shuffledCards.Count; i++)
+            {
+                cards[i] = shuffledCards[i];
+            }
+        }
 
-        hand1.Clear();
-        cards.Clear();
-        cards = shuffledCards;
+        
         
         print($"Bot Cards Shuffled {cards.Count}");
 

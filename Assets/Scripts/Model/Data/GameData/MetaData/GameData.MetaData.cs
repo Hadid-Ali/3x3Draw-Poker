@@ -22,6 +22,7 @@ public static partial class GameData
         public const int MaximumPlayers = 6;
         
         public const int WaitBeforeAutomaticMatchStart = 30;
+        public const int WaitBeforeAutomaticRoundStart = 10;
         public const int WaitBeforePlayerJoinNotify = 6;
         
         public const int NullID = -1000;
@@ -29,6 +30,12 @@ public static partial class GameData
         public const string PrivacyPolicyLink = "https://triplehandpoker.com/privacy-policy/";
         public const string TermsOfUsageLink = "https://triplehandpoker.com/terms-and-conditions/";
         public const string AppWebsiteLink = "https://triplehandpoker.com/";
+        public const string MuteString = "MuteString";
+        
+        public const string BotDifficulty = "BotsDifficulty";
+        public const BotsDifficulty DefaultBotDifficulty = BotsDifficulty.Hard;
 
+        public static Vector2 deafaultCardImageSize = new Vector2(250, 350);
+        public static Vector2 deafaultCharacterImageSize = new Vector2(450, 300);
     }
 }

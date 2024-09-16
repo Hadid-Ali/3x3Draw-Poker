@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 
 public class NetworkMatchManager : MonoBehaviour
 {

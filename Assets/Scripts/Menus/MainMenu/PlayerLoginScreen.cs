@@ -38,25 +38,27 @@ public class PlayerLoginScreen : UIMenuBase
 
     private void CheckForPreviousLogin()
     {
-        if (GameData.RuntimeData.IS_LOGGED_IN)
+        if (!string.IsNullOrEmpty(GameData.PersistentData.UserName))
         {
             LoginInternal();
         }
     }
-    
+
     public void OnLoginBtnEvent()
     {
         string userName = m_InputField.text;
-        
-        GameData.RuntimeData.USER_NAME = userName;
+
+        GameData.PersistentData.UserName = userName;
         GameData.RuntimeData.IS_LOGGED_IN = true;
         LoginInternal();
     }
 
     private void LoginInternal()
     {
-        GameEvents.NetworkEvents.PlayerLogin.Raise(GameData.RuntimeData.USER_NAME);
-        ChangeMenuState(MenuName.ConnectionScreen);
+        GameData.RuntimeData.USER_NAME = GameData.PersistentData.UserName;
+        GameData.RuntimeData.IS_LOGGED_IN = true;
+        
+        ChangeMenuState(MenuName.MainMenu);
     }
 
     private void SetButtonInteractionStatus(bool status)

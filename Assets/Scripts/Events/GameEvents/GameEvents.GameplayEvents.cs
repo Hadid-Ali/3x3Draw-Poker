@@ -15,6 +15,7 @@ public static partial class GameEvents
         
         public static GameEvent<bool> GameplayCardsStateChanged = new();
         public static GameEvent RoundCompleted = new();
+        public static GameEvent RoundMenuEnabled = new();
         
         public static GameEvent<PlayerViewDataObject> LocalPlayerJoined = new();
         public static GameEvent<int, int> PlayerScoreReceived = new();

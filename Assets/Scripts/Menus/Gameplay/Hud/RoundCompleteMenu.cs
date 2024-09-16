@@ -1,26 +1,36 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class RoundCompleteMenu : UIMenuBase
 {
     [Header("Components")] 
     [SerializeField] private TMP_Text m_RewardText;
-    [SerializeField] private Button m_RestartButton;
+    [SerializeField] private TMP_Text m_AutoStartText;
+    //[SerializeField] private Button m_RestartButton;
 
     private void Start()
     {
-        m_RestartButton.onClick.AddListener(OnRestartTap);
+       GameEvents.NetworkEvents.RoundRestartTimer.Register(TimerTick);
+    }
+
+    private void OnDestroy()
+    {
+       GameEvents.NetworkEvents.RoundRestartTimer.UnRegister(TimerTick);
+    }
+
+    protected override void OnContainerEnable()
+    {
+        base.OnContainerEnable();
+        GameEvents.GameplayEvents.RoundMenuEnabled.Raise();
     }
 
     private void OnEnable()
     {
         GameEvents.GameplayUIEvents.PlayerRewardReceived.Register(OnPlayerRewardReceived);
         GameEvents.GameFlowEvents.RoundStart.Register(DisableMenu);
+        
     }
 
     private void OnDisable()
@@ -39,15 +49,21 @@ public class RoundCompleteMenu : UIMenuBase
         m_RewardText.text = $"You Received {reward} Points in this Round";
     }
 
+
+    private void TimerTick(string str)
+    {
+        m_AutoStartText.SetText($"Next Round Starting in {str}...");
+    }
+
     private void OnRestartTap()
     {
         if (PhotonNetwork.IsMasterClient)
         {
             GameEvents.GameFlowEvents.RestartRound.Raise();
         }
-        else
-        {
-            ChangeMenuState(MenuName.LoadingScreen);
-        }
+        // else
+        // {
+        //     ChangeMenuState(MenuName.LoadingScreen);
+        // }
     }
 }

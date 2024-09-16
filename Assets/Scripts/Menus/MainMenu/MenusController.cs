@@ -12,7 +12,7 @@ public abstract class MenusController : MonoBehaviour
 
     private void Start()
     {
-        SetMenuState(MenuName.MainMenu);
+        m_Menus[0].SetAsCurrentState();
     }
 
     protected virtual void OnEnable()

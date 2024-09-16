@@ -8,6 +8,13 @@ public class ApplicationSettingsController : MonoBehaviour
     {
         SetFrameRate();
         SetScreenTime();
+        LoadData();
+    }
+
+    private void LoadData()
+    {
+        GameData.RuntimeData.SELECTED_CHARACTER = (ItemName)GameData.PersistentData.SelectedCharacter;
+        GameData.RuntimeData.SELECTED_CARD_BACK = (ItemName)GameData.PersistentData.SelectedCard;
     }
 
     public void SetFrameRate()
