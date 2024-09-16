@@ -14,7 +14,13 @@ public class CardsRegistery : MonobehaviourSingleton<CardsRegistery>
     public Sprite GetCardSprite(ItemName iName)
     {
         Debug.LogError($"Item {iName}");
-     return m_CardBacks.Find(x=>x.itemName == iName).property.Picture;
+        try
+        {
+            return m_CardBacks.Find(x=>x.itemName == iName).property.Picture;
+        }
+        catch (Exception e)
+        {
+            return m_CardBacks.GetRandomObject().property.Picture;
+        }
     }
-
 }

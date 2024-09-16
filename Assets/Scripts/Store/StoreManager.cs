@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class StoreManager : MonoBehaviour
 {
-    private StorePageName _currentSelectedStore;
-    [SerializeField] private ItemName _currentSelectedCharacter;
-    [SerializeField] private ItemName _currentSelectedCardBack;
-    
     [SerializeField] private List<StorePageName> storeNames = new();
     [SerializeField] private List<StorePageSO> storePages = new();
 
@@ -19,13 +15,22 @@ public class StoreManager : MonoBehaviour
             storeNames.Add(v.pageName);
     }
 #endif    
-    
 
     private void Start()
     {
         GameEvents.StoreEvents.OnStoreButtonClicked.Register(OnStoreButtonClicked);
         GameEvents.StoreEvents.OnStoreItemSelected.Register(OnItemSelected);
+        SetCurrentData();
     }
+
+    private void SetCurrentData()
+    {
+        FindObjectOfType<GameComponent>().StartMethod();
+        Debug.LogError($"{GameData.PersistentData.SelectedCharacter} => {GameData.PersistentData.SelectedCard}");
+        GameData.RuntimeData.SELECTED_CARD_BACK = (ItemName)GameData.PersistentData.SelectedCard;
+        GameData.RuntimeData.SELECTED_CHARACTER = (ItemName)GameData.PersistentData.SelectedCharacter;
+    }
+    
     private void OnDestroy()
     {
         GameEvents.StoreEvents.OnStoreButtonClicked.UnRegister(OnStoreButtonClicked);
@@ -37,14 +42,12 @@ public class StoreManager : MonoBehaviour
         if ((int)obj > 7)
         {
             GameData.PersistentData.SelectedCard = (int)obj;
-            _currentSelectedCardBack = obj;
-            GameData.RuntimeData.SELECTED_CARD_BACK = _currentSelectedCardBack;
+            GameData.RuntimeData.SELECTED_CARD_BACK = obj;
         }
         else
         {
             GameData.PersistentData.SelectedCharacter = (int)obj;
-            _currentSelectedCharacter = obj;
-            GameData.RuntimeData.SELECTED_CHARACTER = _currentSelectedCharacter;
+            GameData.RuntimeData.SELECTED_CHARACTER = obj;
         }
     }
 
@@ -55,13 +58,9 @@ public class StoreManager : MonoBehaviour
         GameEvents.StoreEvents.OnStoreButtonClicked.Raise(storeNames[0]); 
     }
 
-
-
     private void OnStoreButtonClicked(StorePageName obj)
     {
         GameEvents.StoreEvents.OnDisplayStorePage.
             Raise(storePages.Find(x=> x.pageName == obj));
-
-        _currentSelectedStore = obj;
     }
 }

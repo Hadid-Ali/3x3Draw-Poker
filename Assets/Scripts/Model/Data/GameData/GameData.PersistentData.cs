@@ -32,7 +32,7 @@ public static partial class GameData
         
         public static int SelectedCard
         {
-            get => PlayerPrefs.GetInt(_selectedCardBack, 0);
+            get => PlayerPrefs.GetInt(_selectedCardBack, 11);
             set
             {
                 PlayerPrefs.SetInt(_selectedCardBack, value);
