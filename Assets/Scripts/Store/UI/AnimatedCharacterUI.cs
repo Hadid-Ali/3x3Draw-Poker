@@ -1,14 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterItemUI : StoreItemUI
+public class AnimatedCharacterUI : StoreItemUI
 {
-    [SerializeField] private Image characterImage;
     [SerializeField] private RawImage backgroundImage;
-
     private void Awake()
     {
-        SubscribeAction(OnItemClick);
+        m_Button.onClick.AddListener(OnItemClick);   
     }
 
     private void OnItemClick()
@@ -18,13 +16,8 @@ public class CharacterItemUI : StoreItemUI
 
     public override void InitializeItem(ItemProperty parameter1)
     {
-        characterImage.sprite = parameter1.Picture;
+        backgroundImage.texture = StoreUIManager.GetTexture(parameter1.name);
         itemName = parameter1.name;
         OnItemUnSelected();
-    }
-
-    public void InitializeAnimatedCharacter(ItemProperty parameter1)
-    {
-        
     }
 }

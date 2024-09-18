@@ -7,10 +7,10 @@ using UnityEngine.UI;
 
 public class ButtonWidget : MonoBehaviour
 {
-   [SerializeField] private Button m_Button;
+   [SerializeField] protected Button m_Button;
    [SerializeField] private ImageWidget m_ButtonImage;
 
-   private void Start()
+   protected virtual void Start()
    {
       Initialize();
    }
