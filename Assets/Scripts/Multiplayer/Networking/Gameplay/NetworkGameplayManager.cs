@@ -83,9 +83,6 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.NetworkEvents.RoundRestartTimer.Raise(time);
     }
     
-
-
-
     private void OnPlayerWin(int networkViewID,int runnerUpID,int secondRunnerUpID)
     {
         NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView,nameof(AnnounceWinner_RPC),RpcTarget.All,new object[]

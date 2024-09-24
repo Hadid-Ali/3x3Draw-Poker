@@ -23,7 +23,6 @@ public static partial class GameData
         
         public const int WaitBeforeAutomaticMatchStart = 30;
         public const int WaitBeforeAutomaticRoundStart = 10;
-        public const int WaitBeforePlayerJoinNotify = 6;
         
         public const int NullID = -1000;
 
