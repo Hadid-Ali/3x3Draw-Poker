@@ -27,7 +27,7 @@ public class NetworkPlayerBotController : NetworkPlayerController
         
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.All,
-            new object[] { Name, actorNum ,Random.Range(0,8)});
+            new object[] { Name, actorNum ,Random.Range(0,8),(int) ItemName.DefaultCardB});
         
         GameData.RuntimeData.TOTAL_BOTS_SPAWNED++;
     }

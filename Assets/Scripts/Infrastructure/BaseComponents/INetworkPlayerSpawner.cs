@@ -10,4 +10,6 @@ public interface INetworkPlayerSpawner
     public string GetPlayerName(int ID);
     public int GetLocalPlayerNetworkID();
     public int GetPlayerLocalID(int ID);
+
+    public int GetPlayerSelectedCard(int ID);
 }

@@ -25,7 +25,6 @@ public class StoreManager : MonoBehaviour
 
     private void SetCurrentData()
     {
-        FindObjectOfType<GameComponent>().StartMethod();
         Debug.LogError($"{GameData.PersistentData.SelectedCharacter} => {GameData.PersistentData.SelectedCard}");
         GameData.RuntimeData.SELECTED_CARD_BACK = (ItemName)GameData.PersistentData.SelectedCard;
         GameData.RuntimeData.SELECTED_CHARACTER = (ItemName)GameData.PersistentData.SelectedCharacter;

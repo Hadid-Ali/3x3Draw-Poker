@@ -37,6 +37,7 @@ public class ResultHand : MonoBehaviour
         m_HandNameText.text = resultHandDataObject.HandName;
         
         m_CardsDeck.SetHandData(resultHandDataObject.Cards);
+        m_CardsDeck.SetCardBack(resultHandDataObject.CardBack);
         SetVisibilityStatus(true);
 
         Invoke(nameof(CheckForWinStatus), resultHandDataObject.WinnerRevealDuration);

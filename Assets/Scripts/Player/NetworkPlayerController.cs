@@ -59,7 +59,13 @@ public class NetworkPlayerController : PlayerController
         Debug.LogError($"Player Data Set {actorNum} : {nickName}");
         
         NetworkManager.NetworkUtilities.RaiseRPC(m_PhotonView, nameof(SetPlayerData_RPC), RpcTarget.AllBuffered,
-            new object[] {nickName, actorNum ,(int) GameData.RuntimeData.SELECTED_CHARACTER});
+            new object[]
+            {
+                nickName,
+                actorNum,
+                (int) GameData.RuntimeData.SELECTED_CHARACTER,
+                (int) GameData.RuntimeData.SELECTED_CARD_BACK
+            });
 
     }
 
@@ -129,17 +135,19 @@ public class NetworkPlayerController : PlayerController
     }
 
     [PunRPC]
-    public void SetPlayerData_RPC(string nameToSet,int localID,int avatarID)
+    public void SetPlayerData_RPC(string nameToSet,int localID,int avatarID, int cardBackID)
     {
         Name = nameToSet;
         LocalID = localID;
         CharacterAvatarID = avatarID;
+        SelectedCard = (ItemName) cardBackID;
         
         OnPlayerDataSet();
     }
 
     private void OnPlayerDataSet()
     {
+        Debug.Log($"{ID} : {LocalID} : {Name} : {SelectedCard}");
         GameEvents.GameplayEvents.LocalPlayerJoined.Raise(new PlayerViewDataObject()
         {
             Name = Name,

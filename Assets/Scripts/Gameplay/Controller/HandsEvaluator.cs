@@ -74,7 +74,8 @@ public class HandsEvaluator : MonoBehaviour
         
         foreach (KeyValuePair<int, CardData[,]> kvp in cardsData)
         {
-            userScores[kvp.Key] = new PlayerScoreObject(kvp.Key);
+            int card = Dependencies.PlayersContainer.GetPlayerSelectedCard(kvp.Key);
+            userScores[kvp.Key] = new PlayerScoreObject(kvp.Key, card);
         }
         
         for (int i = 0; i < deckCount; i++)

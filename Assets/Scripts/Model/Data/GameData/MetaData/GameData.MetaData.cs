@@ -23,7 +23,6 @@ public static partial class GameData
         
         public const int WaitBeforeAutomaticMatchStart = 30;
         public const int WaitBeforeAutomaticRoundStart = 10;
-        public const int WaitBeforePlayerJoinNotify = 6;
         
         public const int NullID = -1000;
 
@@ -36,6 +35,6 @@ public static partial class GameData
         public const BotsDifficulty DefaultBotDifficulty = BotsDifficulty.Hard;
 
         public static Vector2 deafaultCardImageSize = new Vector2(250, 350);
-        public static Vector2 deafaultCharacterImageSize = new Vector2(450, 300);
+        public static Vector2 deafaultCharacterImageSize = new Vector2(450, 500);
     }
 }

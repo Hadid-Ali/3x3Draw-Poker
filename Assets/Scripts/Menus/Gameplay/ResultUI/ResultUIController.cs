@@ -103,6 +103,7 @@ public class ResultUIController : MonoBehaviour
             
             resultObjects[i] = new ResultHandDataObject()
             {
+                CardBack = CardsRegistery.Instance.GetCardSprite((ItemName)m_UsersScoreList[i].SelectedCard),
                 Cards = GetCardSprites(cardData),
                 Score = GameData.MetaData.HandWinReward,
                 PlayerName = Dependencies.PlayersContainer.GetPlayerName(deckObject.userID),

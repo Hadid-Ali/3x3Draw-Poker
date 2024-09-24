@@ -37,7 +37,8 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
     }
 
     public int GetPlayerLocalID(int photonViewID) => m_JoinedPlayers.Find(player => player.ID == photonViewID).LocalID;
-    
+    public int GetPlayerSelectedCard(int ID) => (int) m_JoinedPlayers.Find(player => player.ID == ID).SelectedCard;
+
     public int GetLocalPlayerNetworkID() => m_JoinedPlayers.Find(player => player.IsLocalPlayer).ID;
 
     public void Initialize(Action<PlayerController> onPlayerSpawned)
