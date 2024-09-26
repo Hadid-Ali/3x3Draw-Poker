@@ -22,7 +22,7 @@ public class GameplayHud : MenusController
     [SerializeField] private GameObject m_DisconnectedLabel;
 
     [SerializeField] private GameObject m_InputBlocker;
-
+    [SerializeField] private TextMeshProUGUI submissionTimer;
     private bool m_ShowMatchoverMenu = false;
     
     private void Start()
@@ -37,14 +37,27 @@ public class GameplayHud : MenusController
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnected);
         GameEvents.GameFlowEvents.RoundStart.Register(AllowGameplayInputs);
         GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
+        
+        GameEvents.NetworkEvents.SubmissionTimerTick.Register(OnSubmissionTimerTick);
+        GameEvents.GameFlowEvents.SubmissionTimerOver.Register(SubmitCards);
+        m_SubmitButton.interactable = true;
+        
+        submissionTimer.text = "";
     }
-    
+    private void OnSubmissionTimerTick(string obj)
+    {
+        submissionTimer.SetText($"Remaining Time : {obj}");
+        
+    }
+
     protected override void OnDisable()
     {
         base.OnDisable();
         GameEvents.NetworkEvents.NetworkDisconnectedEvent.UnRegister(OnNetworkDisconnected);
         GameEvents.GameFlowEvents.RoundStart.UnRegister(AllowGameplayInputs);
         GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
+        GameEvents.NetworkEvents.SubmissionTimerTick.UnRegister(OnSubmissionTimerTick);
+        GameEvents.GameFlowEvents.SubmissionTimerOver.UnRegister(SubmitCards);
     }
 
     public void ShowScoreOnUI()
@@ -75,15 +88,11 @@ public class GameplayHud : MenusController
 
     private void SubmitCards()
     {
-        // try
-        // {
-            GameEvents.GameplayUIEvents.SubmitDecks.Raise();
-            SetGameplayInputStatus(false);
-        // }
-        // catch (Exception e)00
-        // {
-        //     Debug.LogError(e.StackTrace);
-        // }
+        GameEvents.GameplayUIEvents.SubmitDecks.Raise();
+        GameEvents.TimerEvents.CancelActionRequest.Raise();
+        SetGameplayInputStatus(false);
+        
+        submissionTimer.text = "";
     }
     
     private void AllowGameplayInputs()

@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public static partial class GameEvents
 {
@@ -11,5 +7,7 @@ public static partial class GameEvents
         public static GameEvent RestartRound = new();
         public static GameEvent MatchOver = new();
         public static GameEvent LeaveMatch = new();
+        
+        public static GameEvent SubmissionTimerOver = new();
     }
 }

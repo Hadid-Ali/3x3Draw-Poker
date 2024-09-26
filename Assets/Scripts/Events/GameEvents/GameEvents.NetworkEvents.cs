@@ -1,5 +1,3 @@
-
-using System.Collections.Generic;
 using Photon.Realtime;
 
 public static partial class GameEvents
@@ -23,6 +21,7 @@ public static partial class GameEvents
         
         public static GameEvent<string> MatchStartTimer = new();
         public static GameEvent<string> RoundRestartTimer = new();
+        public static GameEvent<string> SubmissionTimerTick = new();
         
         public static GameEvent GameRoomCreated = new();
 

@@ -45,6 +45,9 @@ public sealed class TimerController : MonoBehaviour
 
    private void OnRequestCancel()
    {
+      if(m_RequestRoutine == null)
+         return;
+      
       StopCoroutine(m_RequestRoutine);
       m_RequestRoutine = null;
    }

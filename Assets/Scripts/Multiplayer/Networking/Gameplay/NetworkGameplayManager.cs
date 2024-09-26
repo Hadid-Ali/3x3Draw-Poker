@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ public class NetworkGameplayManager : MonoBehaviour
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
     
     private string _roundRestart = "RoundContinue";
+    private string _roundStart = "RoundStart";
 
     public virtual void Awake()
     {
@@ -40,7 +42,11 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.Register(OnRoundCompleted);
+        GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
     }
+
+
+
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
@@ -48,6 +54,39 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.UnRegister(OnRoundCompleted);
+        GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
+    }
+    
+    private void OnRoundStarted(bool state)
+    {
+        if(!state)
+            return;
+        
+        StartCoroutine(WaitBeforeTimer());
+    }
+
+    IEnumerator WaitBeforeTimer()
+    {
+        yield return new WaitForSeconds(GameData.MetaData.WaitBeforeSubmissionTimerStart);
+        
+        GameEvents.TimerEvents.ExecuteActionRequest.Raise(new TimerDataObject()
+        {
+            Title = _roundStart,
+            TimeDuration = GameData.MetaData.WaitBeforeAutomaticCardsSubmission,
+            ActionToExecute =  SubmissionTimerOver,
+            TickTimeEvent = SubmissionTimerTick,
+            IsNetworkGlobal = true
+        });
+    }
+
+    private void SubmissionTimerTick(string obj)
+    {
+        GameEvents.NetworkEvents.SubmissionTimerTick.Raise(obj);
+    }
+
+    private void SubmissionTimerOver()
+    {
+        GameEvents.GameFlowEvents.SubmissionTimerOver.Raise();
     }
 
     private void OnRoundCompleted()
@@ -82,6 +121,7 @@ public class NetworkGameplayManager : MonoBehaviour
     {
         GameEvents.NetworkEvents.RoundRestartTimer.Raise(time);
     }
+
     
     private void OnPlayerWin(int networkViewID,int runnerUpID,int secondRunnerUpID)
     {
