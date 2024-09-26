@@ -22,7 +22,7 @@ public static partial class GameData
         public const int MaximumPlayers = 6;
         
         public const int WaitBeforeAutomaticMatchStart = 30;
-        public const int WaitBeforeAutomaticRoundStart = 10;
+        public const int WaitBeforeAutomaticRoundStart = 5;
         
         public const int NullID = -1000;
 
