@@ -44,9 +44,7 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.RoundMenuEnabled.Register(OnRoundCompleted);
         GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
     }
-
-
-
+    
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
@@ -59,7 +57,7 @@ public class NetworkGameplayManager : MonoBehaviour
     
     private void OnRoundStarted(bool state)
     {
-        if(!state)
+        if(!state || PhotonNetwork.OfflineMode)
             return;
         
         StartCoroutine(WaitBeforeTimer());
