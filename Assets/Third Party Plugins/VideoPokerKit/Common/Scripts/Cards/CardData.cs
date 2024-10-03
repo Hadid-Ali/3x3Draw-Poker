@@ -71,6 +71,8 @@ public class CardData
 		type = other.type;
 		value = other.value;
 	}
+
+
 	
         public static string RankToString(int rank)
         {

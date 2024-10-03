@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Pun;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ResultUIController : MonoBehaviour
@@ -75,13 +77,13 @@ public class ResultUIController : MonoBehaviour
     {
         int index = 0;
         int totalHands = GameData.MetaData.DecksCount;
-
-  //      Debug.LogError("Routine Start");
+        
         while (index < totalHands)
         {
             ShowDecksAtIndex(index++);
-            yield return m_WaitBetweenDecks;
-     //       Debug.LogError("Show Hand");
+            float waitTime = PhotonNetwork.CountOfPlayers >= 4 ? 
+                m_WaitBetweenDecksReveal : m_WaitBetweenDecksReveal * 2;
+            yield return new WaitForSeconds(waitTime);
         }
 
         m_ResultUiView.Reset();
@@ -101,6 +103,12 @@ public class ResultUIController : MonoBehaviour
             CardData [] cardData = deckObject.Decks[index];
             HandEvaluator.Evaluate(cardData, out HandTypes handTypes);
             
+
+            List<CardData> cardList= cardData.ToList();
+            var orderByDescending = cardList.OrderByDescending(data => data.value);
+
+            cardData = orderByDescending.ToArray();
+
             resultObjects[i] = new ResultHandDataObject()
             {
                 CardBack = CardsRegistery.Instance.GetCardSprite((ItemName)m_UsersScoreList[i].SelectedCard),

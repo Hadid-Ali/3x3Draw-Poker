@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static partial class GameData
@@ -35,6 +33,7 @@ public static partial class GameData
         
         public const string BotDifficulty = "BotsDifficulty";
         public const BotsDifficulty DefaultBotDifficulty = BotsDifficulty.Hard;
+        public const bool IsTestMode = false;
 
         public static Vector2 deafaultCardImageSize = new Vector2(250, 350);
         public static Vector2 deafaultCharacterImageSize = new Vector2(450, 500);

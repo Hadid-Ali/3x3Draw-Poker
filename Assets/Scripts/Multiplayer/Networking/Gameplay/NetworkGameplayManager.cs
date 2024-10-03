@@ -57,7 +57,7 @@ public class NetworkGameplayManager : MonoBehaviour
     
     private void OnRoundStarted(bool state)
     {
-        if(!state || PhotonNetwork.OfflineMode)
+        if(!state || PhotonNetwork.OfflineMode || GameData.MetaData.IsTestMode)
             return;
         
         StartCoroutine(WaitBeforeTimer());
