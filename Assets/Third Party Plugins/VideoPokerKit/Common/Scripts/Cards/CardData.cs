@@ -33,6 +33,7 @@ public enum Cardvalue
 	value_K = 11,
 	value_A = 12,
 	valueS_NO = 13,
+	valueS_A = -1, //Only for straight flush tiebreaker evaluation
 }
 
 //--------------------------------------------

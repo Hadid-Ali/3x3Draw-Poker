@@ -150,6 +150,10 @@ public class TieBreakerComponent : MonoBehaviour
             case HandTypes.Straight:
             case HandTypes.StraightFlush:
                 // For straights, compare the highest card in the straight
+                
+                hand1 = InvertAValue(hand1);
+                hand2 = InvertAValue(hand2);
+                
                 Cardvalue highestCardStraight1 = GetHighestCardValue(hand1);
                 Cardvalue highestCardStraight2 = GetHighestCardValue(hand2);
 
@@ -326,6 +330,7 @@ public class TieBreakerComponent : MonoBehaviour
                 return "It's a tie";
             case HandTypes.Straight:
             case HandTypes.StraightFlush:
+                
                 // For straights, compare the highest card in the straight
                 Cardvalue highestCardStraight1 = GetHighestCardValue(hand1);
                 Cardvalue highestCardStraight2 = GetHighestCardValue(hand2);
@@ -360,6 +365,20 @@ public class TieBreakerComponent : MonoBehaviour
             default:
                 return "It's a tie"; // For other cases, consider it a tie
         }
+    }
+
+    static Hand InvertAValue(Hand hand)
+    {
+        var cardData = hand.CardData;
+        foreach (var c in cardData)
+        {
+            if (c.value != Cardvalue.value_A) continue;
+                    
+            c.value = Cardvalue.valueS_A;
+            break;
+        }
+        hand.CardData = cardData;
+        return hand;
     }
 
     static Cardvalue GetPairOrThreeValue(Hand hand)

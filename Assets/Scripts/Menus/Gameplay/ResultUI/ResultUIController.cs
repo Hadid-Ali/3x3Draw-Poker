@@ -99,15 +99,33 @@ public class ResultUIController : MonoBehaviour
         for (int i = 0; i < m_PlayerDecks.Count; i++)
         {
             PlayerDecksObject deckObject = m_PlayerDecks[i];
-            
             CardData [] cardData = deckObject.Decks[index];
-            HandEvaluator.Evaluate(cardData, out HandTypes handTypes);
+
+            foreach (var c in cardData)
+            {
+                if (c.value != Cardvalue.valueS_A) continue;
+                c.value = Cardvalue.value_A;
+                break;
+            }
             
+            HandEvaluator.Evaluate(cardData, out HandTypes handTypes);
 
-            List<CardData> cardList= cardData.ToList();
-            var orderByDescending = cardList.OrderByDescending(data => data.value);
+            List<CardData> cardList = cardData.ToList();
+            
+            //var orderByDescending = cardList.OrderByDescending(data => data.value);
 
-            cardData = orderByDescending.ToArray();
+            if (handTypes is HandTypes.Straight or HandTypes.StraightFlush)
+            {
+                var temp = cardList.Find(x => x.value == Cardvalue.value_A);
+                if (temp != null)
+                {
+                    cardList.Remove(temp);
+                    cardList.Add(temp);
+                }
+            }
+            
+            
+            //cardData = orderByDescending.ToArray();
 
             resultObjects[i] = new ResultHandDataObject()
             {
