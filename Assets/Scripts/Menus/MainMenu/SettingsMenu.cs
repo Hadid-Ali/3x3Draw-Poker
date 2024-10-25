@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -25,8 +27,10 @@ public class SettingsMenu : UIMenuBase
     [SerializeField] private Sprite soundOff;
 
     [SerializeField] private ButtonWidgetWithStatus[] difficultyButtons;
+        
+    [SerializeField] private Slider _targetScoreSlider;
+    [SerializeField] private TextMeshProUGUI _targetScoreText;
     
-
     private void Start()
     {
         m_PrivacyPolicyButton.SubscribeAction(OnPrivacyPolicyButton);
@@ -44,6 +48,21 @@ public class SettingsMenu : UIMenuBase
         difficultyButtons[0].SubscribeAction(()=>SetDifficulty(BotsDifficulty.Easy));
         difficultyButtons[1].SubscribeAction(()=>SetDifficulty(BotsDifficulty.Medium));
         difficultyButtons[2].SubscribeAction(()=>SetDifficulty(BotsDifficulty.Hard));
+        InitializeSlider();
+    }
+
+    private void InitializeSlider()
+    {
+        _targetScoreSlider.value = GameData.PersistentData.OfflineTargetScore;
+        
+        _targetScoreSlider.onValueChanged.AddListener(OnTargetOfflineScoreChanged);
+        OnTargetOfflineScoreChanged(GameData.PersistentData.OfflineTargetScore);
+    }
+    
+    private void OnTargetOfflineScoreChanged(float value)
+    {
+        GameData.PersistentData.OfflineTargetScore = (int)value;
+        _targetScoreText.text = value.ToString(CultureInfo.InvariantCulture);
     }
 
     private void OnEnable()
