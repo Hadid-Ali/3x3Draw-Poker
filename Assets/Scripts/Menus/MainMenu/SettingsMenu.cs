@@ -31,6 +31,9 @@ public class SettingsMenu : UIMenuBase
     [SerializeField] private Slider _targetScoreSlider;
     [SerializeField] private TextMeshProUGUI _targetScoreText;
     
+    [SerializeField] private int highestScore;
+    [SerializeField] private int stepSize;
+    
     private void Start()
     {
         m_PrivacyPolicyButton.SubscribeAction(OnPrivacyPolicyButton);
@@ -53,16 +56,29 @@ public class SettingsMenu : UIMenuBase
 
     private void InitializeSlider()
     {
-        _targetScoreSlider.value = GameData.PersistentData.OfflineTargetScore;
+        SetSliderBounds(highestScore, stepSize);
         
         _targetScoreSlider.onValueChanged.AddListener(OnTargetOfflineScoreChanged);
         OnTargetOfflineScoreChanged(GameData.PersistentData.OfflineTargetScore);
     }
+    public void SetSliderBounds(float high, float step)
+    {
+        float maxValue = Mathf.Floor(high / step) *step;
+
+        _targetScoreSlider.minValue = step;
+        _targetScoreSlider.maxValue = maxValue;
+        
+        _targetScoreSlider.wholeNumbers = false;
+        _targetScoreSlider.value = GameData.PersistentData.OfflineTargetScore;
+    }
     
     private void OnTargetOfflineScoreChanged(float value)
     {
-        GameData.PersistentData.OfflineTargetScore = (int)value;
-        _targetScoreText.text = value.ToString(CultureInfo.InvariantCulture);
+        float valueTemp = Mathf.Round(value / stepSize) * stepSize;
+        _targetScoreSlider.value = valueTemp;
+        
+        GameData.PersistentData.OfflineTargetScore = (int)valueTemp;
+        _targetScoreText.text = valueTemp.ToString(CultureInfo.InvariantCulture);
     }
 
     private void OnEnable()

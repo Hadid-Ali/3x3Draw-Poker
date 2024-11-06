@@ -43,6 +43,10 @@ public class NetworkBotCardsController : MonoBehaviour
 
         cards.Clear();
         cards.AddRange(obj);
+        foreach (var v in cards.Where(v => v.value == Cardvalue.valueS_A))
+        {
+            v.value = Cardvalue.value_A;
+        }
 
         switch (_botDifficulty)
         {

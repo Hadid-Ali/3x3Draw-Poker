@@ -13,6 +13,7 @@ public class GameplayStateView : MonoBehaviour
     [SerializeField] private ResultUIView m_ResultUIView;
 
     [SerializeField] private GameplayHud m_GameplayHud;
+    [SerializeField] private GameObject scene;
     
     [Header("Properties")]
     
@@ -59,10 +60,10 @@ public class GameplayStateView : MonoBehaviour
 
     private void SwitchToCasinoView()
     {
-        Debug.LogError("Switch To Casino View");
         SetGameplayCardsViewState(false);
         SetResultView(false);
         SetCasinoViewObjectState(true);
+        scene.SetActive(true);
     }
 
     private IEnumerator SwitchToCardsView()
@@ -97,6 +98,7 @@ public class GameplayStateView : MonoBehaviour
     
     private void SetGameplayCardsViewState(bool state)
     {
+        scene.SetActive(false);
         m_GameCardsContainer.alpha = state ? 1 : 0;
         m_GameCardsContainer.interactable = state;
         GameEvents.GameplayEvents.GameplayCardsStateChanged.Raise(state);
@@ -106,6 +108,5 @@ public class GameplayStateView : MonoBehaviour
     private void SetCasinoViewObjectState(bool state)
     {
         m_CasinoViewObject.SetActive(true);
-     //   m_CasinoViewObject.SetViewState(state);
     }
 }

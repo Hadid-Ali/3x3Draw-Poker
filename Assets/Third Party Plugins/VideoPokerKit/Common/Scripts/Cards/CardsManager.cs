@@ -85,6 +85,9 @@ public class CardsManager : MonoBehaviour
 	{
 		for (int i = 0; i < m_GameCards.Length; i++)
 		{
+			if (cardsData[i].value == Cardvalue.valueS_A)
+				cardsData[i].value = Cardvalue.value_A;
+			
 			m_GameCards[i].SetData(cardsData[i], true, true);
 		}
 	}

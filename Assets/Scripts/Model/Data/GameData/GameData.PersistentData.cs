@@ -23,7 +23,7 @@ public static partial class GameData
         
         public static int OfflineTargetScore
         {
-            get => PlayerPrefs.GetInt(_offlineTargetScore, GameData.MetaData.TotalScoreToWinOffline);
+            get => PlayerPrefs.GetInt(_offlineTargetScore, MetaData.TotalScoreToWinOffline);
             set
             {
                 PlayerPrefs.SetInt(_offlineTargetScore, value);

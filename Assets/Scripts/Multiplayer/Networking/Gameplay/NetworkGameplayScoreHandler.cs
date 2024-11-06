@@ -84,7 +84,7 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     private void CheckForWinner()
     {
         int targetScore = PhotonNetwork.OfflineMode
-            ? GameData.MetaData.TotalScoreToWinOffline
+            ? GameData.PersistentData.OfflineTargetScore
             : GameData.MetaData.TotalScoreToWin;
         
         IOrderedEnumerable<KeyValuePair<int, int>> scoresOrderedByDescending = m_PlayerScoreObjects.OrderByDescending(pair => pair.Value);

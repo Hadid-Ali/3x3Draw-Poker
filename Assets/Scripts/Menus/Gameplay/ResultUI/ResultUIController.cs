@@ -19,14 +19,9 @@ public class ResultUIController : MonoBehaviour
     
     private List<PlayerScoreObject> m_UsersScoreList = new();
     private List<PlayerDecksObject> m_PlayerDecks = new();
-
-    private WaitForSeconds m_WaitBetweenDecks;
+    
     private GameEvent m_OnResultViewClose = new();
-
-    private void Start()
-    {
-        m_WaitBetweenDecks = new(m_WaitBetweenDecksReveal);
-    }
+    
 
     private void OnEnable()
     {
@@ -42,7 +37,7 @@ public class ResultUIController : MonoBehaviour
     {
         m_OnResultViewClose.Register(onMenuClose);
     }
-    
+        
     private void OnPlayerScoresReceived(List<NetworkDataObject> playerNetworkDataObjects,
         List<PlayerScoreObject> playerScoreObjects)
     {
@@ -81,8 +76,10 @@ public class ResultUIController : MonoBehaviour
         while (index < totalHands)
         {
             ShowDecksAtIndex(index++);
-            float waitTime = PhotonNetwork.CountOfPlayers >= 4 ? 
-                m_WaitBetweenDecksReveal : m_WaitBetweenDecksReveal * 2;
+            
+            var waitTime = PhotonNetwork.CountOfPlayers >= 4 ? 
+                m_WaitBetweenDecksReveal * 2 : m_WaitBetweenDecksReveal;
+            
             yield return new WaitForSeconds(waitTime);
         }
 
@@ -100,32 +97,55 @@ public class ResultUIController : MonoBehaviour
         {
             PlayerDecksObject deckObject = m_PlayerDecks[i];
             CardData [] cardData = deckObject.Decks[index];
-
-            foreach (var c in cardData)
-            {
-                if (c.value != Cardvalue.valueS_A) continue;
-                c.value = Cardvalue.value_A;
-                break;
-            }
             
             HandEvaluator.Evaluate(cardData, out HandTypes handTypes);
 
             List<CardData> cardList = cardData.ToList();
-            
-            //var orderByDescending = cardList.OrderByDescending(data => data.value);
 
-            if (handTypes is HandTypes.Straight or HandTypes.StraightFlush)
+            if (handTypes is HandTypes.Straight or HandTypes.StraightFlush) //Exception for Straight n StraightFlush
             {
-                var temp = cardList.Find(x => x.value == Cardvalue.value_A);
-                if (temp != null)
+                foreach (var c in cardData)
                 {
-                    cardList.Remove(temp);
-                    cardList.Add(temp);
+                    if (c.value == Cardvalue.value_A )
+                        c.value = Cardvalue.valueS_A; //Change value to custom lowest so A is at the end
                 }
+            }
+
+            if (handTypes is HandTypes.FullHouse)//Exception for fullhouse
+            {
+                var groupedByValue = cardList.GroupBy(card => card.value)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                List<CardData> threeOfAKind = null;
+                List<CardData> pair = null;
+
+                // Check for three of a kind and pair
+                foreach (var group in groupedByValue.Values)
+                {
+                    switch (group.Count)
+                    {
+                        case 3:
+                            threeOfAKind = group;
+                            break;
+                        case 2:
+                            pair = group;
+                            break;
+                    }
+                }
+
+                if (threeOfAKind != null && pair != null)
+                {
+                    cardList = threeOfAKind.Concat(pair).ToList(); //Concatenating with pair so threeOfAKind comes before pair 
+                    cardData = cardList.ToArray(); 
+                }
+            }
+            else //Order the final list by Descending
+            {
+                var descOrdered = cardList.OrderByDescending(x => x.value);
+                cardData = descOrdered.ToArray();
             }
             
             
-            //cardData = orderByDescending.ToArray();
 
             resultObjects[i] = new ResultHandDataObject()
             {
