@@ -23,7 +23,7 @@ public static partial class GameData
         public const int WaitBeforeAutomaticMatchStart = 30;
         public const int WaitBeforeAutomaticRoundStart = 5;
         public const int WaitBeforeAutomaticCardsSubmission = 60;
-        public const int WaitBeforeSubmissionTimerStart = 2;
+        public const int WaitBeforeSubmissionTimerStart = 5;
         
         public const int NullID = -1000;
 

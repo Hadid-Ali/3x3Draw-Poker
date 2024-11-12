@@ -70,7 +70,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
 
     private void TerminateAutoMatchStartRequest()
     {
-        GameEvents.TimerEvents.CancelActionRequest.Raise();
+        GameEvents.TimerEvents.CancelActionRequest.Raise(_matchStartTitle);
         m_IsAutoStartRequestSent = false;
     }
 

@@ -11,6 +11,8 @@ public sealed class TimerController : MonoBehaviour
    private GameEvent m_OnTimerCompletedEvent = new();
    private GameEvent<string> m_OnTimerTickEvent = new();
 
+   private Dictionary<string, Coroutine> activeCoroutines = new Dictionary<string, Coroutine>();
+   
    private void Start()
    {
       DontDestroyOnLoad(gameObject);
@@ -27,63 +29,54 @@ public sealed class TimerController : MonoBehaviour
       GameEvents.TimerEvents.ExecuteActionRequest.UnRegister(OnExecuteActionRequest);
       GameEvents.TimerEvents.CancelActionRequest.UnRegister(OnRequestCancel);
    }
-
-   private void OnExecuteActionRequest(TimerDataObject timerDataObject)
-   {
-      float timeDuration = timerDataObject.TimeDuration;
-
-      m_TimeToWait = timerDataObject.TimeDuration;
-      
-      InitializeEvent(timerDataObject.ActionToExecute);
-      InitializeEvent(timerDataObject.TickTimeEvent);
-
-      if (timerDataObject.IsNetworkGlobal)
-         GameEvents.NetworkEvents.NetworkTimerStartRequest.Raise(timerDataObject.Title, timeDuration);
-
-      m_RequestRoutine = StartCoroutine(StartTimer(m_TimeToWait));
-   }
-
-   private void OnRequestCancel()
-   {
-      if(m_RequestRoutine == null)
-         return;
-      
-      StopCoroutine(m_RequestRoutine);
-      m_RequestRoutine = null;
-   }
    
-   private void InitializeEvent(Action action)
-   {
-      m_OnTimerCompletedEvent.UnRegisterAll();
-      m_OnTimerCompletedEvent.Register(action);
-   }
 
-   private void InitializeEvent(Action<string> action)
-   {
-      m_OnTimerTickEvent.UnRegisterAll();
-      m_OnTimerTickEvent.Register(action);
-   }
-   IEnumerator StartTimer(float time)
-   {
-      int minutes = Mathf.FloorToInt(time / 60F);
-      int seconds = Mathf.FloorToInt(time - minutes * 60);
-      string timerString = $"{minutes:0}:{seconds:00}";
-      
-      
-      yield return new WaitForSeconds(1f);
-      time--;
+    private void OnExecuteActionRequest(TimerDataObject timerDataObject)
+    {
+        // Use a unique identifier for this timer (e.g., the title or a generated ID)
+        string timerId = timerDataObject.Title; 
 
-      if (time >= 0)
-      {
-         m_OnTimerTickEvent.Raise(timerString);
-         m_RequestRoutine = StartCoroutine(StartTimer(time));
-      }
-      else
-      {
-         m_OnTimerTickEvent.Raise("0:00");
-         m_OnTimerCompletedEvent.Raise();
-      }
-   }
+        // Check if there's already an active timer with the same ID and don't start a new one
+        if (activeCoroutines.ContainsKey(timerId)) return;
+
+        // Start a new timer coroutine and add it to the dictionary
+        Coroutine newTimer = StartCoroutine(StartTimer(timerDataObject, timerId));
+        activeCoroutines[timerId] = newTimer;
+    }
+
+    private void OnRequestCancel(string timerId)
+    {
+        // Check if a timer with the given ID exists, and cancel it if found
+        if (!activeCoroutines.TryGetValue(timerId, out Coroutine coroutine)) return;
+        StopCoroutine(coroutine);
+        activeCoroutines.Remove(timerId);
+    }
+
+    private IEnumerator StartTimer(TimerDataObject timerDataObject, string timerId)
+    {
+        float time = timerDataObject.TimeDuration;
+        Action onComplete = timerDataObject.ActionToExecute;
+        Action<string> onTick = timerDataObject.TickTimeEvent;
+
+        while (time > 0)
+        {
+            int minutes = Mathf.FloorToInt(time / 60F);
+            int seconds = Mathf.FloorToInt(time - minutes * 60);
+            string timerString = $"{minutes:0}:{seconds:00}";
+
+            onTick?.Invoke(timerString);
+            yield return new WaitForSeconds(1f);
+            time--;
+        }
+
+        // When time runs out
+        onTick?.Invoke("0:00");
+        onComplete?.Invoke();
+
+        // Remove the completed timer from the dictionary
+        activeCoroutines.Remove(timerId);
+    }
+    
 
 
 }

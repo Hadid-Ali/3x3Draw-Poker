@@ -42,7 +42,7 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.Register(OnRoundCompleted);
-        GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
+      //  GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
     }
     
     private void OnDisable()
@@ -52,40 +52,10 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.UnRegister(OnRoundCompleted);
-        GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
+       // GameEvents.GameplayEvents.GameplayCardsStateChanged.UnRegister(OnRoundStarted);
     }
     
-    private void OnRoundStarted(bool state)
-    {
-        if(!state || PhotonNetwork.OfflineMode || GameData.MetaData.IsTestMode)
-            return;
-        
-        StartCoroutine(WaitBeforeTimer());
-    }
 
-    IEnumerator WaitBeforeTimer()
-    {
-        yield return new WaitForSeconds(GameData.MetaData.WaitBeforeSubmissionTimerStart);
-        
-        GameEvents.TimerEvents.ExecuteActionRequest.Raise(new TimerDataObject()
-        {
-            Title = _roundStart,
-            TimeDuration = GameData.MetaData.WaitBeforeAutomaticCardsSubmission,
-            ActionToExecute =  SubmissionTimerOver,
-            TickTimeEvent = SubmissionTimerTick,
-            IsNetworkGlobal = true
-        });
-    }
-
-    private void SubmissionTimerTick(string obj)
-    {
-        GameEvents.NetworkEvents.SubmissionTimerTick.Raise(obj);
-    }
-
-    private void SubmissionTimerOver()
-    {
-        GameEvents.GameFlowEvents.SubmissionTimerOver.Raise();
-    }
 
     private void OnRoundCompleted()
     {
@@ -181,7 +151,6 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
-        
         SyncUserScoresOverNetwork(new SerializableList<PlayerScoreObject>()
         {
             Contents = userScores.Values.ToList()
@@ -192,7 +161,6 @@ public class NetworkGameplayManager : MonoBehaviour
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
             m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
         }
-        
     }
 
     private void SyncUserScoresOverNetwork(SerializableList<PlayerScoreObject> playerScores)
