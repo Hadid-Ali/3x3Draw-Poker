@@ -9,9 +9,13 @@ public class CardsRegistery : MonobehaviourSingleton<CardsRegistery>
     [SerializeField] private List<ItemSO> m_CardBacks = new();
 
     public Sprite GetCardSprite(CardType cardType, Cardvalue cardValue) {
-        
-        if(cardValue == Cardvalue.valueS_A)
+
+        if (cardValue == Cardvalue.valueS_A)
+        {
+            print("Wrong A reveal");
             cardValue = Cardvalue.value_A;
+        }
+        
         
         return m_Cards.Find(card => card.type == cardType && card.value == cardValue).CardImage;
     }
