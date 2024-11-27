@@ -146,9 +146,11 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         string regionCode = region.Code;
         PhotonNetwork.ConnectToRegion(regionCode);
 
+        // UpdateConnectionStatus(
+        //     $"Connected To {NetworkManager.Instance.RegionsRegistry.GetRegionName(regionCode)}, Finding Lobby");
+        
         UpdateConnectionStatus(
-            $"Connected To {NetworkManager.Instance.RegionsRegistry.GetRegionName(regionCode)}, Finding Lobby");
-        print($"Region : {regionCode} Flow");
+            $"Connected To Game Server, Finding Lobby");
     }
 
     public void CreateRoom(RoomOptions roomOptions)
