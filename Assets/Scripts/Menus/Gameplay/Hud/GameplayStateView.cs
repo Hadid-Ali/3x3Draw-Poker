@@ -38,6 +38,8 @@ public class GameplayStateView : MonoBehaviour
 
     private void OnGameplayStateSwitched(GameplayState gameplayState)
     {
+        
+        
         switch (gameplayState)
         {
             case GameplayState.Casino_View:
@@ -53,6 +55,7 @@ public class GameplayStateView : MonoBehaviour
                 break;
             
             case GameplayState.Result_Score_View:
+                print("Resultant View");
                 SwitchToResultScoresView();
                 break;
         }

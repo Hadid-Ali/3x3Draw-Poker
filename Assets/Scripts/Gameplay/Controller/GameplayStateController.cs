@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameplayStateController : MonoBehaviour
@@ -59,6 +56,6 @@ public class GameplayStateController : MonoBehaviour
 
     private void OnGameStateChanged(GameplayState gameplayState)
     {
-        Debug.LogError($"Gameplay State {gameplayState}");
+        
     }
 }

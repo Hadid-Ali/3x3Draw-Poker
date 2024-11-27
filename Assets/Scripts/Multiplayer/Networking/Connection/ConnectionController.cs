@@ -286,7 +286,8 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.CurrentRoom.IsOpen = false;
 
-        NetworkManager.Instance.LoadGameplay("PokerGame");
+        PhotonNetwork.LoadLevel(2);
+        //NetworkManager.Instance.LoadGameplay("PokerGame");
     }
 
     private void StartOfflineMatch()

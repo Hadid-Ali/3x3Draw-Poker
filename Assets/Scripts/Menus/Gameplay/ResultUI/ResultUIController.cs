@@ -65,7 +65,6 @@ public class ResultUIController : MonoBehaviour
     private void SetupShowResultUI()
     {
         StartCoroutine(ShowResultantUI_Routine());
-        GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Deck_View);
     }
 
     private IEnumerator ShowResultantUI_Routine()
@@ -73,19 +72,25 @@ public class ResultUIController : MonoBehaviour
         int index = 0;
         int totalHands = GameData.MetaData.DecksCount;
         
+        GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Deck_View);
+        
         while (index < totalHands)
         {
             ShowDecksAtIndex(index++);
             
-            var waitTime = PhotonNetwork.CountOfPlayers >= 4 ? 
-                m_WaitBetweenDecksReveal * 2 : m_WaitBetweenDecksReveal;
+           // var waitTime = GameData.SessionData.CurrentRoomPlayersCount >= 4 ? 
+              //  m_WaitBetweenDecksReveal * 2 : m_WaitBetweenDecksReveal;
             
-            yield return new WaitForSeconds(waitTime);
+            //Debug.Log(waitTime);
+            yield return new WaitForSeconds(5);
         }
 
         m_ResultUiView.Reset();
         m_ResultUiView.SetActiveState(false);
         m_OnResultViewClose.Raise();
+        
+        yield return new WaitForSeconds(.5f);
+        
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Score_View);
     }
 

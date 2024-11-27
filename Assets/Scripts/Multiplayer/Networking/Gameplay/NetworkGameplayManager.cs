@@ -23,15 +23,15 @@ public class NetworkGameplayManager : MonoBehaviour
 
     public virtual void Awake()
     {
-        if(PhotonNetwork.IsMasterClient)
-            GameEvents.NetworkEvents.OnMasterGameplayLoaded.Raise();
-        
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
     }
     
     private void Start()
     {
+        if(PhotonNetwork.IsMasterClient)
+            GameEvents.NetworkEvents.OnMasterGameplayLoaded.Raise();
+        
         StartMatchInternal();
     }
 
@@ -68,7 +68,7 @@ public class NetworkGameplayManager : MonoBehaviour
             TimeDuration = GameData.MetaData.WaitBeforeAutomaticRoundStart,
             ActionToExecute =  RoundRestart,
             TickTimeEvent = TimerTick,
-            IsNetworkGlobal = true
+            IsNetworkGlobal = false
         });
     }
     public void TimerTick(string time)
@@ -78,10 +78,10 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void RoundRestart()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameEvents.GameFlowEvents.RestartRound.Raise();
-        }
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
+        GameEvents.GameFlowEvents.RestartRound.Raise();
     }
 
     [PunRPC]
@@ -224,6 +224,7 @@ public class NetworkGameplayManager : MonoBehaviour
     public void StartMatch_RPC(int count)
     {
         GameData.SessionData.CurrentRoomPlayersCount = count;
+        print($"StartMatch_RPC {count}");
     }
     
     [PunRPC]

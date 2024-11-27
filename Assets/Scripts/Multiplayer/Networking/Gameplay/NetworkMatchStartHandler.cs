@@ -93,7 +93,9 @@ public class NetworkMatchStartHandler : MonoBehaviour
             return;
         
         PhotonNetwork.CurrentRoom.IsOpen = false;
-        NetworkManager.Instance.LoadGameplay("PokerGame");
+        
+        PhotonNetwork.LoadLevel(2);
+        //NetworkManager.Instance.LoadGameplay("PokerGame");
     }
 
     private void OnMasterGameplayLoaded()
@@ -104,6 +106,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
     [PunRPC]
     private void LoadScene()
     {
-        NetworkManager.Instance.LoadGameplay("PokerGame");
+        PhotonNetwork.LoadLevel(2);
+        //NetworkManager.Instance.LoadGameplay("PokerGame");
     }
 }

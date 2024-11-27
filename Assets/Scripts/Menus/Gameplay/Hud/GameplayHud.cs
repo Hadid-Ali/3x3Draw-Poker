@@ -71,7 +71,6 @@ public class GameplayHud : MenusController
 
     public void ShowResultMenu()
     {
-        Debug.LogError("Show Result Menu");
         SetMenuState(m_ShowMatchoverMenu ? MenuName.MatchCompleteMenu : MenuName.RoundCompleteMenu);
     }
     

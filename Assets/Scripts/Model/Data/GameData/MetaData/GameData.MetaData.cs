@@ -22,7 +22,7 @@ public static partial class GameData
         
         public const int WaitBeforeAutomaticMatchStart = 30;
         public const int WaitBeforeAutomaticRoundStart = 5;
-        public const int WaitBeforeAutomaticCardsSubmission = 60;
+        public const int WaitBeforeAutomaticCardsSubmission = 180;
         public const int WaitBeforeSubmissionTimerStart = 5;
         
         public const int NullID = -1000;
@@ -32,7 +32,7 @@ public static partial class GameData
         public const string AppWebsiteLink = "https://triplehandpoker.com/";
         public const string MuteString = "MuteString";
         
-        public const string BotDifficulty = "BotsDifficulty";
+        public const string BotDifficulty = "BwaotsDifficulty";
         public const BotsDifficulty DefaultBotDifficulty = BotsDifficulty.Hard;
         public const bool IsTestMode = false;
 
