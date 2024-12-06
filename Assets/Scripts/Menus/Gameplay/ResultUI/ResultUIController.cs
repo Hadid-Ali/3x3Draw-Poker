@@ -102,8 +102,14 @@ public class ResultUIController : MonoBehaviour
         {
             PlayerDecksObject deckObject = m_PlayerDecks[i];
             CardData [] cardData = deckObject.Decks[index];
+
+            var tempcData = cardData;
+
+            foreach (var v in tempcData)
+                if(v.value == Cardvalue.valueS_A)
+                    v.value = Cardvalue.value_A;
             
-            HandEvaluator.Evaluate(cardData, out HandTypes handTypes);
+            HandEvaluator.Evaluate(tempcData, out HandTypes handTypes);
 
             List<CardData> cardList = cardData.ToList();
 
@@ -137,7 +143,6 @@ public class ResultUIController : MonoBehaviour
                             break;
                     }
                 }
-
                 if (threeOfAKind != null && pair != null)
                 {
                     cardList = threeOfAKind.Concat(pair).ToList(); //Concatenating with pair so threeOfAKind comes before pair 
