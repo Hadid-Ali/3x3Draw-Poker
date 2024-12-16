@@ -39,7 +39,6 @@ public class GameplayStateView : MonoBehaviour
     private void OnGameplayStateSwitched(GameplayState gameplayState)
     {
         
-        
         switch (gameplayState)
         {
             case GameplayState.Casino_View:

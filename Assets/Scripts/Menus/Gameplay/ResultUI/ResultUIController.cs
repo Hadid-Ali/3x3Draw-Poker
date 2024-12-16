@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Photon.Pun;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ResultUIController : MonoBehaviour
@@ -78,22 +76,28 @@ public class ResultUIController : MonoBehaviour
         {
             ShowDecksAtIndex(index++);
             
-           // var waitTime = GameData.SessionData.CurrentRoomPlayersCount >= 4 ? 
-              //  m_WaitBetweenDecksReveal * 2 : m_WaitBetweenDecksReveal;
+            var waitTime = GameData.SessionData.CurrentRoomPlayersCount > 3 ? 
+                m_WaitBetweenDecksReveal * 2 : m_WaitBetweenDecksReveal;
             
-            //Debug.Log(waitTime);
-            yield return new WaitForSeconds(5);
+            Debug.Log(waitTime);
+            yield return new WaitForSeconds(waitTime);
         }
 
         m_ResultUiView.Reset();
         m_ResultUiView.SetActiveState(false);
         m_OnResultViewClose.Raise();
         
-        yield return new WaitForSeconds(.5f);
-        
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Score_View);
+        //yield return new WaitForSeconds(.5f);
+        
     }
 
+    Cardvalue[] _specialstraightSet = 
+    {
+        Cardvalue.value_2, Cardvalue.value_3,
+        Cardvalue.value_4, Cardvalue.value_5,
+        Cardvalue.value_A
+    };
     private void ShowDecksAtIndex(int index)
     {
         ResultHandDataObject[] resultObjects = new ResultHandDataObject[m_PlayerDecks.Count];
@@ -113,15 +117,24 @@ public class ResultUIController : MonoBehaviour
 
             List<CardData> cardList = cardData.ToList();
 
-            if (handTypes is HandTypes.Straight or HandTypes.StraightFlush) //Exception for Straight n StraightFlush
+            
+            if (handTypes == HandTypes.Straight || handTypes == HandTypes.StraightFlush) // Check both cases
             {
-                foreach (var c in cardData)
+                bool isSpecialCase = cardData.Select(card => card.value)
+                    .OrderBy(value => value) // Sort to match the sequence
+                    .SequenceEqual(_specialstraightSet);
+
+                if (isSpecialCase)
                 {
-                    if (c.value == Cardvalue.value_A )
-                        c.value = Cardvalue.valueS_A; //Change value to custom lowest so A is at the end
+                    foreach (var card in cardData)
+                    {
+                        if (card.value == Cardvalue.value_A)
+                            card.value = Cardvalue.valueS_A; // Change Ace's value to custom lowest
+                        print("Special Case");
+                    }
                 }
             }
-
+            
             if (handTypes is HandTypes.FullHouse)//Exception for fullhouse
             {
                 var groupedByValue = cardList.GroupBy(card => card.value)
@@ -156,7 +169,6 @@ public class ResultUIController : MonoBehaviour
             }
             
             
-
             resultObjects[i] = new ResultHandDataObject()
             {
                 CardBack = CardsRegistery.Instance.GetCardSprite((ItemName)m_UsersScoreList[i].SelectedCard),
