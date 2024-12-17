@@ -27,6 +27,8 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     private string _matchStart = "Start Match Timer";
     [SerializeField] private float MatchStartTime = 3;
+    
+    private Player cachedMasterClient;
 
     private void Start()
     {
@@ -89,7 +91,8 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        GameEvents.NetworkPlayerEvents.OnPlayerDisconnected.Raise();
+        PhotonNetwork.Reconnect();
+        //GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Raise();
         Debug.LogError($"{cause}");
     }
 
@@ -232,18 +235,29 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
         UpdateConnectionStatus($"Waiting for host to start the match");
 
+        cachedMasterClient = PhotonNetwork.MasterClient;
         if (!PhotonNetwork.IsMasterClient)
             return;
 
         GameEvents.NetworkEvents.GameRoomCreated.Raise();
     }
-
-
-
+    
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
-        GameEvents.NetworkPlayerEvents.OnPlayerDisconnected.Raise();
+
+        if (cachedMasterClient != null && otherPlayer.ActorNumber == cachedMasterClient.ActorNumber)
+        {
+            GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.Raise();
+            print("Master Client Disconnected");
+        }
+        else
+        {
+            GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Raise(otherPlayer.ActorNumber);
+            print($"Player {otherPlayer.ActorNumber} left.");
+        }
+
+        cachedMasterClient = PhotonNetwork.MasterClient;
         UpdatePlayersList();
     }
 

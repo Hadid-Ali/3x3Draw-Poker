@@ -123,11 +123,6 @@ public class NetworkBotCardsController : MonoBehaviour
                 cards[i] = shuffledCards[i];
             }
         }
-
-        
-        
-        print($"Bot Cards Shuffled {cards.Count}");
-
     }
 
     public List<CardData> GetCards()

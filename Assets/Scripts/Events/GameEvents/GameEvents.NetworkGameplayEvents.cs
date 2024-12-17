@@ -24,7 +24,8 @@ public static partial class GameEvents
         public static readonly GameEvent<List<CardData>> ExposePocketCardsLocally = new();
 
         public static GameEvent<int, int> OnSetPlayerRaiseLimits = new();
-        public static GameEvent OnPlayerDisconnected = new();
+        public static GameEvent<int> OnPlayerLeftRoom = new();
+        public static GameEvent OnMasterLeftRoom = new();
 
     }
 }

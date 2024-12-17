@@ -42,9 +42,23 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.Register(OnRoundCompleted);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Register(OnPlayerDisconnected);
       //  GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
     }
-    
+
+    private void OnPlayerDisconnected(int localID)
+    {
+        GameData.SessionData.CurrentRoomPlayersCount -= 1;
+        
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(SyncPlayerCount_RPC),
+            RpcTarget.AllBuffered, new object[]
+            {
+                GameData.SessionData.CurrentRoomPlayersCount
+            });
+        
+        //Dependencies.PlayersContainer.GetPlayerLocalID()
+    }
+
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
@@ -52,6 +66,7 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.UnRegister(OnRoundCompleted);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerDisconnected);
        // GameEvents.GameplayEvents.GameplayCardsStateChanged.UnRegister(OnRoundStarted);
     }
     
@@ -194,7 +209,7 @@ public class NetworkGameplayManager : MonoBehaviour
         GameData.RuntimeData.CURRENT_BOTS_FOR_SPAWNING = BotCount;
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(SyncPlayerCount_RPC),
             RpcTarget.AllBuffered, new object[]
             {
                 count
@@ -221,10 +236,10 @@ public class NetworkGameplayManager : MonoBehaviour
     }
 
     [PunRPC]
-    public void StartMatch_RPC(int count)
+    public void SyncPlayerCount_RPC(int count)
     {
         GameData.SessionData.CurrentRoomPlayersCount = count;
-        print($"StartMatch_RPC {count}");
+        print($"{count} RPC ");
     }
     
     [PunRPC]

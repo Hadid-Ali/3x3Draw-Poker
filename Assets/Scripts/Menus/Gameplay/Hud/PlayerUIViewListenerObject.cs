@@ -9,12 +9,21 @@ public class PlayerUIViewListenerObject : PlayerViewListenerObject
     {
         base.Awake();
         GameEvents.GameplayEvents.PlayerScoreReceived.Register(OnPlayerScoreReceived);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Register(OnPlayerLeftRoom);
     }
 
-    protected override void OnDestroy()
+    private void OnPlayerLeftRoom(int objj)
+    {
+        PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj => obj.PositionIndex == objj);
+        scoreObject.SetContainerStatus(false);
+        scoreObject.SetScore(0);
+    }
+
+    protected override void OnDestroy() 
     {
         base.OnDestroy();
         GameEvents.GameplayEvents.PlayerScoreReceived.UnRegister(OnPlayerScoreReceived);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerLeftRoom);
     }
 
     private void OnPlayerScoreReceived(int score, int playerId)
