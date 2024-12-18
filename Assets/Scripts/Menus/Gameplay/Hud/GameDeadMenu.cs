@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,6 +21,7 @@ public class GameDeadMenu : UIMenuBase
     private void OnGoToMenuClick()
     {
         GameEvents.GameFlowEvents.LeaveMatch.Raise();
+        PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("GameMenu");
     }
     

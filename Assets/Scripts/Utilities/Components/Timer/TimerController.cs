@@ -50,6 +50,7 @@ public sealed class TimerController : MonoBehaviour
         if (!activeCoroutines.TryGetValue(timerId, out Coroutine coroutine)) return;
         StopCoroutine(coroutine);
         activeCoroutines.Remove(timerId);
+        print("Request Timer Found and cancelled");
     }
 
     private IEnumerator StartTimer(TimerDataObject timerDataObject, string timerId)

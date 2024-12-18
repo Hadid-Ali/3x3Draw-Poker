@@ -26,7 +26,7 @@ public class GameOverMenu : UIMenuBase
    protected override void OnContainerEnable()
    {
       base.OnContainerEnable();
-      GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Casino_View);
+     // GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Casino_View);
    }
 
    //TODO: Implement Scene Flow Controller

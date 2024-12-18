@@ -29,6 +29,11 @@ public class PlayerUIViewListenerObject : PlayerViewListenerObject
     private void OnPlayerScoreReceived(int score, int playerId)
     {
         PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj => obj.PositionIndex == playerId);
+
+        PlayerController playerController = Dependencies.PlayersContainer.GetPlayerAgainstID(playerId);
+        if (playerController == null)
+            return;
+        
         scoreObject.SetContainerStatus(true);
         scoreObject.SetScore(score);
     }

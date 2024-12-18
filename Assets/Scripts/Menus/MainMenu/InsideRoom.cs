@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using Photon.Pun;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InsideRoom : UIMenuBase
 {
@@ -17,12 +14,19 @@ public class InsideRoom : UIMenuBase
    {
       GameEvents.NetworkEvents.MatchStartTimer.Register(OnMatchTimerUpdated);
       GameEvents.MenuEvents.PlayersListUpdated.Register(UpdatePlayerList);
+      GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Register(OnPlayerLeftRoom);
+   }
+
+   private void OnPlayerLeftRoom(int obj)
+   {
+      MatchRemainingTimer.SetText("");
    }
 
    private void OnDisable()
    {
       GameEvents.MenuEvents.PlayersListUpdated.UnRegister(UpdatePlayerList);
       GameEvents.NetworkEvents.MatchStartTimer.UnRegister(OnMatchTimerUpdated);
+      GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerLeftRoom);
    }
 
    private void OnMatchTimerUpdated(string obj)
