@@ -6,7 +6,8 @@ public interface INetworkPlayerSpawner
     public void SpawnPlayer();
     public void RegisterPlayer(PlayerController playerController);
     public void ReIteratePlayerSpawns();
-    public PlayerController GetPlayerAgainstID(int ID);
+    public PlayerController GetPlayerAgainstViewID(int ID);
+    public PlayerController GetPlayerAgainstActorID(int ID);
     public string GetPlayerName(int ID);
     public int GetLocalPlayerNetworkID();
     public int GetPlayerLocalID(int ID);

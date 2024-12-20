@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +42,6 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.Register(OnRoundCompleted);
         GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Register(OnPlayerDisconnected);
-      //  GameEvents.GameplayEvents.GameplayCardsStateChanged.Register(OnRoundStarted);
     }
 
     private void OnPlayerDisconnected(int localID)
@@ -55,8 +53,6 @@ public class NetworkGameplayManager : MonoBehaviour
             {
                 GameData.SessionData.CurrentRoomPlayersCount
             });
-        
-        //Dependencies.PlayersContainer.GetPlayerLocalID()
     }
 
     private void OnDisable()
@@ -67,7 +63,6 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.UnRegister(OnRoundCompleted);
         GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerDisconnected);
-       // GameEvents.GameplayEvents.GameplayCardsStateChanged.UnRegister(OnRoundStarted);
     }
     
 
@@ -174,7 +169,7 @@ public class NetworkGameplayManager : MonoBehaviour
         foreach (KeyValuePair<int, PlayerScoreObject> playerScores in userScores)
         {
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
-            m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
+            m_NetworkPlayerSpawner.GetPlayerAgainstViewID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
         }
     }
 

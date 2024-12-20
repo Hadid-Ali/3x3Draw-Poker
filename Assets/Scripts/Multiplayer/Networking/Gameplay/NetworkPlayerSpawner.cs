@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using ExitGames.Client.Photon;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.Serialization;
 
 public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
 {
@@ -77,10 +74,13 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkPlayerSpawner
         }
     }
 
-    public PlayerController GetPlayerAgainstID(int ID) => m_JoinedPlayers.Find(player => player.ID == ID);
+    public PlayerController GetPlayerAgainstViewID(int ID) =>
+        m_JoinedPlayers.Find(player => player.ID == ID);
     
-
-    public string GetPlayerName(int ID) => GetPlayerAgainstID(ID).Name;
+    public PlayerController GetPlayerAgainstActorID(int ID)=>
+        m_JoinedPlayers.Find(player => player.LocalID == ID);
+    
+    public string GetPlayerName(int ID) => GetPlayerAgainstViewID(ID).Name;
     
     private void OnPlayerScoresReceived(List<NetworkDataObject> networkDataObjects, List<PlayerScoreObject> playerScoreObjects)
     {

@@ -28,9 +28,12 @@ public class PlayerUIViewListenerObject : PlayerViewListenerObject
 
     private void OnPlayerScoreReceived(int score, int playerId)
     {
-        PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj => obj.PositionIndex == playerId);
-
-        PlayerController playerController = Dependencies.PlayersContainer.GetPlayerAgainstID(playerId);
+        PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj 
+            => obj.PositionIndex == playerId);
+        
+        PlayerController playerController = 
+            Dependencies.PlayersContainer.GetPlayerAgainstActorID(playerId);
+        
         if (playerController == null)
             return;
         
@@ -40,12 +43,8 @@ public class PlayerUIViewListenerObject : PlayerViewListenerObject
     
     protected override void OnLocalPlayerJoined(PlayerViewDataObject viewDataObject)
     {
-        print($"Local player joined with id :  {viewDataObject.LocalID}");
-        
         PlayerScoreUIObject scoreObject = m_ScoreObjects.Find(obj => obj.PositionIndex == viewDataObject.LocalID);
         scoreObject.SetContainerStatus(true);
         scoreObject.SetName(viewDataObject.Name);
-        print( $"Name is {viewDataObject.Name}");
-
     }
 }
