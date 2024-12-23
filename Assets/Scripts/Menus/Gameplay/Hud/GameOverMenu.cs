@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,6 +21,12 @@ public class GameOverMenu : UIMenuBase
    private void OnDestroy()
    {
       GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.UnRegister(OnMasterLeftRoom);
+   }
+
+   protected override void OnContainerEnable()
+   {
+      base.OnContainerEnable();
+      GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Casino_View);
    }
 
    //TODO: Implement Scene Flow Controller
