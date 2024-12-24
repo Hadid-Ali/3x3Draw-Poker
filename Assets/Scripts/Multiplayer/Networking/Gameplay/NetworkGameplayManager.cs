@@ -53,6 +53,8 @@ public class NetworkGameplayManager : MonoBehaviour
             {
                 GameData.SessionData.CurrentRoomPlayersCount
             });
+        
+        Evaluate();
     }
 
     private void OnDisable()
@@ -145,6 +147,11 @@ public class NetworkGameplayManager : MonoBehaviour
         m_AlreadyCheckedDecks.Add(dataObject.PhotonViewID);
         Debug.LogError(m_AllDecks.Count);
 
+        Evaluate();
+    }
+
+    private void Evaluate()
+    {
         if (!PhotonNetwork.IsMasterClient)
             return;
         
