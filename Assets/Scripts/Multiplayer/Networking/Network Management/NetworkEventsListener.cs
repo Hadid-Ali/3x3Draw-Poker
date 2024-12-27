@@ -23,7 +23,7 @@ public class NetworkEventsListener : MonoBehaviour
 
    private void OnLeaveMatch()
    {
-     // m_ConnectionController.Disconnect();
+      PhotonNetwork.LeaveRoom();
    }
    
    private void OnNetworkTimerStartRequest(string message, float timerAmount)

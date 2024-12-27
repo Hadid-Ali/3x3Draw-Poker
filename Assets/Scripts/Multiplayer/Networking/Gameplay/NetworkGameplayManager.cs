@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ public class NetworkGameplayManager : MonoBehaviour
     {
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
+        
     }
     
     private void Start()
@@ -32,7 +34,14 @@ public class NetworkGameplayManager : MonoBehaviour
             GameEvents.NetworkEvents.OnMasterGameplayLoaded.Raise();
         
         StartMatchInternal();
+        Application.runInBackground = true;
     }
+
+    private void OnDestroy()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
 
     private void OnEnable()
     {
@@ -66,7 +75,32 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.RoundMenuEnabled.UnRegister(OnRoundCompleted);
         GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerDisconnected);
     }
-    
+
+    // private void OnApplicationFocus(bool hasFocus)
+    // {
+    //     if(!hasFocus)
+    //         PhotonNetwork.Disconnect();
+    //
+    //     
+    //         
+    // }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        switch (pauseStatus)
+        {
+            case true:
+                PhotonNetwork.Disconnect();
+                break;
+            case false:
+            {
+                if(!PhotonNetwork.IsConnected)
+                    GameEvents.NetworkPlayerEvents.OnMasterLeftRoom
+                        .Raise();
+                break;
+            }
+        }
+    }
 
 
     private void OnRoundCompleted()

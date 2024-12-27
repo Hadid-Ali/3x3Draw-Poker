@@ -17,6 +17,7 @@ public static partial class GameData
         public static ItemName SELECTED_CARD_BACK = ItemName.DefaultCardB;
         public static ItemName SELECTED_CHARACTER = ItemName.Bear;
 
+
         public static int TOTAL_PLAYER_SCORE
         {
             get;

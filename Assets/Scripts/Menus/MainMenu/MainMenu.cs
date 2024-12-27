@@ -14,6 +14,8 @@ public class MainMenu : UIMenuBase
         m_SettingsButton.SubscribeAction(OnSettingsButton);
         m_PlayOfflineButton.SubscribeAction(StartOffline);
         m_StoreButton.SubscribeAction(OnStoreButtonTap);
+
+        
     }
 
     private void OnStoreButtonTap()

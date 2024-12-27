@@ -57,7 +57,6 @@ public class InsideRoom : UIMenuBase
     
    private void UpdatePlayerList(List<string> Players)
    {
-      print($"Function working");
       CreatePlayersList(Players);
 
       string PlayerPlural = Players.Count > 1 ? "Players Have" : "Player Has";

@@ -22,8 +22,8 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     private int m_RequiredPlayersCount = 2;
     private List<RoomInfo> m_Rooms = new();
 
-    private bool m_IsTestConnection = true;
-    private bool m_IsJoiningRoom = false;
+    public bool m_IsTestConnection = true;
+    public bool m_IsJoiningRoom = false;
 
     private string _matchStart = "Start Match Timer";
     [SerializeField] private float MatchStartTime = 3;
@@ -71,6 +71,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     private void OnDestroy()
     {
         PhotonNetwork.Disconnect();
+        m_IsTestConnection = false;
     }
 
     public void StartGame(MatchMode matchMode,string userName)
@@ -91,7 +92,10 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        PhotonNetwork.Reconnect();
+        
+        if(cause != DisconnectCause.DisconnectByClientLogic)
+            PhotonNetwork.Reconnect();
+        
         //GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Raise();
         Debug.LogError($"{cause}");
     }
@@ -101,7 +105,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         UpdateConnectionStatus("Connecting...");
         PhotonNetwork.ConnectUsingSettings();
 
-        print("Connected To  Server");
+        print("Connecting To  Server");
     }
 
     public override void OnConnectedToMaster()
@@ -113,6 +117,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         }
         else if (m_IsTestConnection)
         {
+            print("Test ");
             UpdateConnectionStatus("Connected to Server, Finding Best Regions to Connect");
             Invoke(nameof(OnRegionsPingCompleted), 1f);
         }
@@ -183,6 +188,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         if (!roomList.Any())
         {
             GameEvents.NetworkEvents.RoomJoinFailed.Raise();
+            print("Room list is empty");
             return;
         }
 
@@ -202,6 +208,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        print("On Lobby Joined");
         GameEvents.NetworkEvents.LobbyJoined.Raise();
     }
 
@@ -227,11 +234,6 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         
 
         UpdatePlayersList();
-
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.CustomProperties.Keys.ToList().Count; i++)
-        {
-            Debug.LogError($" Keys {PhotonNetwork.CurrentRoom.CustomProperties.Keys.ToList()[i]}");
-        }
 
         UpdateConnectionStatus($"Waiting for host to start the match");
 
