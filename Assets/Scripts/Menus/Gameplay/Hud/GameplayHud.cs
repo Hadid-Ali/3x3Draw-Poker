@@ -101,6 +101,9 @@ public class GameplayHud : MenusController
         GameEvents.TimerEvents.CancelActionRequest.Raise("SubmitTimer");
         SetGameplayInputStatus(false);
         
+        if(!PhotonNetwork.InRoom)
+            GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.Raise();
+        
         submissionTimer.text = "";
     }
     

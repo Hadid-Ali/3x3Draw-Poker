@@ -87,6 +87,20 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void OnApplicationPause(bool pauseStatus)
     {
+        // if (!pauseStatus)
+        // {
+        //     if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)
+        //     {
+        //         GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.Raise();
+        //         print("Not Connected");
+        //         return;
+        //     }
+        // }
+        //
+        //
+        //
+        // NetworkViewComponent.RPC(nameof(OnPlayerAppUnFocus), RpcTarget.MasterClient, pauseStatus);
+        //
         switch (pauseStatus)
         {
             case true:
@@ -128,6 +142,17 @@ public class NetworkGameplayManager : MonoBehaviour
             return;
         
         GameEvents.GameFlowEvents.RestartRound.Raise();
+    }
+
+    [PunRPC]
+    public void OnPlayerAppUnFocus(bool status)
+    {
+        if (status)
+            GameData.SessionData.CurrentRoomPlayersCount--;
+        else
+            GameData.SessionData.CurrentRoomPlayersCount++;
+        
+        print($"Players now : {GameData.SessionData.CurrentRoomPlayersCount}");
     }
 
     [PunRPC]

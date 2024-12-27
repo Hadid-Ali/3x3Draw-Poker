@@ -93,8 +93,14 @@ public class ConnectionController : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         
-        if(cause != DisconnectCause.DisconnectByClientLogic)
-            PhotonNetwork.Reconnect();
+        if (cause == DisconnectCause.ClientTimeout || 
+            cause == DisconnectCause.AuthenticationTicketExpired || 
+            cause == DisconnectCause.CustomAuthenticationFailed)
+        {
+            Debug.Log("Will not reconnect due to specific disconnection cause.");
+            return;
+        }
+        //PhotonNetwork.Reconnect();
         
         //GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Raise();
         Debug.LogError($"{cause}");

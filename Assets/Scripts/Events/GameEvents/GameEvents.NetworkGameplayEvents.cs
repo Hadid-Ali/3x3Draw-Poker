@@ -25,6 +25,7 @@ public static partial class GameEvents
 
         public static GameEvent<int, int> OnSetPlayerRaiseLimits = new();
         public static GameEvent<int> OnPlayerLeftRoom = new();
+        public static GameEvent<int, bool> OnPlayerApplicationFocused = new();
         public static GameEvent OnMasterLeftRoom = new();
 
     }
