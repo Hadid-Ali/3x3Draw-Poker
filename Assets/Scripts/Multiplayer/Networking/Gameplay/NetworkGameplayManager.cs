@@ -147,12 +147,12 @@ public class NetworkGameplayManager : MonoBehaviour
     [PunRPC]
     public void OnPlayerAppUnFocus(bool status)
     {
-        if (status)
-            GameData.SessionData.CurrentRoomPlayersCount--;
-        else
-            GameData.SessionData.CurrentRoomPlayersCount++;
-        
-        print($"Players now : {GameData.SessionData.CurrentRoomPlayersCount}");
+        // if (status)
+        //     GameData.SessionData.CurrentRoomPlayersCount--;
+        // else
+        //     GameData.SessionData.CurrentRoomPlayersCount++;
+        //
+        // print($"Players now : {GameData.SessionData.CurrentRoomPlayersCount}");
     }
 
     [PunRPC]
