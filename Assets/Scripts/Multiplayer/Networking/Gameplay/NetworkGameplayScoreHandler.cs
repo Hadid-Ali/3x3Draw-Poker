@@ -32,6 +32,11 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameplayEvents.OnPlayerScoreSubmit.UnRegister(SyncNetworkPlayerScoreReceived_RPC);
     }
 
+    private void OnDestroy()
+    {
+        OnMatchOver();
+    }
+
     public void Initialize(Action<int, int, int> onPlayerWin)
     {
         m_OnPlayerWin.Register(onPlayerWin);

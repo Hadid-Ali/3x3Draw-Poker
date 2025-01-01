@@ -24,6 +24,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     public bool m_IsTestConnection = true;
     public bool m_IsJoiningRoom = false;
+    private bool m_comingFromButton = false;
 
     private string _matchStart = "Start Match Timer";
     [SerializeField] private float MatchStartTime = 3;
@@ -76,6 +77,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     public void StartGame(MatchMode matchMode,string userName)
     {
+        m_comingFromButton = true;
         PhotonNetwork.LocalPlayer.NickName = userName;
         switch (matchMode)
         {
@@ -116,7 +118,7 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        if (PhotonNetwork.OfflineMode)
+        if (PhotonNetwork.OfflineMode && m_comingFromButton)
         {
             print("Creating Offline Room");
             PhotonNetwork.CreateRoom("Offline");
@@ -142,6 +144,9 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     private void OnRegionsPingCompleted()
     {
+        if(m_RegionHandler.EnabledRegions == null)
+            return;
+        
         List<Region> regions = m_RegionHandler.EnabledRegions;
         //GameEvents.NetworkEvents.ConnectionTransition.Raise(new RegionConfig()
       //  {
@@ -316,7 +321,8 @@ public class ConnectionController : MonoBehaviourPunCallbacks
 
     private void StartOfflineMatch()
     {
-        StartCoroutine(ValidateDisconnection());
+        if(m_comingFromButton)
+            StartCoroutine(ValidateDisconnection());
     }
 
     IEnumerator ValidateDisconnection()
@@ -330,8 +336,10 @@ public class ConnectionController : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.OfflineMode = true;
+        m_comingFromButton = false;
         GameData.SessionData.CurrentRoomPlayersCount = 1;
         GameEvents.MenuEvents.MenuTransitionEvent.Raise(MenuName.ConnectionScreen);
         UpdateConnectionStatus($"Starting Offline match");
+        
     }
 }

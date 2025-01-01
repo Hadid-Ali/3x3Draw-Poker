@@ -101,6 +101,10 @@ public class NetworkGameplayManager : MonoBehaviour
         //
         // NetworkViewComponent.RPC(nameof(OnPlayerAppUnFocus), RpcTarget.MasterClient, pauseStatus);
         //
+        if(PhotonNetwork.OfflineMode)
+            return;
+        
+        
         switch (pauseStatus)
         {
             case true:

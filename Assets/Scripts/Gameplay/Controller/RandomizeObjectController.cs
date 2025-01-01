@@ -1,19 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using Photon.Pun;
 using UnityEngine;
 
 public class RandomizeObjectController : MonoBehaviour
 {
     [SerializeField] private List<GameObject> m_RandomObjects;
+    [SerializeField] private PhotonView view;
 
     private void Start()
     {
-        EnableRandomObject();
+        if(!PhotonNetwork.IsMasterClient)
+            view.RPC(nameof(OnMasterInitialized),RpcTarget.AllBuffered, Random.Range(0,m_RandomObjects.Count));
     }
-
-    private void EnableRandomObject()
+    
+    [PunRPC]
+    private void OnMasterInitialized(int val)
     {
-        m_RandomObjects.GetRandomObject().SetActive(true);
+        m_RandomObjects[val].SetActive(true);
     }
 }
