@@ -9,6 +9,12 @@ public class RandomizeObjectController : MonoBehaviour
 
     private void Start()
     {
+        if (PhotonNetwork.OfflineMode)
+        {
+            view.RPC(nameof(OnMasterInitialized),RpcTarget.AllBuffered, Random.Range(0,m_RandomObjects.Count));
+            return;
+        }
+        
         if(!PhotonNetwork.IsMasterClient)
             view.RPC(nameof(OnMasterInitialized),RpcTarget.AllBuffered, Random.Range(0,m_RandomObjects.Count));
     }
