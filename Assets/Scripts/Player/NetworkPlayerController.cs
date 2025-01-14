@@ -1,10 +1,6 @@
-using System;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.SocialPlatforms.Impl;
-using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(PhotonView))]
 public class NetworkPlayerController : PlayerController

@@ -22,7 +22,7 @@ public class GameplayHud : MenusController
     [SerializeField] private GameObject m_DisconnectedLabel;
 
     [SerializeField] private GameObject m_InputBlocker;
-
+    [SerializeField] private TextMeshProUGUI submissionTimer;
     private bool m_ShowMatchoverMenu = false;
     
     private void Start()
@@ -34,17 +34,34 @@ public class GameplayHud : MenusController
     protected override void OnEnable()
     {
         base.OnEnable();
-        GameEvents.NetworkEvents.NetworkDisconnectedEvent.Register(OnNetworkDisconnected);
         GameEvents.GameFlowEvents.RoundStart.Register(AllowGameplayInputs);
         GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
+        GameEvents.GameplayEvents.GameplayStateSwitched.Register(GameplayStateChanged);
+        
+        m_SubmitButton.interactable = true;
+        
+        submissionTimer.text = "";
     }
-    
+
+    private void GameplayStateChanged(GameplayState obj)
+    {
+        if(obj != GameplayState.Cards_View || PhotonNetwork.OfflineMode || GameData.MetaData.IsTestMode)
+            return;
+        
+        StartCoroutine(WaitBeforeTimer());
+    }
+
+    private void OnSubmissionTimerTick(string obj)
+    {
+        submissionTimer.SetText($"Remaining Time : {obj}");
+    }
+
     protected override void OnDisable()
     {
         base.OnDisable();
-        GameEvents.NetworkEvents.NetworkDisconnectedEvent.UnRegister(OnNetworkDisconnected);
         GameEvents.GameFlowEvents.RoundStart.UnRegister(AllowGameplayInputs);
         GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
+        GameEvents.GameplayEvents.GameplayStateSwitched.UnRegister(GameplayStateChanged);
     }
 
     public void ShowScoreOnUI()
@@ -54,7 +71,6 @@ public class GameplayHud : MenusController
 
     public void ShowResultMenu()
     {
-        Debug.LogError("Show Result Menu");
         SetMenuState(m_ShowMatchoverMenu ? MenuName.MatchCompleteMenu : MenuName.RoundCompleteMenu);
     }
     
@@ -62,28 +78,33 @@ public class GameplayHud : MenusController
     {
         m_ShowMatchoverMenu = true;
     }
-    
-    private void OnNetworkDisconnected()
+
+    IEnumerator WaitBeforeTimer()
     {
-    //    m_DisconnectedLabel.SetActive(true);
+        yield return new WaitForSeconds(GameData.MetaData.WaitBeforeSubmissionTimerStart);
+        
+        GameEvents.TimerEvents.ExecuteActionRequest.Raise(new TimerDataObject()
+        {
+            Title = "SubmitTimer",
+            TimeDuration = GameData.MetaData.WaitBeforeAutomaticCardsSubmission,
+            ActionToExecute =  SubmitCards,
+            TickTimeEvent = OnSubmissionTimerTick,
+            IsNetworkGlobal = false
+        });
     }
 
-    private void Disconnect()
-    {
-        PhotonNetwork.Disconnect();
-    }
+    
 
     private void SubmitCards()
     {
-        // try
-        // {
-            GameEvents.GameplayUIEvents.SubmitDecks.Raise();
-            SetGameplayInputStatus(false);
-        // }
-        // catch (Exception e)00
-        // {
-        //     Debug.LogError(e.StackTrace);
-        // }
+        GameEvents.GameplayUIEvents.SubmitDecks.Raise();
+        GameEvents.TimerEvents.CancelActionRequest.Raise("SubmitTimer");
+        SetGameplayInputStatus(false);
+        
+        if(!PhotonNetwork.InRoom)
+            GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.Raise();
+        
+        submissionTimer.text = "";
     }
     
     private void AllowGameplayInputs()
@@ -96,5 +117,9 @@ public class GameplayHud : MenusController
         m_ButtonsContainer.SetActive(status);
         m_InputBlocker.SetActive(!status);
         m_WaitingText.SetActive(!status);
+    }
+    private void Disconnect()
+    {
+        PhotonNetwork.Disconnect();
     }
 }

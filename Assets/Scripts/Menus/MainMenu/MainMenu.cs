@@ -6,6 +6,9 @@ public class MainMenu : UIMenuBase
     [SerializeField] private ButtonWidget m_PlayOfflineButton;
     [SerializeField] private ButtonWidget m_SettingsButton;
     [SerializeField] private ButtonWidget m_StoreButton;
+    [SerializeField] private ButtonWidget m_HowToPlay;
+    
+    [SerializeField] private VideoControllerUIHandler m_HowToPlayVideoObject;
     
     
     private void Start()
@@ -14,6 +17,14 @@ public class MainMenu : UIMenuBase
         m_SettingsButton.SubscribeAction(OnSettingsButton);
         m_PlayOfflineButton.SubscribeAction(StartOffline);
         m_StoreButton.SubscribeAction(OnStoreButtonTap);
+        
+        
+        m_HowToPlay.SubscribeAction(StartHowToPlayVideo);
+        m_HowToPlayVideoObject.Initialize();
+    }
+    private void StartHowToPlayVideo()
+    {
+        m_HowToPlayVideoObject.Show();
     }
 
     private void OnStoreButtonTap()

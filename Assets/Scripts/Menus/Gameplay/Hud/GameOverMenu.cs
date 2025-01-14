@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,6 +9,18 @@ public class GameOverMenu : UIMenuBase
    private void Start()
    {
       m_GoToMenuButton.SubscribeAction(OnGoToMenuClick);
+      GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.Register(OnMasterLeftRoom);
+   }
+
+   private void OnMasterLeftRoom()
+   {
+      GameEvents.MenuEvents.MenuTransitionEvent.Raise(MenuName.GameDead);
+      print("Master left room received");
+   }
+
+   private void OnDestroy()
+   {
+      GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.UnRegister(OnMasterLeftRoom);
    }
 
    protected override void OnContainerEnable()

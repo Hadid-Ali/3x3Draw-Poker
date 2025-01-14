@@ -16,12 +16,14 @@ public class NetworkMatchStartHandler : MonoBehaviour
     {
         GameEvents.NetworkEvents.PlayerJoinedRoom.Register(OnPlayerEnteredInRoom);
         GameEvents.NetworkEvents.OnMasterGameplayLoaded.Register(OnMasterGameplayLoaded);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Register(OnPlayerLeftRoom);
     }
 
     private void OnDestroy()
     {
-        GameEvents.NetworkEvents.PlayerJoinedRoom.Register(OnPlayerEnteredInRoom);
+        GameEvents.NetworkEvents.PlayerJoinedRoom.UnRegister(OnPlayerEnteredInRoom);
         GameEvents.NetworkEvents.OnMasterGameplayLoaded.UnRegister(OnMasterGameplayLoaded);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerLeftRoom);
     }
 
     public void OnPlayerEnteredInRoom()
@@ -62,15 +64,19 @@ public class NetworkMatchStartHandler : MonoBehaviour
         }
     }
 
-    public void OnPlayerLeftRoom()
+    public void OnPlayerLeftRoom(int id)
     {
+        print("Inside leftRoom function");
         if (CurrentPlayersCount < GameData.MetaData.MinimumRequiredPlayers)
+        {
             TerminateAutoMatchStartRequest();
+            print("Match request terminated");
+        }
     }
 
     private void TerminateAutoMatchStartRequest()
     {
-        GameEvents.TimerEvents.CancelActionRequest.Raise();
+        GameEvents.TimerEvents.CancelActionRequest.Raise(_matchStartTitle);
         m_IsAutoStartRequestSent = false;
     }
 
@@ -93,7 +99,9 @@ public class NetworkMatchStartHandler : MonoBehaviour
             return;
         
         PhotonNetwork.CurrentRoom.IsOpen = false;
-        NetworkManager.Instance.LoadGameplay("PokerGame");
+        
+        PhotonNetwork.LoadLevel(2);
+        //NetworkManager.Instance.LoadGameplay("PokerGame");
     }
 
     private void OnMasterGameplayLoaded()
@@ -104,6 +112,7 @@ public class NetworkMatchStartHandler : MonoBehaviour
     [PunRPC]
     private void LoadScene()
     {
-        NetworkManager.Instance.LoadGameplay("PokerGame");
+        PhotonNetwork.LoadLevel(2);
+        //NetworkManager.Instance.LoadGameplay("PokerGame");
     }
 }

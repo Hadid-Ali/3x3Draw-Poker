@@ -32,6 +32,11 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
         GameEvents.GameplayEvents.OnPlayerScoreSubmit.UnRegister(SyncNetworkPlayerScoreReceived_RPC);
     }
 
+    private void OnDestroy()
+    {
+        OnMatchOver();
+    }
+
     public void Initialize(Action<int, int, int> onPlayerWin)
     {
         m_OnPlayerWin.Register(onPlayerWin);
@@ -83,9 +88,12 @@ public class NetworkGameplayScoreHandler : MonoBehaviour
     //TODO: Implement Tie Breaker
     private void CheckForWinner()
     {
+        int targetScore = PhotonNetwork.OfflineMode
+            ? GameData.PersistentData.OfflineTargetScore
+            : GameData.MetaData.TotalScoreToWin;
         
         IOrderedEnumerable<KeyValuePair<int, int>> scoresOrderedByDescending = m_PlayerScoreObjects.OrderByDescending(pair => pair.Value);
-        IEnumerable<KeyValuePair<int, int>> entries = m_PlayerScoreObjects.Where(pair => pair.Value >= GameData.MetaData.TotalScoreToWin);
+        IEnumerable<KeyValuePair<int, int>> entries = m_PlayerScoreObjects.Where(pair => pair.Value >= targetScore);
         
         List<KeyValuePair<int, int>> keyValuePairs = entries.ToList();
 

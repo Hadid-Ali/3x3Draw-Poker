@@ -21,6 +21,7 @@ public class HandEvaluator
 	// (for this type of win, it is more simpler to do it like this instead of using an algorithm)
 	static Cardvalue [][] straightSets = new Cardvalue[][] {	
 		new Cardvalue[] {Cardvalue.value_2, Cardvalue.value_3, Cardvalue.value_4, Cardvalue.value_5, Cardvalue.value_A},
+		new Cardvalue[] {Cardvalue.value_2, Cardvalue.value_3, Cardvalue.value_4, Cardvalue.value_5, Cardvalue.valueS_A},
 		new Cardvalue[] {Cardvalue.value_2, Cardvalue.value_3, Cardvalue.value_4, Cardvalue.value_5, Cardvalue.value_6},
 		new Cardvalue[] {Cardvalue.value_3, Cardvalue.value_4, Cardvalue.value_5, Cardvalue.value_6, Cardvalue.value_7},
 		new Cardvalue[] {Cardvalue.value_4, Cardvalue.value_5, Cardvalue.value_6, Cardvalue.value_7, Cardvalue.value_8},

@@ -9,6 +9,7 @@ public static partial class GameData
         private static string _userName = "UserName";
         private static string _selectedCharacter = "SelectedCharacter";
         private static string _selectedCardBack = "SelectedCard";
+        private static string _offlineTargetScore = "OfflineTargetScore";
 
         public static string UserName
         {
@@ -16,6 +17,16 @@ public static partial class GameData
             set
             {
                 PlayerPrefs.SetString(_userName, value);
+                PlayerPrefs.Save();
+            }
+        }
+        
+        public static int OfflineTargetScore
+        {
+            get => PlayerPrefs.GetInt(_offlineTargetScore, MetaData.TotalScoreToWinOffline);
+            set
+            {
+                PlayerPrefs.SetInt(_offlineTargetScore, value);
                 PlayerPrefs.Save();
             }
         }

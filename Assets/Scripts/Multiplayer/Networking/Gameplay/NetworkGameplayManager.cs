@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,20 +19,29 @@ public class NetworkGameplayManager : MonoBehaviour
     public PhotonView NetworkViewComponent => m_NetworkGameplayManagerView;
     
     private string _roundRestart = "RoundContinue";
+    private string _roundStart = "RoundStart";
 
     public virtual void Awake()
     {
-        if(PhotonNetwork.IsMasterClient)
-            GameEvents.NetworkEvents.OnMasterGameplayLoaded.Raise();
-        
         m_NetworkPlayerSpawner.Initialize(OnPlayerSpawned);
         m_NetworkScoreHandler.Initialize(OnPlayerWin);
+        
     }
     
     private void Start()
     {
+        if(PhotonNetwork.IsMasterClient)
+            GameEvents.NetworkEvents.OnMasterGameplayLoaded.Raise();
+        
         StartMatchInternal();
+        Application.runInBackground = true;
     }
+
+    private void OnDestroy()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
 
     private void OnEnable()
     {
@@ -40,7 +50,22 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.Register(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.Register(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.Register(OnRoundCompleted);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Register(OnPlayerDisconnected);
     }
+
+    private void OnPlayerDisconnected(int localID)
+    {
+        GameData.SessionData.CurrentRoomPlayersCount -= 1;
+        
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(SyncPlayerCount_RPC),
+            RpcTarget.AllBuffered, new object[]
+            {
+                GameData.SessionData.CurrentRoomPlayersCount
+            });
+        
+        Evaluate();
+    }
+
     private void OnDisable()
     {
         GameEvents.NetworkGameplayEvents.NetworkSubmitRequest.UnRegister(OnNetworkSubmitRequest);
@@ -48,7 +73,53 @@ public class NetworkGameplayManager : MonoBehaviour
         GameEvents.GameplayEvents.UserHandsEvaluated.UnRegister(OnRoundScoreEvaluated);
         GameEvents.GameFlowEvents.RestartRound.UnRegister(RestartGame);
         GameEvents.GameplayEvents.RoundMenuEnabled.UnRegister(OnRoundCompleted);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerDisconnected);
     }
+
+    // private void OnApplicationFocus(bool hasFocus)
+    // {
+    //     if(!hasFocus)
+    //         PhotonNetwork.Disconnect();
+    //
+    //     
+    //         
+    // }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        // if (!pauseStatus)
+        // {
+        //     if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)
+        //     {
+        //         GameEvents.NetworkPlayerEvents.OnMasterLeftRoom.Raise();
+        //         print("Not Connected");
+        //         return;
+        //     }
+        // }
+        //
+        //
+        //
+        // NetworkViewComponent.RPC(nameof(OnPlayerAppUnFocus), RpcTarget.MasterClient, pauseStatus);
+        //
+        if(PhotonNetwork.OfflineMode)
+            return;
+        
+        
+        switch (pauseStatus)
+        {
+            case true:
+                PhotonNetwork.Disconnect();
+                break;
+            case false:
+            {
+                if(!PhotonNetwork.IsConnected)
+                    GameEvents.NetworkPlayerEvents.OnMasterLeftRoom
+                        .Raise();
+                break;
+            }
+        }
+    }
+
 
     private void OnRoundCompleted()
     {
@@ -61,7 +132,7 @@ public class NetworkGameplayManager : MonoBehaviour
             TimeDuration = GameData.MetaData.WaitBeforeAutomaticRoundStart,
             ActionToExecute =  RoundRestart,
             TickTimeEvent = TimerTick,
-            IsNetworkGlobal = true
+            IsNetworkGlobal = false
         });
     }
     public void TimerTick(string time)
@@ -71,10 +142,21 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void RoundRestart()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameEvents.GameFlowEvents.RestartRound.Raise();
-        }
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
+        GameEvents.GameFlowEvents.RestartRound.Raise();
+    }
+
+    [PunRPC]
+    public void OnPlayerAppUnFocus(bool status)
+    {
+        // if (status)
+        //     GameData.SessionData.CurrentRoomPlayersCount--;
+        // else
+        //     GameData.SessionData.CurrentRoomPlayersCount++;
+        //
+        // print($"Players now : {GameData.SessionData.CurrentRoomPlayersCount}");
     }
 
     [PunRPC]
@@ -82,6 +164,7 @@ public class NetworkGameplayManager : MonoBehaviour
     {
         GameEvents.NetworkEvents.RoundRestartTimer.Raise(time);
     }
+
     
     private void OnPlayerWin(int networkViewID,int runnerUpID,int secondRunnerUpID)
     {
@@ -127,6 +210,11 @@ public class NetworkGameplayManager : MonoBehaviour
         m_AlreadyCheckedDecks.Add(dataObject.PhotonViewID);
         Debug.LogError(m_AllDecks.Count);
 
+        Evaluate();
+    }
+
+    private void Evaluate()
+    {
         if (!PhotonNetwork.IsMasterClient)
             return;
         
@@ -143,7 +231,6 @@ public class NetworkGameplayManager : MonoBehaviour
 
     private void OnRoundScoreEvaluated(Dictionary<int, PlayerScoreObject> userScores)
     {
-        
         SyncUserScoresOverNetwork(new SerializableList<PlayerScoreObject>()
         {
             Contents = userScores.Values.ToList()
@@ -152,9 +239,8 @@ public class NetworkGameplayManager : MonoBehaviour
         foreach (KeyValuePair<int, PlayerScoreObject> playerScores in userScores)
         {
             KeyValuePair<int, PlayerScoreObject> scoreItem = playerScores;
-            m_NetworkPlayerSpawner.GetPlayerAgainstID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
+            m_NetworkPlayerSpawner.GetPlayerAgainstViewID(scoreItem.Key).AwardPlayerPoints(scoreItem.Value.Score);
         }
-        
     }
 
     private void SyncUserScoresOverNetwork(SerializableList<PlayerScoreObject> playerScores)
@@ -188,7 +274,7 @@ public class NetworkGameplayManager : MonoBehaviour
         GameData.RuntimeData.CURRENT_BOTS_FOR_SPAWNING = BotCount;
         int count = GameData.SessionData.CurrentRoomPlayersCount;
         
-        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(StartMatch_RPC),
+        NetworkManager.NetworkUtilities.RaiseRPC(m_NetworkGameplayManagerView, nameof(SyncPlayerCount_RPC),
             RpcTarget.AllBuffered, new object[]
             {
                 count
@@ -215,9 +301,10 @@ public class NetworkGameplayManager : MonoBehaviour
     }
 
     [PunRPC]
-    public void StartMatch_RPC(int count)
+    public void SyncPlayerCount_RPC(int count)
     {
         GameData.SessionData.CurrentRoomPlayersCount = count;
+        print($"{count} RPC ");
     }
     
     [PunRPC]

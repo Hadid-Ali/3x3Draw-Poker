@@ -32,7 +32,8 @@ public enum Cardvalue
 	value_Q = 10,
 	value_K = 11,
 	value_A = 12,
-	valueS_NO = 13,
+	valueS_A = -1, //Only for straight flush tiebreaker evaluation
+	valueS_NO = 14,
 }
 
 //--------------------------------------------
@@ -71,6 +72,8 @@ public class CardData
 		type = other.type;
 		value = other.value;
 	}
+
+
 	
         public static string RankToString(int rank)
         {

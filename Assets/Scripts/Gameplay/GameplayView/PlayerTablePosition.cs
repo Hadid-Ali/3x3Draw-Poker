@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -9,6 +10,11 @@ public class PlayerTablePosition : MonoBehaviour
     [SerializeField] private Transform m_TopPointTransform;
 
     public int TablePositionIndex => m_TablePositionIndex;
+
+    public void ResetPosition()
+    {
+        m_PositionView.SetPositionEnabled(false);
+    }
 
     public void SetAvatarIndex(int index)
     {

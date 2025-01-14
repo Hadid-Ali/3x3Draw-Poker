@@ -14,5 +14,6 @@ public enum MenuName
     GameOverMenu,
     RoomSelection,
     InsideRoom,
-    StoreSelection
+    StoreSelection,
+    GameDead
 }

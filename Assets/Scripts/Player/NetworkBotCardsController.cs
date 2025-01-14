@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class NetworkBotCardsController : MonoBehaviour
 {
@@ -43,6 +44,10 @@ public class NetworkBotCardsController : MonoBehaviour
 
         cards.Clear();
         cards.AddRange(obj);
+        foreach (var v in cards.Where(v => v.value == Cardvalue.valueS_A))
+        {
+            v.value = Cardvalue.value_A;
+        }
 
         switch (_botDifficulty)
         {
@@ -119,15 +124,34 @@ public class NetworkBotCardsController : MonoBehaviour
                 cards[i] = shuffledCards[i];
             }
         }
-
+    }
+    public void ShuffleAndInterchangeGroups()
+    {
+        if (cards.Count != 15)
+        {
+            Debug.LogWarning("The card list must contain exactly 15 cards to shuffle and interchange groups.");
+            return;
+        }
         
+        var group1 = cards.GetRange(0, 5);
+        var group2 = cards.GetRange(5, 5);
+        var group3 = cards.GetRange(10, 5);
         
-        print($"Bot Cards Shuffled {cards.Count}");
+        var groups = new List<List<CardData>> { group1, group2, group3 };
+        groups = groups.OrderBy(_ => Random.value).ToList();
 
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                cards[i * 5 + j] = groups[i][j];
+            }
+        }
     }
 
     public List<CardData> GetCards()
     {
+        ShuffleAndInterchangeGroups();
         return cards;
     }
     

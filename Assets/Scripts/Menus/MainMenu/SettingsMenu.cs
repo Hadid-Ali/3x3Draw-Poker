@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -25,8 +27,13 @@ public class SettingsMenu : UIMenuBase
     [SerializeField] private Sprite soundOff;
 
     [SerializeField] private ButtonWidgetWithStatus[] difficultyButtons;
+        
+    [SerializeField] private Slider _targetScoreSlider;
+    [SerializeField] private TextMeshProUGUI _targetScoreText;
     
-
+    [SerializeField] private int highestScore;
+    [SerializeField] private int stepSize;
+    
     private void Start()
     {
         m_PrivacyPolicyButton.SubscribeAction(OnPrivacyPolicyButton);
@@ -44,6 +51,34 @@ public class SettingsMenu : UIMenuBase
         difficultyButtons[0].SubscribeAction(()=>SetDifficulty(BotsDifficulty.Easy));
         difficultyButtons[1].SubscribeAction(()=>SetDifficulty(BotsDifficulty.Medium));
         difficultyButtons[2].SubscribeAction(()=>SetDifficulty(BotsDifficulty.Hard));
+        InitializeSlider();
+    }
+
+    private void InitializeSlider()
+    {
+        SetSliderBounds(highestScore, stepSize);
+        
+        _targetScoreSlider.onValueChanged.AddListener(OnTargetOfflineScoreChanged);
+        OnTargetOfflineScoreChanged(GameData.PersistentData.OfflineTargetScore);
+    }
+    public void SetSliderBounds(float high, float step)
+    {
+        float maxValue = Mathf.Floor(high / step) *step;
+
+        _targetScoreSlider.minValue = step;
+        _targetScoreSlider.maxValue = maxValue;
+        
+        _targetScoreSlider.wholeNumbers = false;
+        _targetScoreSlider.value = GameData.PersistentData.OfflineTargetScore;
+    }
+    
+    private void OnTargetOfflineScoreChanged(float value)
+    {
+        float valueTemp = Mathf.Round(value / stepSize) * stepSize;
+        _targetScoreSlider.value = valueTemp;
+        
+        GameData.PersistentData.OfflineTargetScore = (int)valueTemp;
+        _targetScoreText.text = valueTemp.ToString(CultureInfo.InvariantCulture);
     }
 
     private void OnEnable()

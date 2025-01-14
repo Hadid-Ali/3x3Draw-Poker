@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static partial class GameData
@@ -11,6 +9,7 @@ public static partial class GameData
         public const int DeckSize = 5;
 
         public const int TotalScoreToWin = 100;
+        public const int TotalScoreToWinOffline = 100;
         
         public const int OffsetCards = 2;
 
@@ -23,6 +22,8 @@ public static partial class GameData
         
         public const int WaitBeforeAutomaticMatchStart = 30;
         public const int WaitBeforeAutomaticRoundStart = 5;
+        public const int WaitBeforeAutomaticCardsSubmission = 180;
+        public const int WaitBeforeSubmissionTimerStart = 5;
         
         public const int NullID = -1000;
 
@@ -31,8 +32,9 @@ public static partial class GameData
         public const string AppWebsiteLink = "https://triplehandpoker.com/";
         public const string MuteString = "MuteString";
         
-        public const string BotDifficulty = "BotsDifficulty";
+        public const string BotDifficulty = "BwaotsDifficulty";
         public const BotsDifficulty DefaultBotDifficulty = BotsDifficulty.Hard;
+        public const bool IsTestMode = false;
 
         public static Vector2 deafaultCardImageSize = new Vector2(250, 350);
         public static Vector2 deafaultCharacterImageSize = new Vector2(450, 500);

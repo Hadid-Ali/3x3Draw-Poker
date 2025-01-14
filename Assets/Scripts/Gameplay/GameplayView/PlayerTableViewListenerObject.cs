@@ -11,12 +11,14 @@ public class PlayerTableViewListenerObject : PlayerViewListenerObject
     {
         base.Awake();
         GameEvents.GameFlowEvents.MatchOver.Register(OnMatchOver);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.Register(OnPlayerLeftRoom);
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
         GameEvents.GameFlowEvents.MatchOver.UnRegister(OnMatchOver);
+        GameEvents.NetworkPlayerEvents.OnPlayerLeftRoom.UnRegister(OnPlayerLeftRoom);
     }
 
     private void OnMatchOver()
@@ -30,5 +32,13 @@ public class PlayerTableViewListenerObject : PlayerViewListenerObject
             m_TablePositions.Find(player => player.TablePositionIndex == viewDataObject.LocalID);
         
         position.SetAvatarIndex(viewDataObject.AvatarID);
+    }
+    
+    private void OnPlayerLeftRoom(int obj)
+    {
+        PlayerTablePosition position =
+            m_TablePositions.Find(player => player.TablePositionIndex == obj);
+        
+        position.ResetPosition();
     }
 }
