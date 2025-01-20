@@ -18,6 +18,7 @@ public class SettingsMenu : UIMenuBase
     [SerializeField] private ButtonWidget m_HowToPlayButton;
     
     [SerializeField] private ButtonWidget m_BackButton;
+    [SerializeField] private ButtonWidget m_ReportABugButton;
     [SerializeField] private ButtonWidget m_CloseButton;
 
     [SerializeField] private ButtonWidget m_SoundButton;
@@ -38,8 +39,11 @@ public class SettingsMenu : UIMenuBase
     {
         m_PrivacyPolicyButton.SubscribeAction(OnPrivacyPolicyButton);
         m_TermsOfUsageButton.SubscribeAction(OnTermsOfUsageButton);
-        
-        m_BackButton.SubscribeAction(OnBackButton);
+
+        if (m_BackButton != null)
+            m_BackButton.SubscribeAction(OnBackButton);
+        m_ReportABugButton.SubscribeAction(ReportABug);
+
         m_CloseButton.SubscribeAction(OnCloseButton);
         
         m_FindOutMoreButton.SubscribeAction(FindOutMore);
@@ -145,6 +149,10 @@ public class SettingsMenu : UIMenuBase
         ChangeMenuState(MenuName.MainMenu);
     }
 
+    private void ReportABug()
+    {
+        Application.OpenURL(GameData.MetaData.FeedbackFormLink);
+    }
     private void OnCloseButton()
     {
         OnBackButton();
