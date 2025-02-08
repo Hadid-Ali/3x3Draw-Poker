@@ -13,7 +13,6 @@ public class ResultUIController : MonoBehaviour
     [Header("Attributes")]
     
     [SerializeField] private float m_WaitBeforeWinnerReveal;
-    [SerializeField] private float m_WaitBetweenDecksReveal;
     
     private List<PlayerScoreObject> m_UsersScoreList = new();
     private List<PlayerDecksObject> m_PlayerDecks = new();
@@ -72,15 +71,19 @@ public class ResultUIController : MonoBehaviour
         
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Deck_View);
         
+        WaitForSeconds wait = new(GameData.SessionData.CurrentRoomPlayersCount > 3
+            ? GameData.MetaData.RevealTimeForSixPlayersGame
+            : GameData.MetaData.RevealTimeForThreePlayersGame);
+        
         while (index < totalHands)
         {
             ShowDecksAtIndex(index++);
             
             var waitTime = GameData.SessionData.CurrentRoomPlayersCount > 3 ? 
-                m_WaitBetweenDecksReveal * 2 : m_WaitBetweenDecksReveal;
+                GameData.MetaData.RevealTimeForSixPlayersGame : GameData.MetaData.RevealTimeForThreePlayersGame;
             
             Debug.Log(waitTime);
-            yield return new WaitForSeconds(waitTime);
+            yield return wait;
         }
 
         m_ResultUiView.Reset();
@@ -88,8 +91,6 @@ public class ResultUIController : MonoBehaviour
         m_OnResultViewClose.Raise();
         
         GameEvents.GameplayEvents.GameplayStateSwitched.Raise(GameplayState.Result_Score_View);
-        //yield return new WaitForSeconds(.5f);
-        
     }
 
     Cardvalue[] _specialstraightSet = 

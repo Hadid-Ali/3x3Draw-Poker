@@ -19,6 +19,9 @@ public static partial class GameData
         public const int MaxPlayersLimit = 6;
         public const int MinimumRequiredPlayers = 2;
         public const int MaximumPlayers = 6;
+
+        public const float RevealTimeForThreePlayersGame = 8f;
+        public const float RevealTimeForSixPlayersGame = 26f;
         
         public const int WaitBeforeAutomaticMatchStart = 30;
         public const int WaitBeforeAutomaticRoundStart = 5;
