@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using Invector;
-using UnityEngine.Networking.Types;
-using System;
 using Cinemachine;
 using UnityAtoms.BaseAtoms;
 
